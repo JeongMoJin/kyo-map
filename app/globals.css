@@ -1,0 +1,296 @@
+@import "tailwindcss";
+@import "leaflet/dist/leaflet.css";
+
+/* ============================================================
+   Typography — 가독성 + 위계감 중심
+   - 본문/UI: Pretendard Variable (100–900 가변 폭으로 위계 표현)
+   - 디스플레이 Hanja: Noto Serif KR (한자 "空家地圖" 등 출판 품질)
+   - 기술적 accent: IBM Plex Mono (ID·좌표·모델명)
+   ============================================================ */
+@font-face {
+  font-family: "Pretendard Variable";
+  font-weight: 45 920;
+  font-style: normal;
+  font-display: swap;
+  src: url("https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/woff2/PretendardVariable.woff2")
+    format("woff2-variations");
+}
+
+:root {
+  --background: #ffffff;
+  --foreground: #0a1324;
+  --brand-50: #eff6ff;
+  --brand-100: #dbeafe;
+  --brand-500: #3b82f6;
+  --brand-600: #2563eb;
+  --brand-700: #1d4ed8;
+  --brand-800: #1e40af;
+  --brand-900: #1e3a8a;
+  --surface: #ffffff;
+  --surface-muted: #f5f8fc;
+  --line: #e2e8f1;
+  --ink-strong: #0a1324;
+  --ink: #1f2a44;
+  --ink-muted: #475a7a;
+  --ink-subtle: #6a7a96;
+  --success: #10b981;
+  --danger: #ef4444;
+  --warning: #f59e0b;
+
+  --marker-green: #10b981;
+  --marker-blue: #2563eb;
+  --marker-red: #ef4444;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-brand-50: var(--brand-50);
+  --color-brand-100: var(--brand-100);
+  --color-brand-500: var(--brand-500);
+  --color-brand-600: var(--brand-600);
+  --color-brand-700: var(--brand-700);
+  --color-brand-800: var(--brand-800);
+  --color-brand-900: var(--brand-900);
+  --color-surface: var(--surface);
+  --color-surface-muted: var(--surface-muted);
+  --color-line: var(--line);
+  --color-ink-muted: var(--ink-muted);
+  --font-sans: "Pretendard Variable", "Pretendard", system-ui, -apple-system,
+    BlinkMacSystemFont, "Apple SD Gothic Neo", "Noto Sans KR", sans-serif;
+  --font-display: "Pretendard Variable", "Pretendard", system-ui,
+    "Apple SD Gothic Neo", sans-serif;
+  /* --font-hanja / --font-tech-mono are set by next/font/google in layout.tsx */
+  --font-hanja-fallback: var(--font-hanja, "Noto Serif KR"), "Pretendard Variable",
+    serif;
+  --font-tech-mono-fallback: var(--font-tech-mono, "IBM Plex Mono"),
+    ui-monospace, SFMono-Regular, Menlo, monospace;
+  --font-mono: var(--font-tech-mono, "IBM Plex Mono"), ui-monospace,
+    SFMono-Regular, Menlo, Monaco, monospace;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-sans);
+  /* ss06: 한글 획 최적화 / cv11: 라틴 대체 글립 / ss01 */
+  font-feature-settings: "ss06", "cv11", "ss03", "kern", "liga";
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+html {
+  font-size: 16px;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  font-size: 15.5px;
+  line-height: 1.62;
+  letter-spacing: -0.003em;
+  color: var(--ink);
+  background:
+    radial-gradient(1200px 520px at 85% -10%, rgba(37, 99, 235, 0.06), transparent 70%),
+    radial-gradient(900px 420px at -10% 110%, rgba(16, 185, 129, 0.05), transparent 70%),
+    #fbfcfe;
+}
+
+/* 헤드라인 전용 — Pretendard 최대 weight + 타이트 트래킹 */
+.font-display {
+  font-family: var(--font-display);
+  font-feature-settings: "ss06", "kern", "liga";
+  letter-spacing: -0.032em;
+}
+
+/* 한자 전용 — Noto Serif KR (출판 품질) */
+.font-hanja {
+  font-family: var(--font-hanja-fallback);
+  letter-spacing: 0.01em;
+  font-feature-settings: "kern";
+}
+
+/* IBM Plex Mono — 기술 accent */
+.tech-mono {
+  font-family: var(--font-tech-mono-fallback);
+  font-feature-settings: "ss01", "zero";
+  letter-spacing: -0.005em;
+}
+
+h1,
+h2,
+h3 {
+  color: var(--ink-strong);
+  letter-spacing: -0.022em;
+}
+
+/* selection */
+::selection {
+  background: rgba(37, 99, 235, 0.18);
+  color: var(--brand-900);
+}
+
+/* --- Leaflet tweaks --- */
+.leaflet-container {
+  font-family: inherit;
+  background: #eef2f7;
+}
+
+/* Zoom control 리디자인 */
+.leaflet-bottom.leaflet-right {
+  bottom: 16px;
+  right: 16px;
+}
+.leaflet-bar {
+  border: 1px solid var(--line) !important;
+  border-radius: 12px !important;
+  overflow: hidden;
+  box-shadow: 0 6px 20px -8px rgba(13, 24, 58, 0.22) !important;
+}
+.leaflet-bar a {
+  background: #ffffff !important;
+  color: var(--ink-strong) !important;
+  width: 34px !important;
+  height: 34px !important;
+  line-height: 34px !important;
+  font-size: 16px !important;
+  font-weight: 700 !important;
+  border-bottom: 1px solid var(--line) !important;
+  transition: background-color 0.15s ease, color 0.15s ease;
+}
+.leaflet-bar a:hover {
+  background: var(--brand-50) !important;
+  color: var(--brand-800) !important;
+}
+.leaflet-bar a:last-child {
+  border-bottom: none !important;
+}
+.leaflet-popup-content-wrapper {
+  border-radius: 14px;
+  box-shadow: 0 10px 30px -12px rgba(13, 24, 58, 0.25);
+  border: 1px solid var(--line);
+  padding: 0;
+}
+.leaflet-popup-content {
+  margin: 0;
+  padding: 0;
+  min-width: 240px;
+}
+.leaflet-popup-tip {
+  box-shadow: 0 4px 10px rgba(13, 24, 58, 0.12);
+}
+.leaflet-control-attribution {
+  font-size: 10px !important;
+  background: rgba(255, 255, 255, 0.85) !important;
+  backdrop-filter: blur(6px);
+}
+
+/* Custom marker pulse */
+.kyo-marker {
+  position: relative;
+  width: 22px;
+  height: 22px;
+}
+.kyo-marker::before {
+  content: "";
+  position: absolute;
+  inset: -6px;
+  border-radius: 999px;
+  background: currentColor;
+  opacity: 0.28;
+  animation: kyo-pulse 2.4s ease-out infinite;
+}
+.kyo-marker::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 999px;
+  background: currentColor;
+  border: 3px solid white;
+  box-shadow: 0 4px 10px rgba(13, 24, 58, 0.25);
+}
+.kyo-marker[data-risk="true"]::after {
+  border: 3px solid #fff1f0;
+  box-shadow: 0 0 0 2px currentColor, 0 4px 10px rgba(239, 68, 68, 0.35);
+}
+@keyframes kyo-pulse {
+  0% {
+    transform: scale(0.6);
+    opacity: 0.5;
+  }
+  100% {
+    transform: scale(1.9);
+    opacity: 0;
+  }
+}
+
+/* Utility animations */
+@keyframes fade-in-up {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.fade-in-up {
+  animation: fade-in-up 0.5s cubic-bezier(0.22, 0.61, 0.36, 1) both;
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -400px 0;
+  }
+  100% {
+    background-position: 400px 0;
+  }
+}
+.shimmer {
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0) 0%,
+    rgba(255, 255, 255, 0.6) 50%,
+    rgba(255, 255, 255, 0) 100%
+  );
+  background-size: 400px 100%;
+  animation: shimmer 1.6s infinite;
+}
+
+/* Card primitive */
+.card {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  box-shadow: 0 1px 2px rgba(13, 24, 58, 0.04),
+    0 14px 40px -24px rgba(13, 24, 58, 0.18);
+}
+
+/* Tabular numbers for counters */
+.tnum {
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum";
+}
+
+/* Scrollbar refinement */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+::-webkit-scrollbar-thumb {
+  background: #dbe2ee;
+  border-radius: 999px;
+  border: 2px solid transparent;
+  background-clip: content-box;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #c3ccdb;
+  background-clip: content-box;
+  border: 2px solid transparent;
+}
