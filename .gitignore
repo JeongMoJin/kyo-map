@@ -41,3 +41,9 @@ yarn-error.log*
 next-env.d.ts
 
 .vercel
+
+# submission artifacts (generated — see scripts/generate-submission.ts)
+/submission/
+
+# final submission package (personal info PDFs — do NOT publish)
+/FINAL_SUBMIT/

@@ -1,6 +1,11 @@
 @import "tailwindcss";
 @import "leaflet/dist/leaflet.css";
 
+/* Tailwind v4 커스텀 브레이크포인트: xs = 420px (소형 모바일 대응) */
+@theme {
+  --breakpoint-xs: 420px;
+}
+
 /* ============================================================
    Typography — 가독성 + 위계감 중심
    - 본문/UI: Pretendard Variable (100–900 가변 폭으로 위계 표현)

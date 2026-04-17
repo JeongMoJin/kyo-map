@@ -24,6 +24,14 @@ export const metadata: Metadata = {
   metadataBase: new URL("https://kyo-map.vercel.app"),
 };
 
+export const viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 5,
+  themeColor: "#1e40af",
+  viewportFit: "cover" as const,
+};
+
 export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {

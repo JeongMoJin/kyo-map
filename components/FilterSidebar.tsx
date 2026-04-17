@@ -208,7 +208,7 @@ export function FilterSidebar({
           현재 화면 용도별 분포
         </div>
         <div className="card -mx-1 p-3">
-          <div className="h-40">
+          <div className="h-36 sm:h-40">
             <ResponsiveContainer>
               <PieChart>
                 <Pie

@@ -68,9 +68,9 @@ export function HouseDetailView({ house }: { house: House }) {
   const avgPrev6 = house.powerUsage.slice(0, 6).reduce((a, b) => a + b, 0) / 6;
 
   return (
-    <div className="flex min-h-screen flex-col">
+    <div className="flex min-h-[100dvh] flex-col">
       {/* Hero */}
-      <div className="relative h-[320px] w-full overflow-hidden bg-black">
+      <div className="relative h-[280px] w-full overflow-hidden bg-black sm:h-[320px]">
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
           src={`https://picsum.photos/seed/${house.id}/1600/520`}
@@ -81,7 +81,7 @@ export function HouseDetailView({ house }: { house: House }) {
         <div className="absolute inset-x-0 top-0 h-16 bg-gradient-to-b from-black/50 to-transparent" />
 
         {/* Satellite overlay UI */}
-        <div className="pointer-events-none absolute right-5 top-5 z-10 flex flex-col items-end gap-1.5 text-[10.5px] font-mono text-white/80">
+        <div className="pointer-events-none absolute right-3 top-[70px] z-10 hidden flex-col items-end gap-1.5 text-[10.5px] font-mono text-white/80 sm:right-5 sm:top-[72px] sm:flex">
           <span className="rounded-md bg-black/40 px-2 py-0.5 backdrop-blur-sm">
             ViT-B/16 · 해상도 0.5m/px
           </span>
@@ -90,42 +90,43 @@ export function HouseDetailView({ house }: { house: House }) {
           </span>
         </div>
 
-        <div className="absolute inset-x-0 top-5 z-10">
-          <div className="mx-auto flex max-w-[1200px] items-center justify-between px-6">
+        <div className="absolute inset-x-0 top-3 z-10 sm:top-5">
+          <div className="mx-auto flex max-w-[1200px] flex-wrap items-center justify-between gap-2 px-3 sm:px-6">
             <Link
               href="/"
-              className="inline-flex items-center gap-1.5 rounded-full bg-white/90 px-3.5 py-2 text-[12.5px] font-bold text-[color:var(--foreground)] backdrop-blur-md transition-colors hover:bg-white"
+              className="inline-flex items-center gap-1.5 rounded-full bg-white/90 px-3 py-1.5 text-[12px] font-bold text-[color:var(--foreground)] backdrop-blur-md transition-colors hover:bg-white sm:px-3.5 sm:py-2 sm:text-[12.5px]"
             >
               <ArrowLeft className="h-3.5 w-3.5" />
-              지도로 돌아가기
+              <span className="hidden xs:inline">지도로 돌아가기</span>
+              <span className="xs:hidden">지도</span>
             </Link>
-            <div className="flex items-center gap-2">
+            <div className="flex flex-wrap items-center gap-1.5 sm:gap-2">
               <span
-                className="inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-[11.5px] font-bold text-white shadow-lg"
+                className="inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-[11px] font-bold text-white shadow-lg sm:gap-1.5 sm:px-3 sm:py-1.5 sm:text-[11.5px]"
                 style={{ background: color }}
               >
                 <Sparkles className="h-3 w-3" />
                 {USE_LABELS[house.recommendedUse]} 추천
               </span>
               {house.isDisasterZone && (
-                <span className="inline-flex items-center gap-1.5 rounded-full bg-red-600 px-3 py-1.5 text-[11.5px] font-bold text-white shadow-lg">
+                <span className="inline-flex items-center gap-1 rounded-full bg-red-600 px-2.5 py-1 text-[11px] font-bold text-white shadow-lg sm:gap-1.5 sm:px-3 sm:py-1.5 sm:text-[11.5px]">
                   <AlertTriangle className="h-3 w-3" />
-                  붕괴위험 안심구역
+                  <span className="hidden xs:inline">붕괴위험 </span>안심구역
                 </span>
               )}
             </div>
           </div>
         </div>
 
-        <div className="absolute inset-x-0 bottom-5 z-10">
-          <div className="mx-auto max-w-[1200px] px-6 text-white">
-            <div className="text-[11px] font-extrabold uppercase tracking-[0.2em] text-white/75">
+        <div className="absolute inset-x-0 bottom-4 z-10 sm:bottom-5">
+          <div className="mx-auto max-w-[1200px] px-3 text-white sm:px-6">
+            <div className="text-[10.5px] font-extrabold uppercase tracking-[0.18em] text-white/75 sm:text-[11px] sm:tracking-[0.2em]">
               공가 ID · {house.id}
             </div>
-            <h1 className="font-display mt-2 max-w-[820px] text-[34px] font-extrabold leading-[1.15] text-white">
+            <h1 className="font-display mt-1.5 max-w-[820px] text-[22px] font-extrabold leading-[1.2] text-white sm:mt-2 sm:text-[34px] sm:leading-[1.15]">
               {house.address}
             </h1>
-            <div className="mt-3 flex flex-wrap items-center gap-x-5 gap-y-1.5 text-[13px] font-medium text-white/85">
+            <div className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1 text-[11.5px] font-medium text-white/85 sm:mt-3 sm:gap-x-5 sm:gap-y-1.5 sm:text-[13px]">
               <span className="inline-flex items-center gap-1">
                 <Calendar className="h-3.5 w-3.5" />
                 {house.buildYear}년 준공
@@ -149,10 +150,10 @@ export function HouseDetailView({ house }: { house: House }) {
 
       {/* Main content */}
       <main className="flex-1">
-        <div className="mx-auto max-w-[1200px] px-6 py-8">
-          <div className="grid gap-6 lg:grid-cols-[1fr_380px]">
+        <div className="mx-auto max-w-[1200px] px-3 py-5 sm:px-6 sm:py-8">
+          <div className="grid gap-4 sm:gap-6 lg:grid-cols-[1fr_380px]">
             {/* Left column */}
-            <div className="space-y-6">
+            <div className="space-y-4 sm:space-y-6">
               {/* Tabs */}
               <div className="card overflow-hidden">
                 <div className="flex border-b border-[color:var(--line)] bg-[color:var(--surface-muted)]/60">
@@ -160,7 +161,9 @@ export function HouseDetailView({ house }: { house: House }) {
                     active={tab === "info"}
                     onClick={() => setTab("info")}
                   >
-                    <Home className="h-3.5 w-3.5" /> 기본 정보
+                    <Home className="h-3.5 w-3.5" />
+                    <span className="hidden xs:inline">기본 정보</span>
+                    <span className="xs:hidden">정보</span>
                   </TabButton>
                   <TabButton
                     active={tab === "ai"}
@@ -172,11 +175,13 @@ export function HouseDetailView({ house }: { house: House }) {
                     active={tab === "power"}
                     onClick={() => setTab("power")}
                   >
-                    <Zap className="h-3.5 w-3.5" /> 전력사용량
+                    <Zap className="h-3.5 w-3.5" />
+                    <span className="hidden xs:inline">전력사용량</span>
+                    <span className="xs:hidden">전력</span>
                   </TabButton>
                 </div>
 
-                <div className="p-6">
+                <div className="p-4 sm:p-6">
                   {tab === "info" && (
                     <div className="fade-in-up grid gap-4 md:grid-cols-2">
                       <InfoRow
@@ -292,21 +297,21 @@ export function HouseDetailView({ house }: { house: House }) {
 
                   {tab === "power" && (
                     <div className="fade-in-up space-y-4">
-                      <div className="flex items-center justify-between">
+                      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                         <div>
                           <div className="text-[11px] font-bold uppercase tracking-[0.14em] text-[color:var(--ink-muted)]">
                             한국전력 가명정보
                           </div>
-                          <div className="text-[15px] font-bold">
+                          <div className="text-[14.5px] font-bold sm:text-[15px]">
                             최근 12개월 월별 전력사용량
                           </div>
                         </div>
-                        <div className="flex items-center gap-4 text-[12px]">
+                        <div className="flex items-center gap-3 text-[12px] sm:gap-4">
                           <div>
                             <div className="text-[10.5px] text-[color:var(--ink-muted)]">
                               평균 (이전 6M)
                             </div>
-                            <div className="tnum text-[16px] font-bold text-[color:var(--foreground)]">
+                            <div className="tnum text-[15px] font-bold text-[color:var(--foreground)] sm:text-[16px]">
                               {avgPrev6.toFixed(1)}
                               <span className="text-[11px] text-[color:var(--ink-muted)]">
                                 {" "}
@@ -319,7 +324,7 @@ export function HouseDetailView({ house }: { house: House }) {
                             <div className="text-[10.5px] text-[color:var(--ink-muted)]">
                               평균 (최근 6M)
                             </div>
-                            <div className="tnum text-[16px] font-bold text-red-600">
+                            <div className="tnum text-[15px] font-bold text-red-600 sm:text-[16px]">
                               {avgRecent6.toFixed(1)}
                               <span className="text-[11px] text-red-500">
                                 {" "}
@@ -330,7 +335,7 @@ export function HouseDetailView({ house }: { house: House }) {
                         </div>
                       </div>
 
-                      <div className="h-[280px]">
+                      <div className="h-[240px] sm:h-[280px]">
                         <ResponsiveContainer>
                           <AreaChart
                             data={powerData}
@@ -538,7 +543,7 @@ function TabButton({
   return (
     <button
       onClick={onClick}
-      className={`relative flex flex-1 items-center justify-center gap-2 px-4 py-3.5 text-[13px] font-bold transition-colors ${
+      className={`relative flex flex-1 items-center justify-center gap-1.5 px-2 py-3 text-[12.5px] font-bold transition-colors sm:gap-2 sm:px-4 sm:py-3.5 sm:text-[13px] ${
         active
           ? "text-[color:var(--brand-800)]"
           : "text-[color:var(--ink-muted)] hover:text-[color:var(--foreground)]"
@@ -546,7 +551,7 @@ function TabButton({
     >
       {children}
       {active && (
-        <span className="absolute inset-x-4 bottom-0 h-[3px] rounded-full bg-[color:var(--brand-700)]" />
+        <span className="absolute inset-x-2 bottom-0 h-[3px] rounded-full bg-[color:var(--brand-700)] sm:inset-x-4" />
       )}
     </button>
   );
