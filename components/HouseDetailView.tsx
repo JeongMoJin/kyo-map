@@ -3,8 +3,6 @@
 import { useState } from "react";
 import Link from "next/link";
 import {
-  LineChart,
-  Line,
   XAxis,
   YAxis,
   CartesianGrid,
@@ -31,6 +29,7 @@ import {
   Mail,
 } from "lucide-react";
 import { ConfidenceGauge } from "@/components/ConfidenceGauge";
+import { ClientOnlyChart } from "@/components/ClientOnlyChart";
 import { useToast } from "@/components/Toast";
 import type { House } from "@/lib/types";
 import { USE_COLORS, USE_LABELS } from "@/lib/types";
@@ -336,79 +335,86 @@ export function HouseDetailView({ house }: { house: House }) {
                       </div>
 
                       <div className="h-[240px] sm:h-[280px]">
-                        <ResponsiveContainer>
-                          <AreaChart
-                            data={powerData}
-                            margin={{ top: 10, right: 10, left: -10, bottom: 0 }}
-                          >
-                            <defs>
-                              <linearGradient
-                                id="pwr-grad"
-                                x1="0"
-                                y1="0"
-                                x2="0"
-                                y2="1"
-                              >
-                                <stop
-                                  offset="0%"
-                                  stopColor="#1E40AF"
-                                  stopOpacity={0.45}
-                                />
-                                <stop
-                                  offset="100%"
-                                  stopColor="#1E40AF"
-                                  stopOpacity={0.02}
-                                />
-                              </linearGradient>
-                            </defs>
-                            <CartesianGrid
-                              strokeDasharray="3 6"
-                              stroke="#e6ebf3"
-                              vertical={false}
-                            />
-                            <XAxis
-                              dataKey="month"
-                              tick={{ fontSize: 11, fill: "#5b6b85" }}
-                              axisLine={false}
-                              tickLine={false}
-                            />
-                            <YAxis
-                              tick={{ fontSize: 11, fill: "#5b6b85" }}
-                              axisLine={false}
-                              tickLine={false}
-                              width={40}
-                              unit=""
-                            />
-                            <Tooltip
-                              contentStyle={{
-                                borderRadius: 10,
-                                border: "1px solid var(--line)",
-                                fontSize: 12,
+                        <ClientOnlyChart label="전력사용량 차트" minHeight={280}>
+                          <ResponsiveContainer>
+                            <AreaChart
+                              data={powerData}
+                              margin={{
+                                top: 10,
+                                right: 10,
+                                left: -10,
+                                bottom: 0,
                               }}
-                              formatter={(v) => [`${v} kWh`, "사용량"]}
-                            />
-                            <ReferenceLine
-                              y={2}
-                              stroke="#ef4444"
-                              strokeDasharray="4 4"
-                              label={{
-                                value: "빈집 임계치 2kWh",
-                                fill: "#ef4444",
-                                fontSize: 10,
-                                position: "insideTopRight",
-                              }}
-                            />
-                            <Area
-                              type="monotone"
-                              dataKey="value"
-                              stroke="#1E40AF"
-                              strokeWidth={2.5}
-                              fill="url(#pwr-grad)"
-                              dot={{ r: 3, fill: "#1E40AF" }}
-                              activeDot={{ r: 5 }}
-                            />
-                          </AreaChart>
-                        </ResponsiveContainer>
+                            >
+                              <defs>
+                                <linearGradient
+                                  id="pwr-grad"
+                                  x1="0"
+                                  y1="0"
+                                  x2="0"
+                                  y2="1"
+                                >
+                                  <stop
+                                    offset="0%"
+                                    stopColor="#1E40AF"
+                                    stopOpacity={0.45}
+                                  />
+                                  <stop
+                                    offset="100%"
+                                    stopColor="#1E40AF"
+                                    stopOpacity={0.02}
+                                  />
+                                </linearGradient>
+                              </defs>
+                              <CartesianGrid
+                                strokeDasharray="3 6"
+                                stroke="#e6ebf3"
+                                vertical={false}
+                              />
+                              <XAxis
+                                dataKey="month"
+                                tick={{ fontSize: 11, fill: "#5b6b85" }}
+                                axisLine={false}
+                                tickLine={false}
+                              />
+                              <YAxis
+                                tick={{ fontSize: 11, fill: "#5b6b85" }}
+                                axisLine={false}
+                                tickLine={false}
+                                width={40}
+                                unit=""
+                              />
+                              <Tooltip
+                                contentStyle={{
+                                  borderRadius: 10,
+                                  border: "1px solid var(--line)",
+                                  fontSize: 12,
+                                }}
+                                formatter={(v) => [`${v} kWh`, "사용량"]}
+                              />
+                              <ReferenceLine
+                                y={2}
+                                stroke="#ef4444"
+                                strokeDasharray="4 4"
+                                label={{
+                                  value: "빈집 임계치 2kWh",
+                                  fill: "#ef4444",
+                                  fontSize: 10,
+                                  position: "insideTopRight",
+                                }}
+                              />
+                              <Area
+                                type="monotone"
+                                dataKey="value"
+                                stroke="#1E40AF"
+                                strokeWidth={2.5}
+                                fill="url(#pwr-grad)"
+                                dot={{ r: 3, fill: "#1E40AF" }}
+                                activeDot={{ r: 5 }}
+                              />
+                            </AreaChart>
+                          </ResponsiveContainer>
+                        </ClientOnlyChart>
                       </div>
 
                       <div className="rounded-xl border border-red-100 bg-red-50/60 p-4 text-[13px] leading-[1.7] text-red-900">
@@ -521,7 +527,8 @@ export function HouseDetailView({ house }: { house: House }) {
 
               <div className="rounded-2xl border border-[color:var(--line)] bg-[color:var(--surface-muted)]/70 p-4 text-[11.5px] leading-relaxed text-[color:var(--ink-muted)]">
                 본 페이지는 2026 국토교통 데이터활용 경진대회 제출용 시제품
-                데모입니다. 모든 수치는 샘플 데이터로 실제 물건과 무관합니다.
+                데모입니다. 모든 수치는 샘플 데이터로 실제 물건과 무관하며,
+                실증 단계에서는 지자체 빈집대장과 현장 확인 결과로 검증합니다.
               </div>
             </aside>
           </div>

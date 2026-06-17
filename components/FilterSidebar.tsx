@@ -9,6 +9,7 @@ import {
   Tooltip,
 } from "recharts";
 import { SlidersHorizontal, MapPin, Sparkles } from "lucide-react";
+import { ClientOnlyChart } from "@/components/ClientOnlyChart";
 import type { House, RecommendedUse } from "@/lib/types";
 import { USE_COLORS, USE_LABELS } from "@/lib/types";
 
@@ -209,32 +210,34 @@ export function FilterSidebar({
         </div>
         <div className="card -mx-1 p-3">
           <div className="h-36 sm:h-40">
-            <ResponsiveContainer>
-              <PieChart>
-                <Pie
-                  data={pieData}
-                  innerRadius={38}
-                  outerRadius={60}
-                  paddingAngle={2}
-                  dataKey="value"
-                  stroke="white"
-                  strokeWidth={2}
-                >
-                  {pieData.map((d) => (
-                    <Cell key={d.key} fill={d.color} />
-                  ))}
-                </Pie>
-                <Tooltip
-                  contentStyle={{
-                    borderRadius: 10,
-                    border: "1px solid var(--line)",
-                    boxShadow: "0 10px 30px -14px rgba(13,24,58,0.2)",
-                    fontSize: 12,
-                  }}
-                  formatter={(v) => [`${v}건`, "탐지"]}
-                />
-              </PieChart>
-            </ResponsiveContainer>
+            <ClientOnlyChart label="필터 분포 차트" minHeight={160}>
+              <ResponsiveContainer>
+                <PieChart>
+                  <Pie
+                    data={pieData}
+                    innerRadius={38}
+                    outerRadius={60}
+                    paddingAngle={2}
+                    dataKey="value"
+                    stroke="white"
+                    strokeWidth={2}
+                  >
+                    {pieData.map((d) => (
+                      <Cell key={d.key} fill={d.color} />
+                    ))}
+                  </Pie>
+                  <Tooltip
+                    contentStyle={{
+                      borderRadius: 10,
+                      border: "1px solid var(--line)",
+                      boxShadow: "0 10px 30px -14px rgba(13,24,58,0.2)",
+                      fontSize: 12,
+                    }}
+                    formatter={(v) => [`${v}건`, "탐지"]}
+                  />
+                </PieChart>
+              </ResponsiveContainer>
+            </ClientOnlyChart>
           </div>
           <div className="mt-2 space-y-1">
             {pieData.map((d) => {

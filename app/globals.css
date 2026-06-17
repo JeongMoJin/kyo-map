@@ -8,19 +8,10 @@
 
 /* ============================================================
    Typography — 가독성 + 위계감 중심
-   - 본문/UI: Pretendard Variable (100–900 가변 폭으로 위계 표현)
+   - 본문/UI: Noto Sans KR (next/font self-hosted)
    - 디스플레이 Hanja: Noto Serif KR (한자 "空家地圖" 등 출판 품질)
    - 기술적 accent: IBM Plex Mono (ID·좌표·모델명)
    ============================================================ */
-@font-face {
-  font-family: "Pretendard Variable";
-  font-weight: 45 920;
-  font-style: normal;
-  font-display: swap;
-  src: url("https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/woff2/PretendardVariable.woff2")
-    format("woff2-variations");
-}
-
 :root {
   --background: #ffffff;
   --foreground: #0a1324;
@@ -61,13 +52,14 @@
   --color-surface-muted: var(--surface-muted);
   --color-line: var(--line);
   --color-ink-muted: var(--ink-muted);
-  --font-sans: "Pretendard Variable", "Pretendard", system-ui, -apple-system,
-    BlinkMacSystemFont, "Apple SD Gothic Neo", "Noto Sans KR", sans-serif;
-  --font-display: "Pretendard Variable", "Pretendard", system-ui,
+  --font-sans: var(--font-sans-kr), "Pretendard Variable", "Pretendard",
+    system-ui, -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo",
+    "Noto Sans KR", sans-serif;
+  --font-display: var(--font-sans-kr), "Pretendard Variable", "Pretendard", system-ui,
     "Apple SD Gothic Neo", sans-serif;
   /* --font-hanja / --font-tech-mono are set by next/font/google in layout.tsx */
-  --font-hanja-fallback: var(--font-hanja, "Noto Serif KR"), "Pretendard Variable",
-    serif;
+  --font-hanja-fallback: var(--font-hanja, "Noto Serif KR"),
+    var(--font-sans-kr), serif;
   --font-tech-mono-fallback: var(--font-tech-mono, "IBM Plex Mono"),
     ui-monospace, SFMono-Regular, Menlo, monospace;
   --font-mono: var(--font-tech-mono, "IBM Plex Mono"), ui-monospace,

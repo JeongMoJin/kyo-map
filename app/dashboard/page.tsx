@@ -13,11 +13,8 @@ import {
   PieChart,
   Pie,
   Cell,
-  LineChart,
-  Line,
   Area,
   AreaChart,
-  Legend,
 } from "recharts";
 import {
   AlertTriangle,
@@ -31,6 +28,8 @@ import {
   PieChart as PieIcon,
 } from "lucide-react";
 import { SiteHeader } from "@/components/SiteHeader";
+import { ClientOnlyChart } from "@/components/ClientOnlyChart";
+import { PublicEvidencePanel } from "@/components/PublicEvidencePanel";
 import { HOUSES } from "@/lib/houses";
 import type { House, RecommendedUse } from "@/lib/types";
 import { USE_COLORS, USE_LABELS } from "@/lib/types";
@@ -76,7 +75,7 @@ export default function DashboardPage() {
     }));
   }, []);
 
-  // 최근 6개월 탐지 추이 (샘플 곡선 — 신규 탐지 급증 연출)
+  // 공식 미거주 주택 규모를 기준으로 한 전국 확장 운영 시나리오
   const monthlyTrend = [
     { month: "2025-11", detected: 184_204, new: 2_840 },
     { month: "2025-12", detected: 192_481, new: 3_102 },
@@ -145,7 +144,7 @@ export default function DashboardPage() {
           {/* KPI row */}
           <div className="mt-5 grid grid-cols-2 gap-2.5 sm:mt-6 sm:gap-3 md:grid-cols-4">
             <Kpi
-              label="전체 탐지 빈집"
+              label="데모 탐지 빈집"
               value={totalDetected.toLocaleString()}
               unit="건"
               trend="+12.4%"
@@ -178,6 +177,8 @@ export default function DashboardPage() {
 
       <main className="flex-1">
         <div className="mx-auto max-w-[1440px] px-3 py-5 sm:px-6 sm:py-8">
+          <PublicEvidencePanel />
+
           <div className="grid gap-4 sm:gap-5 lg:grid-cols-2">
             {/* Top 10 */}
             <div className="card flex flex-col overflow-hidden lg:row-span-2">
@@ -223,49 +224,51 @@ export default function DashboardPage() {
                 </span>
               </header>
               <div className="h-[260px]">
-                <ResponsiveContainer>
-                  <BarChart
-                    data={sidoCounts}
-                    margin={{ top: 10, right: 10, left: -15, bottom: 0 }}
-                  >
-                    <CartesianGrid
-                      strokeDasharray="3 6"
-                      stroke="#e6ebf3"
-                      vertical={false}
-                    />
-                    <XAxis
-                      dataKey="name"
-                      tick={{ fontSize: 10.5, fill: "#5b6b85" }}
-                      axisLine={false}
-                      tickLine={false}
-                      interval={0}
-                      angle={-18}
-                      textAnchor="end"
-                      height={50}
-                    />
-                    <YAxis
-                      tick={{ fontSize: 11, fill: "#5b6b85" }}
-                      axisLine={false}
-                      tickLine={false}
-                      width={32}
-                    />
-                    <Tooltip
-                      contentStyle={{
-                        borderRadius: 10,
-                        border: "1px solid var(--line)",
-                        fontSize: 12,
-                      }}
-                      cursor={{ fill: "rgba(37,99,235,0.06)" }}
-                      formatter={(v) => [`${v}건`, "탐지"]}
-                    />
-                    <Bar
-                      dataKey="value"
-                      fill="#1E40AF"
-                      radius={[8, 8, 0, 0]}
-                      maxBarSize={42}
-                    />
-                  </BarChart>
-                </ResponsiveContainer>
+                <ClientOnlyChart label="시도별 차트" minHeight={260}>
+                  <ResponsiveContainer>
+                    <BarChart
+                      data={sidoCounts}
+                      margin={{ top: 10, right: 10, left: -15, bottom: 0 }}
+                    >
+                      <CartesianGrid
+                        strokeDasharray="3 6"
+                        stroke="#e6ebf3"
+                        vertical={false}
+                      />
+                      <XAxis
+                        dataKey="name"
+                        tick={{ fontSize: 10.5, fill: "#5b6b85" }}
+                        axisLine={false}
+                        tickLine={false}
+                        interval={0}
+                        angle={-18}
+                        textAnchor="end"
+                        height={50}
+                      />
+                      <YAxis
+                        tick={{ fontSize: 11, fill: "#5b6b85" }}
+                        axisLine={false}
+                        tickLine={false}
+                        width={32}
+                      />
+                      <Tooltip
+                        contentStyle={{
+                          borderRadius: 10,
+                          border: "1px solid var(--line)",
+                          fontSize: 12,
+                        }}
+                        cursor={{ fill: "rgba(37,99,235,0.06)" }}
+                        formatter={(v) => [`${v}건`, "탐지"]}
+                      />
+                      <Bar
+                        dataKey="value"
+                        fill="#1E40AF"
+                        radius={[8, 8, 0, 0]}
+                        maxBarSize={42}
+                      />
+                    </BarChart>
+                  </ResponsiveContainer>
+                </ClientOnlyChart>
               </div>
             </div>
 
@@ -286,31 +289,33 @@ export default function DashboardPage() {
               </header>
               <div className="grid grid-cols-1 items-center gap-3 sm:grid-cols-[1fr_auto] sm:gap-4">
                 <div className="h-[220px]">
-                  <ResponsiveContainer>
-                    <PieChart>
-                      <Pie
-                        data={useDistribution}
-                        innerRadius={52}
-                        outerRadius={86}
-                        paddingAngle={3}
-                        dataKey="value"
-                        stroke="white"
-                        strokeWidth={3}
-                      >
-                        {useDistribution.map((d) => (
-                          <Cell key={d.key} fill={d.color} />
-                        ))}
-                      </Pie>
-                      <Tooltip
-                        contentStyle={{
-                          borderRadius: 10,
-                          border: "1px solid var(--line)",
-                          fontSize: 12,
-                        }}
-                        formatter={(v) => [`${v}건`, "탐지"]}
-                      />
-                    </PieChart>
-                  </ResponsiveContainer>
+                  <ClientOnlyChart label="용도별 차트" minHeight={220}>
+                    <ResponsiveContainer>
+                      <PieChart>
+                        <Pie
+                          data={useDistribution}
+                          innerRadius={52}
+                          outerRadius={86}
+                          paddingAngle={3}
+                          dataKey="value"
+                          stroke="white"
+                          strokeWidth={3}
+                        >
+                          {useDistribution.map((d) => (
+                            <Cell key={d.key} fill={d.color} />
+                          ))}
+                        </Pie>
+                        <Tooltip
+                          contentStyle={{
+                            borderRadius: 10,
+                            border: "1px solid var(--line)",
+                            fontSize: 12,
+                          }}
+                          formatter={(v) => [`${v}건`, "탐지"]}
+                        />
+                      </PieChart>
+                    </ResponsiveContainer>
+                  </ClientOnlyChart>
                 </div>
                 <ul className="flex flex-col gap-2 pr-3">
                   {useDistribution.map((d) => {
@@ -343,11 +348,11 @@ export default function DashboardPage() {
                   <div className="flex items-center gap-2">
                     <TrendingUp className="h-4 w-4 text-[color:var(--brand-700)]" />
                     <h2 className="text-[16px] font-extrabold tracking-[-0.018em] text-[color:var(--ink-strong)]">
-                      월별 탐지 추이 (최근 6개월)
+                      전국 확장 운영 시나리오
                     </h2>
                   </div>
                   <div className="mt-0.5 text-[12px] font-medium text-[color:var(--ink-muted)]">
-                    누적 탐지 · 신규 탐지 이원 추적
+                    공식 미거주 주택 규모 기반 누적 탐지 · 신규 탐지 추정
                   </div>
                 </div>
                 <div className="flex items-center gap-3 text-[11px]">
@@ -362,77 +367,99 @@ export default function DashboardPage() {
                 </div>
               </header>
               <div className="h-[280px]">
-                <ResponsiveContainer>
-                  <AreaChart
-                    data={monthlyTrend}
-                    margin={{ top: 10, right: 20, left: -5, bottom: 0 }}
-                  >
-                    <defs>
-                      <linearGradient id="total-grad" x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="0%" stopColor="#1E40AF" stopOpacity={0.3} />
-                        <stop offset="100%" stopColor="#1E40AF" stopOpacity={0} />
-                      </linearGradient>
-                      <linearGradient id="new-grad" x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="0%" stopColor="#10b981" stopOpacity={0.35} />
-                        <stop offset="100%" stopColor="#10b981" stopOpacity={0} />
-                      </linearGradient>
-                    </defs>
-                    <CartesianGrid
-                      strokeDasharray="3 6"
-                      stroke="#e6ebf3"
-                      vertical={false}
-                    />
-                    <XAxis
-                      dataKey="month"
-                      tick={{ fontSize: 11, fill: "#5b6b85" }}
-                      axisLine={false}
-                      tickLine={false}
-                    />
-                    <YAxis
-                      yAxisId="left"
-                      tick={{ fontSize: 11, fill: "#5b6b85" }}
-                      axisLine={false}
-                      tickLine={false}
-                      width={60}
-                      tickFormatter={(v) => `${(v / 1000).toFixed(0)}k`}
-                    />
-                    <YAxis
-                      yAxisId="right"
-                      orientation="right"
-                      tick={{ fontSize: 11, fill: "#10b981" }}
-                      axisLine={false}
-                      tickLine={false}
-                      width={50}
-                    />
-                    <Tooltip
-                      contentStyle={{
-                        borderRadius: 10,
-                        border: "1px solid var(--line)",
-                        fontSize: 12,
-                      }}
-                      formatter={(v, name) => [
-                        `${Number(v).toLocaleString()}건`,
-                        name === "detected" ? "누적 탐지" : "신규 탐지",
-                      ]}
-                    />
-                    <Area
-                      yAxisId="left"
-                      type="monotone"
-                      dataKey="detected"
-                      stroke="#1E40AF"
-                      strokeWidth={2.5}
-                      fill="url(#total-grad)"
-                    />
-                    <Area
-                      yAxisId="right"
-                      type="monotone"
-                      dataKey="new"
-                      stroke="#10b981"
-                      strokeWidth={2.5}
-                      fill="url(#new-grad)"
-                    />
-                  </AreaChart>
-                </ResponsiveContainer>
+                <ClientOnlyChart label="운영 시나리오 차트" minHeight={280}>
+                  <ResponsiveContainer>
+                    <AreaChart
+                      data={monthlyTrend}
+                      margin={{ top: 10, right: 20, left: -5, bottom: 0 }}
+                    >
+                      <defs>
+                        <linearGradient
+                          id="total-grad"
+                          x1="0"
+                          y1="0"
+                          x2="0"
+                          y2="1"
+                        >
+                          <stop
+                            offset="0%"
+                            stopColor="#1E40AF"
+                            stopOpacity={0.3}
+                          />
+                          <stop offset="100%" stopColor="#1E40AF" stopOpacity={0} />
+                        </linearGradient>
+                        <linearGradient
+                          id="new-grad"
+                          x1="0"
+                          y1="0"
+                          x2="0"
+                          y2="1"
+                        >
+                          <stop
+                            offset="0%"
+                            stopColor="#10b981"
+                            stopOpacity={0.35}
+                          />
+                          <stop offset="100%" stopColor="#10b981" stopOpacity={0} />
+                        </linearGradient>
+                      </defs>
+                      <CartesianGrid
+                        strokeDasharray="3 6"
+                        stroke="#e6ebf3"
+                        vertical={false}
+                      />
+                      <XAxis
+                        dataKey="month"
+                        tick={{ fontSize: 11, fill: "#5b6b85" }}
+                        axisLine={false}
+                        tickLine={false}
+                      />
+                      <YAxis
+                        yAxisId="left"
+                        tick={{ fontSize: 11, fill: "#5b6b85" }}
+                        axisLine={false}
+                        tickLine={false}
+                        width={60}
+                        tickFormatter={(v) => `${(v / 1000).toFixed(0)}k`}
+                      />
+                      <YAxis
+                        yAxisId="right"
+                        orientation="right"
+                        tick={{ fontSize: 11, fill: "#10b981" }}
+                        axisLine={false}
+                        tickLine={false}
+                        width={50}
+                      />
+                      <Tooltip
+                        contentStyle={{
+                          borderRadius: 10,
+                          border: "1px solid var(--line)",
+                          fontSize: 12,
+                        }}
+                        formatter={(v, name) => [
+                          `${Number(v).toLocaleString()}건`,
+                          name === "detected" ? "누적 탐지" : "신규 탐지",
+                        ]}
+                      />
+                      <Area
+                        yAxisId="left"
+                        type="monotone"
+                        dataKey="detected"
+                        stroke="#1E40AF"
+                        strokeWidth={2.5}
+                        fill="url(#total-grad)"
+                      />
+                      <Area
+                        yAxisId="right"
+                        type="monotone"
+                        dataKey="new"
+                        stroke="#10b981"
+                        strokeWidth={2.5}
+                        fill="url(#new-grad)"
+                      />
+                    </AreaChart>
+                  </ResponsiveContainer>
+                </ClientOnlyChart>
               </div>
             </div>
           </div>

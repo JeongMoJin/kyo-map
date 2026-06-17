@@ -1,7 +1,14 @@
 import type { Metadata } from "next";
-import { Noto_Serif_KR, IBM_Plex_Mono } from "next/font/google";
+import { Noto_Sans_KR, Noto_Serif_KR, IBM_Plex_Mono } from "next/font/google";
 import "./globals.css";
 import { ToastProvider } from "@/components/Toast";
+
+const notoSansKr = Noto_Sans_KR({
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700", "800", "900"],
+  variable: "--font-sans-kr",
+  display: "swap",
+});
 
 const notoSerifKr = Noto_Serif_KR({
   subsets: ["latin"],
@@ -38,7 +45,7 @@ export default function RootLayout({
   return (
     <html
       lang="ko"
-      className={`h-full antialiased ${notoSerifKr.variable} ${plexMono.variable}`}
+      className={`h-full antialiased ${notoSansKr.variable} ${notoSerifKr.variable} ${plexMono.variable}`}
     >
       <body className="min-h-full flex flex-col font-sans text-[15.5px] leading-[1.62] text-[color:var(--ink)]">
         <ToastProvider>{children}</ToastProvider>
