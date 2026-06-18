@@ -291,3 +291,17 @@ h3 {
   background-clip: content-box;
   border: 2px solid transparent;
 }
+
+@media print {
+  .no-print {
+    display: none !important;
+  }
+
+  body {
+    background: #ffffff !important;
+  }
+
+  .card {
+    box-shadow: none !important;
+  }
+}

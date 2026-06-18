@@ -31,6 +31,7 @@ import {
 import { ConfidenceGauge } from "@/components/ConfidenceGauge";
 import { ClientOnlyChart } from "@/components/ClientOnlyChart";
 import { useToast } from "@/components/Toast";
+import { getPriorityProfile } from "@/lib/priority";
 import type { House } from "@/lib/types";
 import { USE_COLORS, USE_LABELS } from "@/lib/types";
 
@@ -65,6 +66,7 @@ export function HouseDetailView({ house }: { house: House }) {
   const avgRecent6 =
     house.powerUsage.slice(6).reduce((a, b) => a + b, 0) / 6;
   const avgPrev6 = house.powerUsage.slice(0, 6).reduce((a, b) => a + b, 0) / 6;
+  const priority = getPriorityProfile(house);
 
   return (
     <div className="flex min-h-[100dvh] flex-col">
@@ -282,6 +284,29 @@ export function HouseDetailView({ house }: { house: House }) {
                         />
                       </div>
 
+                      <div className="grid gap-3 md:grid-cols-4">
+                        <PriorityMetric
+                          label="행정 우선순위"
+                          value={priority.priorityScore}
+                          tone="brand"
+                        />
+                        <PriorityMetric
+                          label="안전 위험"
+                          value={priority.safetyRisk}
+                          tone="danger"
+                        />
+                        <PriorityMetric
+                          label="현장확인 필요"
+                          value={priority.fieldCheckNeed}
+                          tone="warn"
+                        />
+                        <PriorityMetric
+                          label="재생 적합도"
+                          value={priority.regenerationFit}
+                          tone="success"
+                        />
+                      </div>
+
                       <div className="rounded-xl bg-[color:var(--surface-muted)] p-4 text-[13px] leading-[1.75] text-[color:var(--ink-muted)]">
                         <div className="mb-1.5 text-[12.5px] font-bold text-[color:var(--ink-strong)]">
                           분석 근거
@@ -290,6 +315,36 @@ export function HouseDetailView({ house }: { house: House }) {
                         위성영상 교차검증 <br />• 안심구역 API와 결합해 붕괴위험
                         지역 가중치 적용 <br />• 추천 용도는 인접 관광자원/교통
                         접근성 기반 후보지 스코어링 결과
+                      </div>
+
+                      <div className="rounded-xl border border-[color:var(--brand-100)] bg-[color:var(--brand-50)] p-4">
+                        <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+                          <div>
+                            <div className="text-[11px] font-extrabold uppercase tracking-[0.14em] text-[color:var(--brand-800)]">
+                              Administrative action
+                            </div>
+                            <div className="mt-1 text-[15px] font-extrabold text-[color:var(--ink-strong)]">
+                              {priority.department} · {priority.actionLabel}
+                            </div>
+                            <p className="mt-1 text-[12.5px] font-medium leading-[1.65] text-[color:var(--ink-muted)]">
+                              조치 기한은 {priority.urgencyLabel}이며, 현장 확인 전까지
+                              AI 판단과 공공데이터 근거를 함께 보관합니다.
+                            </p>
+                          </div>
+                          <span className="rounded-full bg-white px-3 py-1 text-[11px] font-extrabold text-[color:var(--brand-800)] ring-1 ring-[color:var(--brand-100)]">
+                            점수 {priority.priorityScore}/100
+                          </span>
+                        </div>
+                        <ul className="mt-3 grid gap-2 sm:grid-cols-2">
+                          {priority.evidence.map((item) => (
+                            <li
+                              key={item}
+                              className="rounded-lg bg-white/75 px-3 py-2 text-[12px] font-bold text-[color:var(--ink)] ring-1 ring-[color:var(--brand-100)]"
+                            >
+                              {item}
+                            </li>
+                          ))}
+                        </ul>
                       </div>
                     </div>
                   )}
@@ -512,17 +567,28 @@ export function HouseDetailView({ house }: { house: House }) {
                 <ul className="mt-3 space-y-2 text-[13px] text-[color:var(--foreground)]">
                   <ScenarioLine
                     active
-                    label="토지·건축물 조사"
-                    status="완료"
+                    label="담당부서 배정"
+                    status={priority.department}
                   />
                   <ScenarioLine
                     active
                     label="AI 용도 추천"
-                    status="완료"
+                    status={`${priority.priorityScore}점`}
                   />
-                  <ScenarioLine label="지자체 협의" status="대기" />
+                  <ScenarioLine label="현장 확인" status={priority.urgencyLabel} />
                   <ScenarioLine label="리모델링·착공" status="대기" />
                 </ul>
+              </div>
+
+              <div className="card p-5">
+                <div className="text-[11px] font-bold uppercase tracking-[0.14em] text-[color:var(--ink-muted)]">
+                  행정 처리 요약
+                </div>
+                <div className="mt-3 grid gap-2">
+                  <AdminSummary label="권장 조치" value={priority.actionLabel} />
+                  <AdminSummary label="담당 부서" value={priority.department} />
+                  <AdminSummary label="조치 기한" value={priority.urgencyLabel} />
+                </div>
               </div>
 
               <div className="rounded-2xl border border-[color:var(--line)] bg-[color:var(--surface-muted)]/70 p-4 text-[11.5px] leading-relaxed text-[color:var(--ink-muted)]">
@@ -617,6 +683,50 @@ function PipelineCard({
       <div className="mt-1 text-[11.5px] font-medium leading-[1.5] text-[color:var(--ink-muted)]">
         {hint}
       </div>
+    </div>
+  );
+}
+
+function PriorityMetric({
+  label,
+  value,
+  tone,
+}: {
+  label: string;
+  value: number;
+  tone: "brand" | "danger" | "warn" | "success";
+}) {
+  const toneClass =
+    tone === "brand"
+      ? "text-[color:var(--brand-800)] bg-[color:var(--brand-50)]"
+      : tone === "danger"
+        ? "text-red-700 bg-red-50"
+        : tone === "warn"
+          ? "text-amber-700 bg-amber-50"
+          : "text-emerald-700 bg-emerald-50";
+
+  return (
+    <div className={`rounded-xl p-3 ring-1 ring-inset ring-black/5 ${toneClass}`}>
+      <div className="text-[10.5px] font-extrabold uppercase tracking-[0.13em] opacity-75">
+        {label}
+      </div>
+      <div className="tnum mt-1 text-[24px] font-extrabold leading-none">
+        {value}
+        <span className="ml-0.5 text-[12px] font-bold opacity-70">점</span>
+      </div>
+    </div>
+  );
+}
+
+function AdminSummary({ label, value }: { label: string; value: string }) {
+  return (
+    <div className="flex items-center justify-between gap-3 rounded-xl bg-[color:var(--surface-muted)] px-3 py-2.5">
+      <span className="text-[11.5px] font-bold text-[color:var(--ink-muted)]">
+        {label}
+      </span>
+      <span className="text-right text-[12.5px] font-extrabold text-[color:var(--ink-strong)]">
+        {value}
+      </span>
     </div>
   );
 }

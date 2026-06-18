@@ -42,7 +42,7 @@ node scripts/generate-houses.mjs
 - **지도:** react-leaflet v5 + CARTO Light 타일
 - **차트:** Recharts (PieChart · AreaChart · BarChart)
 - **아이콘:** lucide-react
-- **폰트:** Pretendard Variable (CDN)
+- **폰트:** Noto Sans KR · Noto Serif KR · IBM Plex Mono (`next/font` self-hosted)
 - **배포:** Vercel
 
 ## AI 파이프라인 (개념 설계)
@@ -94,10 +94,13 @@ components/
 lib/
   types.ts
   houses.ts
+  priority.ts              # 행정 우선순위 점수 산정
 data/
   houses.json              # 100건 샘플
 scripts/
   generate-houses.mjs      # seeded 생성기
+docs/
+  final-polish-implementation-brief.md
 ```
 
 ## 배포

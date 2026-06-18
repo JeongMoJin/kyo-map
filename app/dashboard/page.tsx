@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useMemo } from "react";
+import { useMemo, useRef } from "react";
 import {
   BarChart,
   Bar,
@@ -30,25 +30,22 @@ import {
 import { SiteHeader } from "@/components/SiteHeader";
 import { ClientOnlyChart } from "@/components/ClientOnlyChart";
 import { PublicEvidencePanel } from "@/components/PublicEvidencePanel";
+import { useToast } from "@/components/Toast";
 import { HOUSES } from "@/lib/houses";
+import { getPriorityProfile, toCsvValue, type PriorityProfile } from "@/lib/priority";
 import type { House, RecommendedUse } from "@/lib/types";
 import { USE_COLORS, USE_LABELS } from "@/lib/types";
 
 // AI 도구: ViT(위성영상 분류), LSTM(전력사용 학습), GPT-4o(용도 추천)
 export default function DashboardPage() {
+  const toast = useToast();
+  const regionalChartRef = useRef<HTMLDivElement>(null);
+
   const top10 = useMemo(() => {
     return [...HOUSES]
+      .map((house) => ({ house, profile: getPriorityProfile(house) }))
       .sort((a, b) => {
-        // 붕괴위험(철거) 우선 + AI 신뢰도 높은 순
-        const aScore =
-          (a.isDisasterZone ? 1000 : 0) +
-          (a.recommendedUse === "철거" ? 500 : 0) +
-          a.aiConfidence * 100;
-        const bScore =
-          (b.isDisasterZone ? 1000 : 0) +
-          (b.recommendedUse === "철거" ? 500 : 0) +
-          b.aiConfidence * 100;
-        return bScore - aScore;
+        return b.profile.priorityScore - a.profile.priorityScore;
       })
       .slice(0, 10);
   }, []);
@@ -87,8 +84,68 @@ export default function DashboardPage() {
 
   const totalDetected = HOUSES.length;
   const disasterCount = HOUSES.filter((h) => h.isDisasterZone).length;
+  const fieldCheckCount = HOUSES.filter(
+    (h) => getPriorityProfile(h).fieldCheckNeed >= 80,
+  ).length;
   const avgConfidence =
     HOUSES.reduce((a, h) => a + h.aiConfidence, 0) / HOUSES.length;
+
+  function handleFocusRegions() {
+    regionalChartRef.current?.scrollIntoView({ behavior: "smooth", block: "center" });
+    toast({
+      title: "시도별 탐지 분포로 이동했습니다",
+      description: "지역별 후보 밀집도를 보고 현장 확인 순서를 정할 수 있습니다.",
+    });
+  }
+
+  function handlePrintReport() {
+    toast({
+      title: "월간 리포트 인쇄 모드",
+      description: "브라우저 인쇄 창에서 PDF 저장도 가능합니다.",
+    });
+    window.setTimeout(() => window.print(), 180);
+  }
+
+  function handleDownloadCsv() {
+    const headers = [
+      "rank",
+      "id",
+      "address",
+      "priorityScore",
+      "safetyRisk",
+      "fieldCheckNeed",
+      "recommendedUse",
+      "department",
+      "action",
+      "urgency",
+    ];
+    const rows = top10.map(({ house, profile }, index) => [
+      index + 1,
+      house.id,
+      house.address,
+      profile.priorityScore,
+      profile.safetyRisk,
+      profile.fieldCheckNeed,
+      USE_LABELS[house.recommendedUse],
+      profile.department,
+      profile.actionLabel,
+      profile.urgencyLabel,
+    ]);
+    const csv = [headers, ...rows]
+      .map((row) => row.map(toCsvValue).join(","))
+      .join("\n");
+    const blob = new Blob([`\uFEFF${csv}`], { type: "text/csv;charset=utf-8" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = "gonggajido-priority-top10.csv";
+    link.click();
+    URL.revokeObjectURL(url);
+    toast({
+      title: "우선순위 CSV를 내보냈습니다",
+      description: "Top 10 후보의 점수, 담당부서, 권장 조치가 포함됩니다.",
+    });
+  }
 
   return (
     <div className="flex min-h-screen flex-col">
@@ -113,8 +170,9 @@ export default function DashboardPage() {
                 확인할 수 있습니다. 담당 부서와 자동 연계됩니다.
               </p>
             </div>
-            <div className="flex flex-wrap items-center gap-1.5 sm:gap-2">
+            <div className="no-print flex flex-wrap items-center gap-1.5 sm:gap-2">
               <button
+                onClick={handleFocusRegions}
                 className="inline-flex items-center gap-1.5 rounded-full border border-white/20 bg-white/10 px-3 py-1.5 text-[11.5px] font-bold text-white backdrop-blur-sm transition-colors hover:bg-white/20 sm:px-3.5 sm:py-2 sm:text-[12.5px]"
                 aria-label="시군구 필터"
               >
@@ -123,6 +181,7 @@ export default function DashboardPage() {
                 <span className="sm:hidden">필터</span>
               </button>
               <button
+                onClick={handlePrintReport}
                 className="inline-flex items-center gap-1.5 rounded-full border border-white/20 bg-white/10 px-3 py-1.5 text-[11.5px] font-bold text-white backdrop-blur-sm transition-colors hover:bg-white/20 sm:px-3.5 sm:py-2 sm:text-[12.5px]"
                 aria-label="월간 리포트"
               >
@@ -131,6 +190,7 @@ export default function DashboardPage() {
                 <span className="sm:hidden">리포트</span>
               </button>
               <button
+                onClick={handleDownloadCsv}
                 className="inline-flex items-center gap-1.5 rounded-full bg-white px-3 py-1.5 text-[11.5px] font-bold text-[color:var(--brand-800)] hover:bg-sky-50 sm:px-3.5 sm:py-2 sm:text-[12.5px]"
                 aria-label="CSV 내보내기"
               >
@@ -165,11 +225,11 @@ export default function DashboardPage() {
               tone="info"
             />
             <Kpi
-              label="귀촌 매칭 성사"
-              value="28"
+              label="현장확인 필요"
+              value={fieldCheckCount.toString()}
               unit="건"
-              trend="+9건 (WoW)"
-              tone="positive"
+              trend="우선 방문"
+              tone="warn"
             />
           </div>
         </div>
@@ -195,18 +255,23 @@ export default function DashboardPage() {
                   </div>
                 </div>
                 <span className="rounded-full bg-red-50 px-2.5 py-1 text-[10.5px] font-bold text-red-700">
-                  긴급 {top10.filter((h) => h.isDisasterZone).length}건
+                  긴급 {top10.filter(({ profile }) => profile.priorityScore >= 82).length}건
                 </span>
               </header>
               <ol className="flex flex-col divide-y divide-[color:var(--line)]">
-                {top10.map((h, i) => (
-                  <Top10Row key={h.id} rank={i + 1} house={h} />
+                {top10.map(({ house, profile }, i) => (
+                  <Top10Row
+                    key={house.id}
+                    rank={i + 1}
+                    house={house}
+                    profile={profile}
+                  />
                 ))}
               </ol>
             </div>
 
             {/* Sido bar chart */}
-            <div className="card p-4 sm:p-5">
+            <div ref={regionalChartRef} className="card scroll-mt-24 p-4 sm:p-5">
               <header className="mb-3 flex items-center justify-between">
                 <div>
                   <div className="flex items-center gap-2">
@@ -530,7 +595,15 @@ function Kpi({
   );
 }
 
-function Top10Row({ rank, house }: { rank: number; house: House }) {
+function Top10Row({
+  rank,
+  house,
+  profile,
+}: {
+  rank: number;
+  house: House;
+  profile: PriorityProfile;
+}) {
   const color = USE_COLORS[house.recommendedUse];
   return (
     <li className="group relative flex items-center gap-2.5 px-4 py-2.5 transition-colors hover:bg-[color:var(--surface-muted)]/70 sm:gap-3 sm:px-5 sm:py-3">
@@ -560,15 +633,32 @@ function Top10Row({ rank, house }: { rank: number; house: House }) {
           <span className="text-[10.5px] font-semibold text-[color:var(--ink-muted)]">
             · {house.id}
           </span>
+          <span className="rounded-md bg-[color:var(--brand-50)] px-1.5 py-0.5 text-[9.5px] font-extrabold text-[color:var(--brand-800)]">
+            우선순위 {profile.priorityScore}
+          </span>
         </div>
         <div className="mt-1 truncate text-[13.5px] font-extrabold text-[color:var(--ink-strong)]">
           {house.address}
         </div>
-        <div className="mt-0.5 text-[11.5px] font-medium text-[color:var(--ink-muted)]">
-          {house.buildYear}년 · {house.area}㎡ · AI{" "}
+        <div className="mt-0.5 flex flex-wrap items-center gap-x-2 gap-y-0.5 text-[11.5px] font-medium text-[color:var(--ink-muted)]">
+          <span>{house.buildYear}년 · {house.area}㎡</span>
+          <span>AI{" "}
           <span className="tnum font-extrabold text-[color:var(--brand-800)]">
             {(house.aiConfidence * 100).toFixed(0)}%
           </span>
+          </span>
+          <span className="font-bold text-[color:var(--ink-strong)]">
+            {profile.department}
+          </span>
+          <span>{profile.actionLabel}</span>
+        </div>
+      </div>
+      <div className="hidden w-[78px] shrink-0 text-right sm:block">
+        <div className="tnum text-[18px] font-extrabold leading-none text-[color:var(--ink-strong)]">
+          {profile.priorityScore}
+        </div>
+        <div className="mt-1 text-[10px] font-bold text-red-600">
+          {profile.urgencyLabel}
         </div>
       </div>
       <Link
