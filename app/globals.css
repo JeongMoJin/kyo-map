@@ -15,6 +15,12 @@
 :root {
   --background: #ffffff;
   --foreground: #0a1324;
+  --font-sans-kr: "Pretendard Variable", "Pretendard", system-ui,
+    -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Noto Sans KR",
+    sans-serif;
+  --font-hanja: "Noto Serif KR", "Noto Sans KR", serif;
+  --font-tech-mono: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo,
+    Monaco, monospace;
   --brand-50: #eff6ff;
   --brand-100: #dbeafe;
   --brand-500: #3b82f6;

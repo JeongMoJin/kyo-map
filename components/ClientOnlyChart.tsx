@@ -15,7 +15,8 @@ export function ClientOnlyChart({
   const [isMounted, setIsMounted] = useState(false);
 
   useEffect(() => {
-    setIsMounted(true);
+    const frame = requestAnimationFrame(() => setIsMounted(true));
+    return () => cancelAnimationFrame(frame);
   }, []);
 
   if (!isMounted) {
@@ -29,5 +30,9 @@ export function ClientOnlyChart({
     );
   }
 
-  return <>{children}</>;
+  return (
+    <div style={{ minHeight, minWidth: 0, width: "100%", height: "100%" }}>
+      {children}
+    </div>
+  );
 }
