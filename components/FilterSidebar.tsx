@@ -1,15 +1,7 @@
 "use client";
 
 import { useMemo } from "react";
-import {
-  PieChart,
-  Pie,
-  Cell,
-  ResponsiveContainer,
-  Tooltip,
-} from "recharts";
 import { SlidersHorizontal, MapPin, Sparkles } from "lucide-react";
-import { ClientOnlyChart } from "@/components/ClientOnlyChart";
 import type { House, RecommendedUse } from "@/lib/types";
 import { USE_COLORS, USE_LABELS } from "@/lib/types";
 
@@ -54,7 +46,9 @@ export function FilterSidebar({
       <div className="sticky top-0 z-10 border-b border-[color:var(--line)] bg-white/90 px-5 py-4 backdrop-blur-md">
         <div className="flex items-center gap-2">
           <SlidersHorizontal className="h-4 w-4 text-[color:var(--brand-700)]" />
-          <h2 className="text-[15px] font-extrabold tracking-[-0.018em] text-[color:var(--ink-strong)]">탐지 필터</h2>
+          <h2 className="text-[15px] font-extrabold tracking-[-0.018em] text-[color:var(--ink-strong)]">
+            후보 필터
+          </h2>
           <span className="ml-auto rounded-full bg-[color:var(--brand-50)] px-2.5 py-1 text-[11.5px] font-extrabold tnum text-[color:var(--brand-800)]">
             {total.toLocaleString()}건
           </span>
@@ -136,10 +130,10 @@ export function FilterSidebar({
         </select>
       </section>
 
-      {/* AI confidence slider */}
+      {/* AI estimate slider */}
       <section className="border-b border-[color:var(--line)] px-5 py-4">
         <div className="mb-2 flex items-center gap-1.5 text-[11px] font-extrabold uppercase tracking-[0.18em] text-[color:var(--ink-muted)]">
-          <Sparkles className="h-3 w-3" /> AI 신뢰도
+          <Sparkles className="h-3 w-3" /> AI 추정 점수
         </div>
         <div className="mb-1 flex items-end justify-between">
           <span className="text-[12px] text-[color:var(--ink-muted)]">
@@ -165,8 +159,8 @@ export function FilterSidebar({
           className="w-full accent-[color:var(--brand-700)]"
         />
         <div className="mt-1 flex justify-between text-[10.5px] text-[color:var(--ink-muted)] tnum">
-          <span>60%</span>
-          <span>99%</span>
+          <span>낮음</span>
+          <span>높음</span>
         </div>
       </section>
 
@@ -175,10 +169,10 @@ export function FilterSidebar({
         <label className="flex cursor-pointer items-center justify-between rounded-lg bg-red-50/60 px-3 py-2.5 transition-colors hover:bg-red-50">
           <div>
             <div className="text-[13px] font-bold text-red-800">
-              붕괴위험 안심구역만
+              위험 검토 후보만
             </div>
             <div className="text-[11px] text-red-700/80">
-              철거 우선 관리 대상
+              현장 확인 우선 검토
             </div>
           </div>
           <input
@@ -209,54 +203,29 @@ export function FilterSidebar({
           현재 화면 용도별 분포
         </div>
         <div className="card -mx-1 p-3">
-          <div className="h-36 sm:h-40">
-            <ClientOnlyChart label="필터 분포 차트" minHeight={160}>
-              <ResponsiveContainer>
-                <PieChart>
-                  <Pie
-                    data={pieData}
-                    innerRadius={38}
-                    outerRadius={60}
-                    paddingAngle={2}
-                    dataKey="value"
-                    stroke="white"
-                    strokeWidth={2}
-                  >
-                    {pieData.map((d) => (
-                      <Cell key={d.key} fill={d.color} />
-                    ))}
-                  </Pie>
-                  <Tooltip
-                    contentStyle={{
-                      borderRadius: 10,
-                      border: "1px solid var(--line)",
-                      boxShadow: "0 10px 30px -14px rgba(13,24,58,0.2)",
-                      fontSize: 12,
-                    }}
-                    formatter={(v) => [`${v}건`, "탐지"]}
-                  />
-                </PieChart>
-              </ResponsiveContainer>
-            </ClientOnlyChart>
-          </div>
           <div className="mt-2 space-y-1">
             {pieData.map((d) => {
               const pct = total ? Math.round((d.value / total) * 100) : 0;
               return (
-                <div
-                  key={d.key}
-                  className="flex items-center gap-2 text-[12.5px]"
-                >
-                  <span
-                    className="h-2 w-2 rounded-full"
-                    style={{ background: d.color }}
-                  />
-                  <span className="text-[color:var(--foreground)]">
-                    {d.name}
-                  </span>
-                  <span className="ml-auto tnum text-[color:var(--ink-muted)]">
-                    {d.value}건 · {pct}%
-                  </span>
+                <div key={d.key} className="text-[12.5px]">
+                  <div className="mb-1 flex items-center gap-2">
+                    <span
+                      className="h-2 w-2 rounded-full"
+                      style={{ background: d.color }}
+                    />
+                    <span className="text-[color:var(--foreground)]">
+                      {d.name}
+                    </span>
+                    <span className="ml-auto tnum text-[color:var(--ink-muted)]">
+                      {d.value}건 · {pct}%
+                    </span>
+                  </div>
+                  <div className="h-1.5 overflow-hidden rounded-full bg-[color:var(--surface-muted)]">
+                    <div
+                      className="h-full rounded-full"
+                      style={{ width: `${pct}%`, background: d.color }}
+                    />
+                  </div>
                 </div>
               );
             })}
@@ -265,7 +234,7 @@ export function FilterSidebar({
       </section>
 
       <div className="mt-auto border-t border-[color:var(--line)] bg-[color:var(--surface-muted)] px-5 py-3 text-[10.5px] leading-relaxed text-[color:var(--ink-muted)]">
-        <div className="font-bold text-[color:var(--foreground)]">데이터 출처</div>
+        <div className="font-bold text-[color:var(--foreground)]">데모 데이터 구성</div>
         국토교통부 건축물대장 · 한국전력 가명정보 · 국토지리정보원 위성영상 ·
         안심구역 API
       </div>

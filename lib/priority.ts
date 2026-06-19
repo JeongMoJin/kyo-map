@@ -68,15 +68,15 @@ export function getPriorityProfile(house: House): PriorityProfile {
         : "건축정비과";
 
   const actionLabel = house.isDisasterZone
-    ? "48시간 내 현장점검"
+    ? "긴급 현장점검 검토"
     : house.recommendedUse === "철거"
       ? "정비계획 검토"
       : house.recommendedUse === "창업"
         ? "상권·용도지역 검토"
-        : "소유자 연락 및 리모델링 상담";
+        : "소유자 확인 및 활용 검토";
 
   const urgencyLabel =
-    priorityScore >= 82 ? "즉시 조치" : priorityScore >= 70 ? "7일 내 확인" : "30일 내 검토";
+    priorityScore >= 82 ? "긴급 검토" : priorityScore >= 70 ? "우선 확인" : "일반 검토";
 
   return {
     priorityScore,
@@ -87,7 +87,7 @@ export function getPriorityProfile(house: House): PriorityProfile {
     actionLabel,
     urgencyLabel,
     evidence: [
-      `AI 빈집 확률 ${confidenceScore.toFixed(0)}%`,
+      `AI 추정 점수 ${confidenceScore.toFixed(0)}점`,
       `최근 6개월 평균 전력 ${recentPower.toFixed(1)}kWh`,
       `준공 ${age}년차`,
       house.isDisasterZone ? "안심구역 중첩" : `교통 접근성 점수 ${accessScore}점`,

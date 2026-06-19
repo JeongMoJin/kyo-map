@@ -94,7 +94,7 @@ export function HouseDetailView({ house }: { house: House }) {
         <div className="absolute inset-x-0 top-3 z-10 sm:top-5">
           <div className="mx-auto flex max-w-[1200px] flex-wrap items-center justify-between gap-2 px-3 sm:px-6">
             <Link
-              href="/"
+              href="/map"
               className="inline-flex items-center gap-1.5 rounded-full bg-white/90 px-3 py-1.5 text-[12px] font-bold text-[color:var(--foreground)] backdrop-blur-md transition-colors hover:bg-white sm:px-3.5 sm:py-2 sm:text-[12.5px]"
             >
               <ArrowLeft className="h-3.5 w-3.5" />
@@ -107,7 +107,7 @@ export function HouseDetailView({ house }: { house: House }) {
                 style={{ background: color }}
               >
                 <Sparkles className="h-3 w-3" />
-                {USE_LABELS[house.recommendedUse]} 추천
+                {USE_LABELS[house.recommendedUse]} 검토
               </span>
               {house.isDisasterZone && (
                 <span className="inline-flex items-center gap-1 rounded-full bg-red-600 px-2.5 py-1 text-[11px] font-bold text-white shadow-lg sm:gap-1.5 sm:px-3 sm:py-1.5 sm:text-[11.5px]">
@@ -170,7 +170,7 @@ export function HouseDetailView({ house }: { house: House }) {
                     active={tab === "ai"}
                     onClick={() => setTab("ai")}
                   >
-                    <Sparkles className="h-3.5 w-3.5" /> AI 분석
+                    <Sparkles className="h-3.5 w-3.5" /> AI 추정
                   </TabButton>
                   <TabButton
                     active={tab === "power"}
@@ -251,10 +251,10 @@ export function HouseDetailView({ house }: { house: House }) {
                         </div>
                         <div>
                           <div className="text-[11px] font-bold uppercase tracking-[0.14em] text-[color:var(--brand-800)]">
-                            GPT-4o 용도 추천
+                            AI 용도 검토
                           </div>
                           <div className="mt-0.5 text-[15px] font-bold text-[color:var(--foreground)]">
-                            {USE_LABELS[house.recommendedUse]} 재생 제안
+                            {USE_LABELS[house.recommendedUse]} 활용 검토
                           </div>
                         </div>
                       </div>
@@ -278,7 +278,7 @@ export function HouseDetailView({ house }: { house: House }) {
                         />
                         <PipelineCard
                           model="GPT-4o"
-                          label="용도 추천"
+                          label="활용 검토"
                           value={USE_LABELS[house.recommendedUse]}
                           hint="교통·상권·토지이용 맥락 반영"
                         />
@@ -313,7 +313,7 @@ export function HouseDetailView({ house }: { house: House }) {
                         </div>
                         • 건축물대장 · 한전 가명정보(월별 전력) · 국토지리정보원
                         위성영상 교차검증 <br />• 안심구역 API와 결합해 붕괴위험
-                        지역 가중치 적용 <br />• 추천 용도는 인접 관광자원/교통
+                        지역 가중치 적용 <br />• 활용 검토는 인접 관광자원/교통
                         접근성 기반 후보지 스코어링 결과
                       </div>
 
@@ -328,7 +328,7 @@ export function HouseDetailView({ house }: { house: House }) {
                             </div>
                             <p className="mt-1 text-[12.5px] font-medium leading-[1.65] text-[color:var(--ink-muted)]">
                               조치 기한은 {priority.urgencyLabel}이며, 현장 확인 전까지
-                              AI 판단과 공공데이터 근거를 함께 보관합니다.
+                              AI 추정과 공공데이터 근거를 함께 보관합니다.
                             </p>
                           </div>
                           <span className="rounded-full bg-white px-3 py-1 text-[11px] font-extrabold text-[color:var(--brand-800)] ring-1 ring-[color:var(--brand-100)]">
@@ -452,7 +452,7 @@ export function HouseDetailView({ house }: { house: House }) {
                                 stroke="#ef4444"
                                 strokeDasharray="4 4"
                                 label={{
-                                  value: "빈집 임계치 2kWh",
+                                  value: "저사용 기준 2kWh",
                                   fill: "#ef4444",
                                   fontSize: 10,
                                   position: "insideTopRight",
@@ -475,11 +475,11 @@ export function HouseDetailView({ house }: { house: House }) {
                       <div className="rounded-xl border border-red-100 bg-red-50/60 p-4 text-[13px] leading-[1.7] text-red-900">
                         <div className="mb-1 flex items-center gap-1.5 text-[12.5px] font-extrabold">
                           <AlertTriangle className="h-3.5 w-3.5" />
-                          LSTM 탐지 시그널
+                          저사용 검토 시그널
                         </div>
-                        최근 6개월 평균 전력사용량이 임계치(2kWh) 이하로 지속되고
-                        있습니다. 실거주 없이 계량기만 연결된 상태일 가능성이
-                        높습니다.
+                        최근 6개월 평균 전력사용량이 저사용 기준 이하로 지속되고
+                        있습니다. 장기 미거주 후보일 수 있어 현장 확인이
+                        필요합니다.
                       </div>
                     </div>
                   )}
@@ -541,22 +541,22 @@ export function HouseDetailView({ house }: { house: House }) {
               <div className="card flex flex-col items-center p-6">
                 <ConfidenceGauge
                   value={house.aiConfidence}
-                  label="AI 빈집 확률"
+                  label="AI 추정 점수"
                   color={color}
                 />
                 <div className="mt-3 text-center text-[12.5px] leading-relaxed text-[color:var(--ink-muted)]">
-                  ViT · LSTM · GPT-4o 세 가지 모델의 합의도 기반 확률입니다.
+                  위성영상, 전력패턴, 건축물 정보를 함께 본 후보 점수입니다.
                 </div>
                 <div className="mt-4 grid w-full grid-cols-3 gap-2">
-                  <MiniStat label="지붕 손상" value="12%" />
-                  <MiniStat label="식생 침투" value="38%" />
+                  <MiniStat label="지붕 단서" value="관찰" />
+                  <MiniStat label="식생 단서" value="검토" />
                   <MiniStat label="정주 가능" value="양호" />
                 </div>
               </div>
 
               <div className="card p-5">
                 <div className="text-[11px] font-bold uppercase tracking-[0.14em] text-[color:var(--ink-muted)]">
-                  추천 재생 시나리오
+                  활용 검토 시나리오
                 </div>
                 <div
                   className="mt-1 text-[18px] font-bold tracking-[-0.01em]"
@@ -572,7 +572,7 @@ export function HouseDetailView({ house }: { house: House }) {
                   />
                   <ScenarioLine
                     active
-                    label="AI 용도 추천"
+                    label="AI 활용 검토"
                     status={`${priority.priorityScore}점`}
                   />
                   <ScenarioLine label="현장 확인" status={priority.urgencyLabel} />

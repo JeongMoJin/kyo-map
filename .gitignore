@@ -19,10 +19,13 @@
 
 # production
 /build
+/dist
 
 # misc
 .DS_Store
+Thumbs.db
 *.pem
+*.log
 
 # debug
 npm-debug.log*
@@ -40,10 +43,29 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
-.vercel
-
-# submission artifacts (generated — see scripts/generate-submission.ts)
+# generated submission artifacts
 /submission/
 
 # final submission package (personal info PDFs — do NOT publish)
 /FINAL_SUBMIT/
+
+# generated pitch / presentation / demo artifacts
+/exports/
+/outputs/
+/pitch-assets/
+/pitch-deck/
+/screenshots/
+/recordings/
+/demo-videos/
+/playwright-report/
+/test-results/
+/.cache/
+/.tmp/
+/temp/
+*.mp4
+*.mov
+*.webm
+*.gif
+*.pptx
+*.key
+*.pdf

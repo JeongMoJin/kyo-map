@@ -13,29 +13,42 @@
    - 기술적 accent: IBM Plex Mono (ID·좌표·모델명)
    ============================================================ */
 :root {
-  --background: #ffffff;
-  --foreground: #0a1324;
-  --brand-50: #eff6ff;
-  --brand-100: #dbeafe;
-  --brand-500: #3b82f6;
-  --brand-600: #2563eb;
-  --brand-700: #1d4ed8;
-  --brand-800: #1e40af;
-  --brand-900: #1e3a8a;
-  --surface: #ffffff;
-  --surface-muted: #f5f8fc;
-  --line: #e2e8f1;
-  --ink-strong: #0a1324;
-  --ink: #1f2a44;
-  --ink-muted: #475a7a;
-  --ink-subtle: #6a7a96;
-  --success: #10b981;
-  --danger: #ef4444;
-  --warning: #f59e0b;
+  --primary-navy: #0f2a44;
+  --deep-navy: #09233b;
+  --primary-blue: #2f80ed;
+  --soft-blue: #eaf4ff;
+  --green-accent: #2ead73;
+  --soft-green: #eaf8f1;
+  --warning-orange: #f2994a;
+  --danger-red: #eb5757;
+  --background: #f7fafc;
+  --foreground: #0f2a44;
+  --card-background: #ffffff;
+  --border: #d8e5f2;
+  --body-text: #4b5563;
+  --muted-text: #7a8a9a;
 
-  --marker-green: #10b981;
-  --marker-blue: #2563eb;
-  --marker-red: #ef4444;
+  --brand-50: var(--soft-blue);
+  --brand-100: #d6eaff;
+  --brand-500: var(--primary-blue);
+  --brand-600: #256fd4;
+  --brand-700: #1d5fb8;
+  --brand-800: var(--primary-navy);
+  --brand-900: var(--deep-navy);
+  --surface: var(--card-background);
+  --surface-muted: #eef5fb;
+  --line: var(--border);
+  --ink-strong: var(--primary-navy);
+  --ink: var(--body-text);
+  --ink-muted: var(--muted-text);
+  --ink-subtle: #8da0b3;
+  --success: var(--green-accent);
+  --danger: var(--danger-red);
+  --warning: var(--warning-orange);
+
+  --marker-green: var(--green-accent);
+  --marker-blue: var(--primary-blue);
+  --marker-red: var(--danger-red);
 }
 
 @theme inline {
@@ -52,12 +65,13 @@
   --color-surface-muted: var(--surface-muted);
   --color-line: var(--line);
   --color-ink-muted: var(--ink-muted);
-  --font-sans: var(--font-sans-kr), "Pretendard Variable", "Pretendard",
+  --font-sans: "Pretendard Variable", "Pretendard",
+    var(--font-sans-kr, "Noto Sans KR"),
     system-ui, -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo",
     "Noto Sans KR", sans-serif;
-  --font-display: var(--font-sans-kr), "Pretendard Variable", "Pretendard", system-ui,
-    "Apple SD Gothic Neo", sans-serif;
-  /* --font-hanja / --font-tech-mono are set by next/font/google in layout.tsx */
+  --font-display: "Pretendard Variable", "Pretendard",
+    var(--font-sans-kr, "Noto Sans KR"), system-ui, "Apple SD Gothic Neo",
+    sans-serif;
   --font-hanja-fallback: var(--font-hanja, "Noto Serif KR"),
     var(--font-sans-kr), serif;
   --font-tech-mono-fallback: var(--font-tech-mono, "IBM Plex Mono"),
@@ -80,6 +94,7 @@ body {
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  word-break: keep-all;
 }
 
 html {
@@ -90,7 +105,7 @@ html {
 body {
   font-size: 15.5px;
   line-height: 1.62;
-  letter-spacing: -0.003em;
+  letter-spacing: 0;
   color: var(--ink);
   background:
     radial-gradient(1200px 520px at 85% -10%, rgba(37, 99, 235, 0.06), transparent 70%),
@@ -102,7 +117,7 @@ body {
 .font-display {
   font-family: var(--font-display);
   font-feature-settings: "ss06", "kern", "liga";
-  letter-spacing: -0.032em;
+  letter-spacing: 0;
 }
 
 /* 한자 전용 — Noto Serif KR (출판 품질) */
@@ -123,7 +138,7 @@ h1,
 h2,
 h3 {
   color: var(--ink-strong);
-  letter-spacing: -0.022em;
+  letter-spacing: 0;
 }
 
 /* selection */
