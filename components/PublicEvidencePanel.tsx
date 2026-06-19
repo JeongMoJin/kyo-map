@@ -55,7 +55,7 @@ export function PublicEvidencePanel() {
             Validation plan
           </div>
           <h3 className="mt-1 text-[16px] font-extrabold text-[color:var(--ink-strong)]">
-            지자체 실증 로드맵
+            컨설팅에서 강조할 실증 로드맵
           </h3>
           <ol className="mt-3 space-y-2.5">
             {VALIDATION_STEPS.map((step, index) => (

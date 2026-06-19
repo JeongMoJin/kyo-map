@@ -2,6 +2,15 @@
 
 This document defines the visual and product language for 공가지도. It follows the DESIGN.md pattern popularized by `awesome-design-md`: plain markdown that agents and contributors can read before changing UI, copy, or presentation assets.
 
+## Active Implementation Note
+
+The live product has been restored to the previous map-first service design.
+
+- Treat `/` as the primary map demo screen.
+- Do not reintroduce a landing-first redesign or `/map` split route unless explicitly requested.
+- Keep future visual changes small and compatible with the restored blue/emerald operational dashboard style.
+- The language guidance below remains useful for pitch safety, but it must not override the restored product layout.
+
 ## 1. Visual Theme & Atmosphere
 
 공가지도 is a public-data urban decision-support service.

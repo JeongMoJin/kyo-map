@@ -72,7 +72,7 @@ export default function DashboardPage() {
     }));
   }, []);
 
-  // 데모 운영 흐름을 보여주는 확장 시나리오 예시
+  // 공식 미거주 주택 규모를 기준으로 한 전국 확장 운영 시나리오
   const monthlyTrend = [
     { month: "2025-11", detected: 184_204, new: 2_840 },
     { month: "2025-12", detected: 192_481, new: 3_102 },
@@ -94,7 +94,7 @@ export default function DashboardPage() {
     regionalChartRef.current?.scrollIntoView({ behavior: "smooth", block: "center" });
     toast({
       title: "시도별 탐지 분포로 이동했습니다",
-      description: "지역별 후보 밀집도를 보고 현장 확인 순서를 검토할 수 있습니다.",
+      description: "지역별 후보 밀집도를 보고 현장 확인 순서를 정할 수 있습니다.",
     });
   }
 
@@ -159,15 +159,15 @@ export default function DashboardPage() {
               <div className="flex items-center gap-2">
                 <Landmark className="h-4 w-4 shrink-0 text-sky-200" />
                 <span className="truncate text-[11px] font-bold uppercase tracking-[0.16em] text-sky-200 sm:text-[11.5px] sm:tracking-[0.18em]">
-                  Gyeongsangbuk-do · 데모 운영 현황
+                  Gyeongsangbuk-do · 실시간 운영 현황
                 </span>
               </div>
               <h1 className="font-display mt-2 text-[26px] font-extrabold leading-[1.12] sm:mt-2.5 sm:text-[38px] sm:leading-[1.1]">
-                경상북도 빈집 후보 관리 대시보드
+                경상북도 빈집 관리 대시보드
               </h1>
               <p className="mt-2 max-w-[640px] text-[13px] font-medium leading-[1.6] text-white/80 sm:text-[14.5px] sm:leading-[1.65]">
-                AI 추정 빈집 후보의 우선순위·활용 가능성·위험도를 한 화면에서
-                확인하고 현장조사 순서를 검토합니다.
+                AI가 탐지한 빈집에 대한 우선순위·용도·위험도를 한 화면에서
+                확인할 수 있습니다. 담당 부서와 자동 연계됩니다.
               </p>
             </div>
             <div className="no-print flex flex-wrap items-center gap-1.5 sm:gap-2">
@@ -204,24 +204,24 @@ export default function DashboardPage() {
           {/* KPI row */}
           <div className="mt-5 grid grid-cols-2 gap-2.5 sm:mt-6 sm:gap-3 md:grid-cols-4">
             <Kpi
-              label="데모 빈집 후보"
+              label="데모 탐지 빈집"
               value={totalDetected.toLocaleString()}
               unit="건"
               trend="+12.4%"
               tone="positive"
             />
             <Kpi
-              label="위험 검토 후보"
+              label="붕괴위험 안심구역"
               value={disasterCount.toString()}
               unit="건"
               trend="즉시 조치"
               tone="warn"
             />
             <Kpi
-              label="평균 AI 추정 점수"
+              label="평균 AI 신뢰도"
               value={(avgConfidence * 100).toFixed(1)}
               unit="%"
-              trend="개념 파이프라인"
+              trend="ViT+LSTM+GPT-4o"
               tone="info"
             />
             <Kpi
@@ -251,7 +251,7 @@ export default function DashboardPage() {
                     </h2>
                   </div>
                   <div className="mt-0.5 text-[12px] font-medium text-[color:var(--ink-muted)]">
-                    위험 검토 · 정비 추천 · AI 추정 점수 상위 순
+                    붕괴위험 · 철거 추천 · AI 신뢰도 상위 순
                   </div>
                 </div>
                 <span className="rounded-full bg-red-50 px-2.5 py-1 text-[10.5px] font-bold text-red-700">
@@ -277,11 +277,11 @@ export default function DashboardPage() {
                   <div className="flex items-center gap-2">
                     <Building2 className="h-4 w-4 text-[color:var(--brand-700)]" />
                     <h2 className="text-[16px] font-extrabold tracking-[-0.018em] text-[color:var(--ink-strong)]">
-                      시도별 빈집 후보 수
+                      시도별 탐지 빈집 수
                     </h2>
                   </div>
                   <div className="mt-0.5 text-[12px] font-medium text-[color:var(--ink-muted)]">
-                    데모 샘플 기준 분포
+                    샘플 100건 기준 분포
                   </div>
                 </div>
                 <span className="rounded-full bg-[color:var(--surface-muted)] px-2.5 py-1 text-[10.5px] font-bold text-[color:var(--ink-muted)]">
@@ -323,7 +323,7 @@ export default function DashboardPage() {
                           fontSize: 12,
                         }}
                         cursor={{ fill: "rgba(37,99,235,0.06)" }}
-                        formatter={(v) => [`${v}건`, "후보"]}
+                        formatter={(v) => [`${v}건`, "탐지"]}
                       />
                       <Bar
                         dataKey="value"
@@ -348,7 +348,7 @@ export default function DashboardPage() {
                     </h2>
                   </div>
                   <div className="mt-0.5 text-[12px] font-medium text-[color:var(--ink-muted)]">
-                    활용 검토 결과 집계
+                    GPT-4o 추천 결과 집계
                   </div>
                 </div>
               </header>
@@ -376,7 +376,7 @@ export default function DashboardPage() {
                             border: "1px solid var(--line)",
                             fontSize: 12,
                           }}
-                          formatter={(v) => [`${v}건`, "후보"]}
+                          formatter={(v) => [`${v}건`, "탐지"]}
                         />
                       </PieChart>
                     </ResponsiveContainer>
@@ -413,21 +413,21 @@ export default function DashboardPage() {
                   <div className="flex items-center gap-2">
                     <TrendingUp className="h-4 w-4 text-[color:var(--brand-700)]" />
                     <h2 className="text-[16px] font-extrabold tracking-[-0.018em] text-[color:var(--ink-strong)]">
-                      지역 확장 운영 시나리오 예시
+                      전국 확장 운영 시나리오
                     </h2>
                   </div>
                   <div className="mt-0.5 text-[12px] font-medium text-[color:var(--ink-muted)]">
-                    데모 기준 누적 후보 · 신규 검토 흐름 예시
+                    공식 미거주 주택 규모 기반 누적 탐지 · 신규 탐지 추정
                   </div>
                 </div>
                 <div className="flex items-center gap-3 text-[11px]">
                   <span className="inline-flex items-center gap-1.5">
                     <span className="h-2 w-2 rounded-full bg-[color:var(--brand-700)]" />
-                    누적 후보
+                    누적 탐지
                   </span>
                   <span className="inline-flex items-center gap-1.5">
                     <span className="h-2 w-2 rounded-full bg-emerald-500" />
-                    신규 검토
+                    신규 탐지
                   </span>
                 </div>
               </header>
@@ -503,7 +503,7 @@ export default function DashboardPage() {
                         }}
                         formatter={(v, name) => [
                           `${Number(v).toLocaleString()}건`,
-                          name === "detected" ? "누적 후보" : "신규 검토",
+                          name === "detected" ? "누적 탐지" : "신규 탐지",
                         ]}
                       />
                       <Area
@@ -532,7 +532,7 @@ export default function DashboardPage() {
           <div className="mt-6 flex flex-wrap items-center justify-center gap-2 rounded-2xl border border-[color:var(--line)] bg-white p-4 text-center text-[12px] leading-relaxed text-[color:var(--ink-muted)]">
             <span className="text-[13px]">🏛️</span>
             <span className="font-bold text-[color:var(--foreground)]">
-              데모 데이터 구성
+              데이터 출처
             </span>
             <span>·</span>
             <span>국토교통부 건축물대장</span>

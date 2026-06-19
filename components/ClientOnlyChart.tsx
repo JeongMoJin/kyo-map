@@ -31,7 +31,7 @@ export function ClientOnlyChart({
   }
 
   return (
-    <div style={{ width: "100%", height: "100%", minWidth: 0, minHeight }}>
+    <div style={{ minHeight, minWidth: 0, width: "100%", height: "100%" }}>
       {children}
     </div>
   );

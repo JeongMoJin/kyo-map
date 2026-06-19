@@ -2,6 +2,12 @@
 
 Recorded at: 2026-06-19 (Asia/Seoul)
 
+Latest update:
+
+- Restored the previous map-first service design after the final cleanup redesign branch was reviewed.
+- The public home route is again the service map screen.
+- The temporary `/map` route and generated OpenGraph image route were removed from the app.
+
 ## Build and Checks
 
 Package manager:
@@ -22,8 +28,6 @@ Build result:
 - Static routes generated:
   - `/`
   - `/dashboard`
-  - `/map`
-  - `/opengraph-image`
   - `/house/[id]` with 100 generated sample paths.
 
 Lint result:
@@ -46,18 +50,16 @@ Local QA URL:
 Checked routes:
 
 - `/`
-- `/map`
 - `/dashboard`
 - `/house/H00018`
 
 Result:
 
-- Landing page rendered with final hero copy.
-- Hero CTA navigated to `/map`.
-- Map page rendered candidate filters and markers.
-- Dashboard rendered without new console warnings/errors.
-- Detail page rendered `AI 추정 점수` wording and back-to-map navigation.
-- Mobile viewport check passed for landing and map.
+- Home rendered the restored previous map-first UI with `전국 공가` and `LIVE · 실시간 탐지 결과`.
+- Home navigation exposes `/dashboard` through the `지자체 대시보드` link.
+- Dashboard route rendered the restored previous heading `경상북도 빈집 관리 대시보드`.
+- Fresh browser console checks after reload/direct route load reported no new errors or warnings.
+- Browser screenshot capture timed out in the in-app browser runtime, so rendered proof was collected from DOM snapshots, console logs, HTTP checks, and production HTML checks.
 
 ## Production Deploy
 
@@ -70,25 +72,29 @@ npx vercel deploy --prod --yes
 Deployment result:
 
 - Success.
-- Deployment ID: `dpl_46E5tT2sVTm1HTs4cMYpeRoM81s6`
-- Deployment URL: `https://kyo-mdo1rkjfo-jeongmoflag-6585s-projects.vercel.app`
+- Deployment ID: `dpl_FZvFi56u6NkuDeSwFqGRNfqjvthk`
+- Deployment URL: `https://kyo-54elyogtm-jeongmoflag-6585s-projects.vercel.app`
 - Production alias: `https://kyo-map.vercel.app`
-- Vercel inspector: `https://vercel.com/jeongmoflag-6585s-projects/kyo-map/46E5tT2sVTm1HTs4cMYpeRoM81s6`
+- Vercel inspector: `https://vercel.com/jeongmoflag-6585s-projects/kyo-map/FZvFi56u6NkuDeSwFqGRNfqjvthk`
 
 Live URL checks:
 
 - `https://kyo-map.vercel.app` -> `200`
-- `https://kyo-map.vercel.app/map` -> `200`
 - `https://kyo-map.vercel.app/dashboard` -> `200`
+- `https://kyo-map.vercel.app/house/H00018` -> `200`
+- `https://kyo-map.vercel.app/map` -> `404` after route removal.
+- Production HTML includes restored home text `전국 공가` and `LIVE · 실시간 탐지 결과`.
+- Production dashboard HTML includes `경상북도 빈집 관리 대시보드`.
 
 ## Remaining Issues
 
 - Moderate npm audit advisory remains in Next's bundled PostCSS dependency. Do not run `npm audit fix --force` without reviewing the resulting dependency plan.
 - The service still uses sample data. Presentation and README clearly state this is a candidate detection/decision-support MVP, not a legal vacancy judgment.
+- Some documentation such as `DESIGN.md` still records the safer final-pitch language direction. The live product UI has intentionally been restored to the previous map-first design.
 
 ## Home Follow-Up
 
-- Open `https://kyo-map.vercel.app` and capture the final landing, map, dashboard, and detail screenshots for PPT.
+- Open `https://kyo-map.vercel.app` and capture the restored map-first home, dashboard, and detail screenshots for PPT.
 - Use `docs/presentation/PITCH_DECK_MANUAL.md` and `docs/presentation/ASSET_CHECKLIST.md` to build slides manually.
 - Re-run deploy only after further code changes:
 

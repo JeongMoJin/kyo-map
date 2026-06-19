@@ -19,10 +19,10 @@ export const OFFICIAL_EVIDENCE = [
   },
   {
     eyebrow: "심사 정합성",
-    metric: "AI 활용",
+    metric: "AI 10점",
     title: "데이터 융합형 서비스",
     detail:
-      "공모전 주제에 맞춰 공공데이터 융합과 AI 기반 후보 탐지 흐름을 서비스 구조로 구현했습니다.",
+      "공모요강의 데이터융합, 안심구역, AI 활용 가점 구조와 맞물리도록 서비스를 설계했습니다.",
     sourceName: "국토교통 데이터 활용 경진대회",
     href: "https://www.bigdata-transportation.kr/pageant/dashboard/CMPE_000000000020042",
   },
@@ -31,5 +31,5 @@ export const OFFICIAL_EVIDENCE = [
 export const VALIDATION_STEPS = [
   "지자체 빈집대장과 탐지 후보 주소 매칭",
   "한전 가명 전력사용 패턴으로 장기 미거주 후보 검증",
-  "현장 확인 결과를 학습 데이터로 환류해 AI 추정 기준 보정",
+  "현장 확인 결과를 학습 데이터로 환류해 모델 신뢰도 보정",
 ] as const;

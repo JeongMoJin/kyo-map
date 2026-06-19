@@ -82,7 +82,7 @@ export function MobileFilterSheet({
                 <span className="h-1 w-10 rounded-full bg-[color:var(--line)]" />
               </div>
               <div className="absolute left-1/2 top-3.5 -translate-x-1/2 text-[14px] font-extrabold tracking-[-0.01em] text-[color:var(--ink-strong)]">
-                후보 필터
+                탐지 필터
               </div>
               <button
                 onClick={() => setOpen(false)}

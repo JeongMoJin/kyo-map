@@ -109,7 +109,7 @@ export default function HouseMap({
                 </div>
                 <div className="mt-3 grid grid-cols-2 gap-2 rounded-lg bg-[color:var(--surface-muted)] p-2.5 text-[11.5px]">
                   <div>
-                    <div className="text-[color:var(--ink-muted)]">AI 추정 점수</div>
+                    <div className="text-[color:var(--ink-muted)]">AI 신뢰도</div>
                     <div className="tnum font-bold text-[color:var(--foreground)]">
                       {(h.aiConfidence * 100).toFixed(0)}%
                     </div>
@@ -123,7 +123,7 @@ export default function HouseMap({
                 </div>
                 {h.isDisasterZone && (
                   <div className="mt-2 inline-flex items-center gap-1 rounded-full bg-red-50 px-2 py-0.5 text-[10.5px] font-bold text-red-700">
-                    위험 검토 구역
+                    ⚠ 붕괴위험 안심구역 내
                   </div>
                 )}
                 <Link
