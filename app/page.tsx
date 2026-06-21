@@ -6,12 +6,13 @@ import { SiteHeader } from "@/components/SiteHeader";
 import { LiveTicker } from "@/components/LiveTicker";
 import { FilterSidebar, type Filters } from "@/components/FilterSidebar";
 import { MobileFilterSheet } from "@/components/MobileFilterSheet";
+import { ProductionStatusPanel } from "@/components/ProductionStatusPanel";
 import { HOUSES, getSidoList } from "@/lib/houses";
 import type { RecommendedUse } from "@/lib/types";
 import { USE_LABELS } from "@/lib/types";
 import { Sparkles, Cpu, Info } from "lucide-react";
 
-// AI 도구: ViT(위성영상 분류), LSTM(전력사용 학습), GPT-4o(용도 추천)
+// 실서비스 PoC: 공공데이터 수집 + 정책 스코어링 + OpenAI Responses 분석
 const MapView = dynamic(() => import("@/components/HouseMap"), {
   ssr: false,
   loading: () => (
@@ -73,10 +74,10 @@ export default function HomePage() {
             <div className="card pointer-events-auto fade-in-up p-3.5 sm:p-5">
               <div className="flex items-center gap-1.5 text-[10px] font-extrabold uppercase tracking-[0.18em] text-[color:var(--brand-800)] sm:text-[10.5px]">
                 <Sparkles className="h-3 w-3" />
-                LIVE · 실시간 탐지 결과
+                MOLIT · 실서비스 후보 탐지
               </div>
               <div className="font-display mt-1.5 text-[20px] font-extrabold leading-[1.15] text-[color:var(--ink-strong)] sm:mt-2 sm:text-[26px]">
-                전국 공가
+                빈집 후보
                 <span className="font-hanja mx-1 text-[15px] font-bold text-[color:var(--brand-800)] sm:text-[20px]">
                   (空家)
                 </span>
@@ -86,8 +87,8 @@ export default function HomePage() {
                 <span className="text-[17px] sm:text-[22px]">건</span>
               </div>
               <div className="mt-1.5 hidden text-[12.5px] leading-[1.6] text-[color:var(--ink-muted)] sm:mt-2 sm:block">
-                AI가 재생 용도를 자동 추천합니다. 마커를 클릭하면 상세 분석으로
-                이동합니다.
+                공개 빈집 현황과 후보 스코어링을 결합해 현장조사 우선순위를
+                제안합니다. 마커를 클릭하면 상세 AI 분석으로 이동합니다.
               </div>
               <div className="mt-2 flex flex-wrap gap-1 sm:mt-3 sm:gap-1.5">
                 {(Object.keys(USE_LABELS) as RecommendedUse[]).map((k) => {
@@ -123,9 +124,13 @@ export default function HomePage() {
                 <span className="font-bold text-[color:var(--ink-strong)]">
                   AI 파이프라인
                 </span>{" "}
-                · ViT로 위성영상 분류 → LSTM으로 월별 전력패턴 학습 → GPT-4o가
-                용도 추천
+                · 공공데이터 수집 → 정책 우선순위 산식 → OpenAI Responses API가
+                조치안 구조화
               </div>
+            </div>
+
+            <div className="pointer-events-auto mt-2 hidden sm:block">
+              <ProductionStatusPanel compact />
             </div>
           </div>
 

@@ -9,7 +9,6 @@ import {
   YAxis,
   CartesianGrid,
   Tooltip,
-  ResponsiveContainer,
   PieChart,
   Pie,
   Cell,
@@ -29,6 +28,7 @@ import {
 } from "lucide-react";
 import { SiteHeader } from "@/components/SiteHeader";
 import { ClientOnlyChart } from "@/components/ClientOnlyChart";
+import { ProductionStatusPanel } from "@/components/ProductionStatusPanel";
 import { PublicEvidencePanel } from "@/components/PublicEvidencePanel";
 import { useToast } from "@/components/Toast";
 import { HOUSES } from "@/lib/houses";
@@ -36,7 +36,7 @@ import { getPriorityProfile, toCsvValue, type PriorityProfile } from "@/lib/prio
 import type { House, RecommendedUse } from "@/lib/types";
 import { USE_COLORS, USE_LABELS } from "@/lib/types";
 
-// AI 도구: ViT(위성영상 분류), LSTM(전력사용 학습), GPT-4o(용도 추천)
+// 실서비스 PoC: 공공데이터 수집 + 후보 스코어링 + OpenAI 정책 분석
 export default function DashboardPage() {
   const toast = useToast();
   const regionalChartRef = useRef<HTMLDivElement>(null);
@@ -159,15 +159,15 @@ export default function DashboardPage() {
               <div className="flex items-center gap-2">
                 <Landmark className="h-4 w-4 shrink-0 text-sky-200" />
                 <span className="truncate text-[11px] font-bold uppercase tracking-[0.16em] text-sky-200 sm:text-[11.5px] sm:tracking-[0.18em]">
-                  Gyeongsangbuk-do · 실시간 운영 현황
+                  MOLIT · 공공데이터 기반 운영 현황
                 </span>
               </div>
               <h1 className="font-display mt-2 text-[26px] font-extrabold leading-[1.12] sm:mt-2.5 sm:text-[38px] sm:leading-[1.1]">
-                경상북도 빈집 관리 대시보드
+                국토교통부 빈집 후보 관리 대시보드
               </h1>
               <p className="mt-2 max-w-[640px] text-[13px] font-medium leading-[1.6] text-white/80 sm:text-[14.5px] sm:leading-[1.65]">
-                AI가 탐지한 빈집에 대한 우선순위·용도·위험도를 한 화면에서
-                확인할 수 있습니다. 담당 부서와 자동 연계됩니다.
+                공개 빈집 현황, 건축물·공간정보, AI 정책 분석을 결합해
+                현장조사 후보와 우선순위, 조치안을 한 화면에서 검토합니다.
               </p>
             </div>
             <div className="no-print flex flex-wrap items-center gap-1.5 sm:gap-2">
@@ -204,7 +204,7 @@ export default function DashboardPage() {
           {/* KPI row */}
           <div className="mt-5 grid grid-cols-2 gap-2.5 sm:mt-6 sm:gap-3 md:grid-cols-4">
             <Kpi
-              label="데모 탐지 빈집"
+              label="지도 후보"
               value={totalDetected.toLocaleString()}
               unit="건"
               trend="+12.4%"
@@ -221,7 +221,7 @@ export default function DashboardPage() {
               label="평균 AI 신뢰도"
               value={(avgConfidence * 100).toFixed(1)}
               unit="%"
-              trend="ViT+LSTM+GPT-4o"
+              trend="스코어링+OpenAI"
               tone="info"
             />
             <Kpi
@@ -238,6 +238,9 @@ export default function DashboardPage() {
       <main className="flex-1">
         <div className="mx-auto max-w-[1440px] px-3 py-5 sm:px-6 sm:py-8">
           <PublicEvidencePanel />
+          <div className="mb-4 sm:mb-5">
+            <ProductionStatusPanel />
+          </div>
 
           <div className="grid gap-4 sm:gap-5 lg:grid-cols-2">
             {/* Top 10 */}
@@ -251,7 +254,7 @@ export default function DashboardPage() {
                     </h2>
                   </div>
                   <div className="mt-0.5 text-[12px] font-medium text-[color:var(--ink-muted)]">
-                    붕괴위험 · 철거 추천 · AI 신뢰도 상위 순
+                    붕괴위험 · 철거 추천 · 현장확인 필요도 상위 순
                   </div>
                 </div>
                 <span className="rounded-full bg-red-50 px-2.5 py-1 text-[10.5px] font-bold text-red-700">
@@ -290,8 +293,10 @@ export default function DashboardPage() {
               </header>
               <div className="h-[260px]">
                 <ClientOnlyChart label="시도별 차트" minHeight={260}>
-                  <ResponsiveContainer>
+                  {({ width, height }) => (
                     <BarChart
+                      width={width}
+                      height={height}
                       data={sidoCounts}
                       margin={{ top: 10, right: 10, left: -15, bottom: 0 }}
                     >
@@ -332,7 +337,7 @@ export default function DashboardPage() {
                         maxBarSize={42}
                       />
                     </BarChart>
-                  </ResponsiveContainer>
+                  )}
                 </ClientOnlyChart>
               </div>
             </div>
@@ -348,15 +353,15 @@ export default function DashboardPage() {
                     </h2>
                   </div>
                   <div className="mt-0.5 text-[12px] font-medium text-[color:var(--ink-muted)]">
-                    GPT-4o 추천 결과 집계
+                    정책 산식 추천 결과 집계
                   </div>
                 </div>
               </header>
               <div className="grid grid-cols-1 items-center gap-3 sm:grid-cols-[1fr_auto] sm:gap-4">
                 <div className="h-[220px]">
                   <ClientOnlyChart label="용도별 차트" minHeight={220}>
-                    <ResponsiveContainer>
-                      <PieChart>
+                    {({ width, height }) => (
+                      <PieChart width={width} height={height}>
                         <Pie
                           data={useDistribution}
                           innerRadius={52}
@@ -379,7 +384,7 @@ export default function DashboardPage() {
                           formatter={(v) => [`${v}건`, "탐지"]}
                         />
                       </PieChart>
-                    </ResponsiveContainer>
+                    )}
                   </ClientOnlyChart>
                 </div>
                 <ul className="flex flex-col gap-2 pr-3">
@@ -433,8 +438,10 @@ export default function DashboardPage() {
               </header>
               <div className="h-[280px]">
                 <ClientOnlyChart label="운영 시나리오 차트" minHeight={280}>
-                  <ResponsiveContainer>
+                  {({ width, height }) => (
                     <AreaChart
+                      width={width}
+                      height={height}
                       data={monthlyTrend}
                       margin={{ top: 10, right: 20, left: -5, bottom: 0 }}
                     >
@@ -523,7 +530,7 @@ export default function DashboardPage() {
                         fill="url(#new-grad)"
                       />
                     </AreaChart>
-                  </ResponsiveContainer>
+                  )}
                 </ClientOnlyChart>
               </div>
             </div>
@@ -535,13 +542,13 @@ export default function DashboardPage() {
               데이터 출처
             </span>
             <span>·</span>
+            <span>영주시 공개 빈집 현황</span>
+            <span>·</span>
             <span>국토교통부 건축물대장</span>
             <span>·</span>
-            <span>한국전력 가명정보</span>
+            <span>한국전력 집계/가명 전력데이터</span>
             <span>·</span>
-            <span>국토지리정보원 위성영상</span>
-            <span>·</span>
-            <span>안심구역 API</span>
+            <span>국토지리정보원/VWorld 공간정보</span>
           </div>
         </div>
       </main>

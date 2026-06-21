@@ -20,7 +20,7 @@ export function SiteHeader({ active }: { active?: "map" | "dashboard" }) {
               </span>
             </div>
             <div className="mt-1 hidden truncate text-[12px] font-medium text-[color:var(--ink-muted)] sm:block">
-              AI가 찾아주는 전국 빈집 재생 플랫폼
+              공공데이터와 AI로 미확인 빈집 후보를 찾는 행정 서비스
             </div>
           </div>
         </Link>
@@ -58,14 +58,14 @@ export function SiteHeader({ active }: { active?: "map" | "dashboard" }) {
               <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-60" />
               <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-500" />
             </span>
-            AI 엔진 가동 중
+            공공데이터 연동
           </div>
           <div
             className="flex items-center gap-1.5 rounded-full border border-[color:var(--line)] bg-white px-3 py-1.5 text-[11px] font-bold text-[color:var(--brand-800)]"
-            title="2026 국토교통 데이터활용 경진대회 제출 시제품"
+            title="국토교통부 실서비스 전환 PoC"
           >
             <Trophy className="h-3 w-3 text-amber-500" />
-            2026 국토교통 경진대회
+            MOLIT 실서비스 PoC
           </div>
         </div>
       </div>

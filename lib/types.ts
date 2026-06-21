@@ -1,4 +1,4 @@
-// AI 도구: ViT(위성영상 분류), LSTM(전력사용 학습), GPT-4o(용도 추천) — 개념적 파이프라인
+// 후보 DTO: 공개 공공데이터와 내부 조사 데이터를 화면/AI 분석에 전달하는 최소 필드
 export type RecommendedUse = "귀촌" | "창업" | "철거";
 export type UsageType = "주거" | "상업" | "농가주택";
 export type OwnerType = "개인" | "지자체" | "기타";

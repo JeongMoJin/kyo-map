@@ -7,7 +7,9 @@
 ## 핵심 기능
 
 - 공공데이터 기반 빈집 후보 지도
+- `data.go.kr` 영주시 공개 빈집 현황 CSV/API 수집
 - 후보별 AI 추정 점수와 판단 근거 확인
+- OpenAI Responses API 기반 후보지 정책 분석
 - 위험도와 활용 가능성을 반영한 우선조사 추천
 - 지자체 대시보드 기반 후보 분포와 행정 검토 흐름
 - 후보 상세 화면의 전력 사용 패턴, 기본 정보, 정책 활용 시나리오
@@ -19,6 +21,9 @@
 | `/` | 빈집 후보 지도 데모 |
 | `/house/[id]` | 빈집 후보 상세 |
 | `/dashboard` | 지자체 후보 관리 대시보드 |
+| `/api/public-data/yeongju` | 영주시 공개 빈집 현황 수집/집계 API |
+| `/api/public-data/status` | 공공데이터/운영 키 상태 API |
+| `/api/ai/analyze` | OpenAI 또는 로컬 fallback 후보 분석 API |
 
 ## 기술 스택
 
@@ -38,6 +43,16 @@ npm run dev
 ```
 
 로컬 실행 후 `http://localhost:3000`에서 확인합니다.
+
+환경변수는 `.env.example`을 기준으로 `.env.local`에 설정합니다.
+
+- `OPENAI_API_KEY`: OpenAI Responses API 분석용
+- `OPENAI_MODEL`: 기본값 `gpt-5.5`
+- `DATA_GO_KR_SERVICE_KEY`: 공공데이터포털 ODCloud/API 호출용
+- `VWORLD_API_KEY`: 공간정보/VWorld 확장용
+- `KAKAO_REST_API_KEY`: 주소 지오코딩 보조용
+
+키가 없더라도 영주시 공개 CSV 파일 다운로드 경로로 공공데이터를 읽고, AI 분석은 로컬 정책 산식 fallback으로 동작합니다.
 
 프로덕션 빌드:
 

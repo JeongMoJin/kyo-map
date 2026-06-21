@@ -1,22 +1,54 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Activity, TrendingUp, Satellite, Zap } from "lucide-react";
+import { Activity, Database, Satellite, Zap } from "lucide-react";
 
 function formatK(n: number) {
   return n.toLocaleString("ko-KR");
 }
 
+interface PublicDataTickerState {
+  totalRows: number;
+  basisDate: string | null;
+  fetchMode: string;
+  openAiConfigured: boolean;
+}
+
+function fetchModeLabel(mode: string) {
+  if (mode === "data_go_kr_odcloud_api") return "ODCloud API";
+  if (mode === "data_go_kr_file_download") return "공개 CSV";
+  return "백업 샘플";
+}
+
 export function LiveTicker({ total }: { total: number }) {
-  const [today, setToday] = useState(14);
-  const [cumulative, setCumulative] = useState(1_453_827);
+  const [publicData, setPublicData] = useState<PublicDataTickerState | null>(
+    null,
+  );
 
   useEffect(() => {
-    const id = setInterval(() => {
-      setToday((v) => v + (Math.random() < 0.35 ? 1 : 0));
-      setCumulative((v) => v + Math.floor(Math.random() * 3));
-    }, 2400);
-    return () => clearInterval(id);
+    let alive = true;
+    fetch("/api/public-data/yeongju?limit=0", { cache: "no-store" })
+      .then((response) => response.json())
+      .then((payload) => {
+        if (!alive) return;
+        setPublicData({
+          totalRows: payload.summary?.totalRows ?? 0,
+          basisDate: payload.summary?.basisDate ?? null,
+          fetchMode: payload.fetchMode ?? "unknown",
+          openAiConfigured: Boolean(
+            payload.integrations?.find(
+              (item: { key: string }) => item.key === "OPENAI_API_KEY",
+            )?.configured,
+          ),
+        });
+      })
+      .catch(() => {
+        if (alive) setPublicData(null);
+      });
+
+    return () => {
+      alive = false;
+    };
   }, []);
 
   return (
@@ -25,35 +57,39 @@ export function LiveTicker({ total }: { total: number }) {
         <div className="flex shrink-0 items-center gap-1.5 text-white/95 sm:gap-2">
           <Activity className="h-3.5 w-3.5 shrink-0 text-emerald-300" />
           <span className="hidden font-medium text-white/75 sm:inline">
-            오늘 새로 탐지된 빈집
+            영주시 공개 빈집현황
           </span>
-          <span className="font-medium text-white/75 sm:hidden">오늘</span>
+          <span className="font-medium text-white/75 sm:hidden">공공</span>
           <span className="tnum text-[12.5px] font-extrabold text-emerald-300 sm:text-[13.5px]">
-            {formatK(today)}건
+            {publicData ? formatK(publicData.totalRows) : "..."}건
           </span>
         </div>
         <div className="h-3.5 w-px shrink-0 bg-white/15" />
         <div className="flex shrink-0 items-center gap-1.5 text-white/95 sm:gap-2">
-          <TrendingUp className="h-3.5 w-3.5 shrink-0 text-sky-300" />
+          <Database className="h-3.5 w-3.5 shrink-0 text-sky-300" />
           <span className="hidden font-medium text-white/75 sm:inline">
-            누적 탐지
+            데이터 기준일
           </span>
-          <span className="font-medium text-white/75 sm:hidden">누적</span>
+          <span className="font-medium text-white/75 sm:hidden">기준</span>
           <span className="tnum text-[12.5px] font-extrabold sm:text-[13.5px]">
-            {formatK(cumulative)}건
+            {publicData?.basisDate ?? "확인 중"}
           </span>
         </div>
         <div className="hidden h-3.5 w-px shrink-0 bg-white/15 sm:block" />
         <div className="hidden shrink-0 items-center gap-2 text-white/95 sm:flex">
           <Satellite className="h-3.5 w-3.5 shrink-0 text-sky-300" />
-          <span className="font-medium text-white/75">위성 분석 커버리지</span>
-          <span className="tnum text-[13.5px] font-extrabold">98.4%</span>
+          <span className="font-medium text-white/75">원천 수집 방식</span>
+          <span className="tnum text-[13.5px] font-extrabold">
+            {publicData ? fetchModeLabel(publicData.fetchMode) : "확인 중"}
+          </span>
         </div>
         <div className="hidden h-3.5 w-px shrink-0 bg-white/15 md:block" />
         <div className="hidden shrink-0 items-center gap-2 text-white/95 md:flex">
           <Zap className="h-3.5 w-3.5 shrink-0 text-amber-300" />
-          <span className="font-medium text-white/75">한전 데이터 연계</span>
-          <span className="tnum text-[13.5px] font-extrabold">실시간</span>
+          <span className="font-medium text-white/75">OpenAI 분석</span>
+          <span className="tnum text-[13.5px] font-extrabold">
+            {publicData?.openAiConfigured ? "연동 가능" : "키 필요"}
+          </span>
         </div>
         <div className="ml-auto hidden shrink-0 items-center gap-1.5 rounded-full bg-white/10 px-3 py-1 text-[11.5px] font-bold text-white/85 lg:flex">
           현재 화면:{" "}

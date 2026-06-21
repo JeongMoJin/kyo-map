@@ -30,6 +30,7 @@ import {
 } from "lucide-react";
 import { ConfidenceGauge } from "@/components/ConfidenceGauge";
 import { ClientOnlyChart } from "@/components/ClientOnlyChart";
+import { RealAiAnalysisPanel } from "@/components/RealAiAnalysisPanel";
 import { useToast } from "@/components/Toast";
 import { getPriorityProfile } from "@/lib/priority";
 import type { House } from "@/lib/types";
@@ -75,7 +76,7 @@ export function HouseDetailView({ house }: { house: House }) {
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
           src={`https://picsum.photos/seed/${house.id}/1600/520`}
-          alt={`${house.address} 위성사진`}
+          alt={`${house.address} 현장 참고 이미지`}
           className="absolute inset-0 h-full w-full object-cover opacity-90"
         />
         <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/20 to-black/20" />
@@ -84,7 +85,7 @@ export function HouseDetailView({ house }: { house: House }) {
         {/* Satellite overlay UI */}
         <div className="pointer-events-none absolute right-3 top-[70px] z-10 hidden flex-col items-end gap-1.5 text-[10.5px] font-mono text-white/80 sm:right-5 sm:top-[72px] sm:flex">
           <span className="rounded-md bg-black/40 px-2 py-0.5 backdrop-blur-sm">
-            ViT-B/16 · 해상도 0.5m/px
+            Public-data candidate · exact parcel hidden
           </span>
           <span className="rounded-md bg-black/40 px-2 py-0.5 backdrop-blur-sm">
             {house.lat.toFixed(4)}°N · {house.lng.toFixed(4)}°E
@@ -251,10 +252,10 @@ export function HouseDetailView({ house }: { house: House }) {
                         </div>
                         <div>
                           <div className="text-[11px] font-bold uppercase tracking-[0.14em] text-[color:var(--brand-800)]">
-                            GPT-4o 용도 추천
+                            OpenAI Responses 정책 분석
                           </div>
                           <div className="mt-0.5 text-[15px] font-bold text-[color:var(--foreground)]">
-                            {USE_LABELS[house.recommendedUse]} 재생 제안
+                            {USE_LABELS[house.recommendedUse]} 조치안 초안
                           </div>
                         </div>
                       </div>
@@ -265,22 +266,22 @@ export function HouseDetailView({ house }: { house: House }) {
 
                       <div className="grid gap-3 md:grid-cols-3">
                         <PipelineCard
-                          model="ViT-B/16"
-                          label="위성영상 분류"
+                          model="공공데이터"
+                          label="후보 스코어링"
                           value={`${Math.round(house.aiConfidence * 100)}%`}
-                          hint="지붕·식생·인프라 패턴 분석"
+                          hint="건축·행정·공간 속성 기반 초기 후보 점수"
                         />
                         <PipelineCard
-                          model="LSTM"
-                          label="전력사용 패턴"
+                          model="전력패턴"
+                          label="저사용 신호"
                           value={`${avgRecent6.toFixed(1)} kWh`}
                           hint={`최근 6개월 평균 (이전: ${avgPrev6.toFixed(1)})`}
                         />
                         <PipelineCard
-                          model="GPT-4o"
-                          label="용도 추천"
+                          model="OpenAI"
+                          label="정책 조치안"
                           value={USE_LABELS[house.recommendedUse]}
-                          hint="교통·상권·토지이용 맥락 반영"
+                          hint="서버 Route Handler에서 구조화 JSON 생성"
                         />
                       </div>
 
@@ -316,6 +317,8 @@ export function HouseDetailView({ house }: { house: House }) {
                         지역 가중치 적용 <br />• 추천 용도는 인접 관광자원/교통
                         접근성 기반 후보지 스코어링 결과
                       </div>
+
+                      <RealAiAnalysisPanel house={house} />
 
                       <div className="rounded-xl border border-[color:var(--brand-100)] bg-[color:var(--brand-50)] p-4">
                         <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
@@ -391,7 +394,7 @@ export function HouseDetailView({ house }: { house: House }) {
 
                       <div className="h-[240px] sm:h-[280px]">
                         <ClientOnlyChart label="전력사용량 차트" minHeight={280}>
-                          <ResponsiveContainer>
+                          <ResponsiveContainer width="100%" height="100%" minWidth={1} minHeight={1}>
                             <AreaChart
                               data={powerData}
                               margin={{
@@ -475,7 +478,7 @@ export function HouseDetailView({ house }: { house: House }) {
                       <div className="rounded-xl border border-red-100 bg-red-50/60 p-4 text-[13px] leading-[1.7] text-red-900">
                         <div className="mb-1 flex items-center gap-1.5 text-[12.5px] font-extrabold">
                           <AlertTriangle className="h-3.5 w-3.5" />
-                          LSTM 탐지 시그널
+                          전력 저사용 시그널
                         </div>
                         최근 6개월 평균 전력사용량이 임계치(2kWh) 이하로 지속되고
                         있습니다. 실거주 없이 계량기만 연결된 상태일 가능성이
@@ -545,12 +548,16 @@ export function HouseDetailView({ house }: { house: House }) {
                   color={color}
                 />
                 <div className="mt-3 text-center text-[12.5px] leading-relaxed text-[color:var(--ink-muted)]">
-                  ViT · LSTM · GPT-4o 세 가지 모델의 합의도 기반 확률입니다.
+                  공공데이터 기반 정책 산식과 OpenAI 분석 요청 결과로 보정되는
+                  후보 확률입니다.
                 </div>
                 <div className="mt-4 grid w-full grid-cols-3 gap-2">
-                  <MiniStat label="지붕 손상" value="12%" />
-                  <MiniStat label="식생 침투" value="38%" />
-                  <MiniStat label="정주 가능" value="양호" />
+                  <MiniStat label="최근 전력" value={`${avgRecent6.toFixed(1)}kWh`} />
+                  <MiniStat
+                    label="안심구역"
+                    value={house.isDisasterZone ? "지정" : "미지정"}
+                  />
+                  <MiniStat label="조치" value={priority.urgencyLabel} />
                 </div>
               </div>
 
@@ -592,9 +599,9 @@ export function HouseDetailView({ house }: { house: House }) {
               </div>
 
               <div className="rounded-2xl border border-[color:var(--line)] bg-[color:var(--surface-muted)]/70 p-4 text-[11.5px] leading-relaxed text-[color:var(--ink-muted)]">
-                본 페이지는 2026 국토교통 데이터활용 경진대회 제출용 시제품
-                데모입니다. 모든 수치는 샘플 데이터로 실제 물건과 무관하며,
-                실증 단계에서는 지자체 빈집대장과 현장 확인 결과로 검증합니다.
+                공개 화면에는 개인정보와 정확 지번을 노출하지 않습니다. 실제
+                행정 운영에서는 공공데이터 원본, 건축물대장, 가명/집계 전력
+                데이터, 현장조사 결과를 감사 로그와 함께 보관합니다.
               </div>
             </aside>
           </div>

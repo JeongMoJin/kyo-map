@@ -5,7 +5,6 @@ import {
   PieChart,
   Pie,
   Cell,
-  ResponsiveContainer,
   Tooltip,
 } from "recharts";
 import { SlidersHorizontal, MapPin, Sparkles } from "lucide-react";
@@ -211,8 +210,8 @@ export function FilterSidebar({
         <div className="card -mx-1 p-3">
           <div className="h-36 sm:h-40">
             <ClientOnlyChart label="필터 분포 차트" minHeight={160}>
-              <ResponsiveContainer>
-                <PieChart>
+              {({ width, height }) => (
+                <PieChart width={width} height={height}>
                   <Pie
                     data={pieData}
                     innerRadius={38}
@@ -236,7 +235,7 @@ export function FilterSidebar({
                     formatter={(v) => [`${v}건`, "탐지"]}
                   />
                 </PieChart>
-              </ResponsiveContainer>
+              )}
             </ClientOnlyChart>
           </div>
           <div className="mt-2 space-y-1">
