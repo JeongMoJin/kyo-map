@@ -87,7 +87,7 @@ export function getPriorityProfile(house: House): PriorityProfile {
     actionLabel,
     urgencyLabel,
     evidence: [
-      `AI 빈집 확률 ${confidenceScore.toFixed(0)}%`,
+      `AI 후보 신뢰도 ${confidenceScore.toFixed(0)}%`,
       `최근 6개월 평균 전력 ${recentPower.toFixed(1)}kWh`,
       `준공 ${age}년차`,
       house.isDisasterZone ? "안심구역 중첩" : `교통 접근성 점수 ${accessScore}점`,

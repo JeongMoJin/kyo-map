@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useMemo, useRef } from "react";
+import { useMemo, useRef, useState } from "react";
 import {
   BarChart,
   Bar,
@@ -26,29 +26,60 @@ import {
   Landmark,
   TrendingUp,
   PieChart as PieIcon,
+  ClipboardCheck,
 } from "lucide-react";
 import { SiteHeader } from "@/components/SiteHeader";
 import { ClientOnlyChart } from "@/components/ClientOnlyChart";
 import { PublicEvidencePanel } from "@/components/PublicEvidencePanel";
 import { useToast } from "@/components/Toast";
+import { useWorkCases } from "@/components/useWorkCases";
 import { HOUSES } from "@/lib/houses";
 import { getPriorityProfile, toCsvValue, type PriorityProfile } from "@/lib/priority";
 import type { House, RecommendedUse } from "@/lib/types";
 import { USE_COLORS, USE_LABELS } from "@/lib/types";
+import {
+  CASE_STATUSES,
+  CASE_STATUS_LABELS,
+  CASE_STATUS_STYLES,
+  type CaseStatus,
+} from "@/lib/workflow";
 
 // AI 도구: ViT(위성영상 분류), LSTM(전력사용 학습), GPT-4o(용도 추천)
 export default function DashboardPage() {
   const toast = useToast();
   const regionalChartRef = useRef<HTMLDivElement>(null);
+  const [statusFilter, setStatusFilter] = useState<CaseStatus | "all">("all");
+  const { cases, getStatus, updateStatus } = useWorkCases();
 
   const top10 = useMemo(() => {
-    return [...HOUSES]
+    const ranked = [...HOUSES]
       .map((house) => ({ house, profile: getPriorityProfile(house) }))
       .sort((a, b) => {
         return b.profile.priorityScore - a.profile.priorityScore;
-      })
+      });
+
+    return (statusFilter === "all"
+      ? ranked
+      : ranked.filter(({ house }) => getStatus(house.id) === statusFilter)
+    )
       .slice(0, 10);
-  }, []);
+  }, [getStatus, statusFilter, cases]);
+
+  const statusCounts = useMemo(() => {
+    const counts: Record<CaseStatus, number> = {
+      미검토: 0,
+      현장확인: 0,
+      처리중: 0,
+      보류: 0,
+      완료: 0,
+    };
+
+    HOUSES.forEach((house) => {
+      counts[getStatus(house.id)] += 1;
+    });
+
+    return counts;
+  }, [getStatus, cases]);
 
   const sidoCounts = useMemo(() => {
     const map = new Map<string, number>();
@@ -115,6 +146,7 @@ export default function DashboardPage() {
       "safetyRisk",
       "fieldCheckNeed",
       "recommendedUse",
+      "workflowStatus",
       "department",
       "action",
       "urgency",
@@ -127,6 +159,7 @@ export default function DashboardPage() {
       profile.safetyRisk,
       profile.fieldCheckNeed,
       USE_LABELS[house.recommendedUse],
+      CASE_STATUS_LABELS[getStatus(house.id)],
       profile.department,
       profile.actionLabel,
       profile.urgencyLabel,
@@ -159,15 +192,15 @@ export default function DashboardPage() {
               <div className="flex items-center gap-2">
                 <Landmark className="h-4 w-4 shrink-0 text-sky-200" />
                 <span className="truncate text-[11px] font-bold uppercase tracking-[0.16em] text-sky-200 sm:text-[11.5px] sm:tracking-[0.18em]">
-                  Gyeongsangbuk-do · 실시간 운영 현황
+                  Gyeongsangbuk-do · 운영 현황
                 </span>
               </div>
               <h1 className="font-display mt-2 text-[26px] font-extrabold leading-[1.12] sm:mt-2.5 sm:text-[38px] sm:leading-[1.1]">
                 경상북도 빈집 관리 대시보드
               </h1>
               <p className="mt-2 max-w-[640px] text-[13px] font-medium leading-[1.6] text-white/80 sm:text-[14.5px] sm:leading-[1.65]">
-                AI가 탐지한 빈집에 대한 우선순위·용도·위험도를 한 화면에서
-                확인할 수 있습니다. 담당 부서와 자동 연계됩니다.
+                AI가 추정한 빈집 후보의 우선순위·용도·위험도를 한 화면에서
+                확인할 수 있습니다. 담당 부서 검토 흐름에 연결할 수 있습니다.
               </p>
             </div>
             <div className="no-print flex flex-wrap items-center gap-1.5 sm:gap-2">
@@ -204,7 +237,7 @@ export default function DashboardPage() {
           {/* KPI row */}
           <div className="mt-5 grid grid-cols-2 gap-2.5 sm:mt-6 sm:gap-3 md:grid-cols-4">
             <Kpi
-              label="데모 탐지 빈집"
+              label="검토 후보"
               value={totalDetected.toLocaleString()}
               unit="건"
               trend="+12.4%"
@@ -239,6 +272,50 @@ export default function DashboardPage() {
         <div className="mx-auto max-w-[1440px] px-3 py-5 sm:px-6 sm:py-8">
           <PublicEvidencePanel />
 
+          <section className="card mb-4 p-4 sm:mb-5 sm:p-5">
+            <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+              <div>
+                <div className="flex items-center gap-2">
+                  <ClipboardCheck className="h-4 w-4 text-[color:var(--brand-700)]" />
+                  <h2 className="text-[16px] font-extrabold tracking-[-0.018em] text-[color:var(--ink-strong)]">
+                    현장 검토 업무 상태
+                  </h2>
+                </div>
+                <p className="mt-1 text-[12.5px] font-medium leading-[1.6] text-[color:var(--ink-muted)]">
+                  상태 변경은 이 브라우저에 저장됩니다. API 키와 DB를 연결하면 같은
+                  구조로 서버 저장소에 이관할 수 있습니다.
+                </p>
+              </div>
+              <div className="flex flex-wrap gap-1.5">
+                <button
+                  type="button"
+                  onClick={() => setStatusFilter("all")}
+                  className={`rounded-full px-3 py-1.5 text-[11.5px] font-extrabold ring-1 ring-inset transition-colors ${
+                    statusFilter === "all"
+                      ? "bg-[color:var(--brand-800)] text-white ring-[color:var(--brand-800)]"
+                      : "bg-white text-[color:var(--ink-muted)] ring-[color:var(--line)] hover:text-[color:var(--ink-strong)]"
+                  }`}
+                >
+                  전체 {HOUSES.length}
+                </button>
+                {CASE_STATUSES.map((status) => (
+                  <button
+                    key={status}
+                    type="button"
+                    onClick={() => setStatusFilter(status)}
+                    className={`rounded-full px-3 py-1.5 text-[11.5px] font-extrabold ring-1 ring-inset transition-colors ${
+                      statusFilter === status
+                        ? "bg-[color:var(--brand-800)] text-white ring-[color:var(--brand-800)]"
+                        : `${CASE_STATUS_STYLES[status]} hover:brightness-[0.98]`
+                    }`}
+                  >
+                    {CASE_STATUS_LABELS[status]} {statusCounts[status]}
+                  </button>
+                ))}
+              </div>
+            </div>
+          </section>
+
           <div className="grid gap-4 sm:gap-5 lg:grid-cols-2">
             {/* Top 10 */}
             <div className="card flex flex-col overflow-hidden lg:row-span-2">
@@ -265,8 +342,30 @@ export default function DashboardPage() {
                     rank={i + 1}
                     house={house}
                     profile={profile}
+                    status={getStatus(house.id)}
+                    onStatusChange={(status) => {
+                      updateStatus(
+                        house.id,
+                        status,
+                        `대시보드에서 ${CASE_STATUS_LABELS[status]} 상태로 변경`,
+                      );
+                      toast({
+                        title: "업무 상태를 변경했습니다",
+                        description: `${house.id} · ${CASE_STATUS_LABELS[status]}`,
+                      });
+                    }}
                   />
                 ))}
+                {top10.length === 0 && (
+                  <li className="px-5 py-10 text-center">
+                    <div className="text-[14px] font-extrabold text-[color:var(--ink-strong)]">
+                      선택한 상태의 후보가 없습니다
+                    </div>
+                    <p className="mt-1 text-[12.5px] font-medium text-[color:var(--ink-muted)]">
+                      다른 상태를 선택하거나 전체 목록으로 돌아가세요.
+                    </p>
+                  </li>
+                )}
               </ol>
             </div>
 
@@ -281,7 +380,7 @@ export default function DashboardPage() {
                     </h2>
                   </div>
                   <div className="mt-0.5 text-[12px] font-medium text-[color:var(--ink-muted)]">
-                    샘플 100건 기준 분포
+                    현재 후보 데이터 기준 분포
                   </div>
                 </div>
                 <span className="rounded-full bg-[color:var(--surface-muted)] px-2.5 py-1 text-[10.5px] font-bold text-[color:var(--ink-muted)]">
@@ -290,7 +389,12 @@ export default function DashboardPage() {
               </header>
               <div className="h-[260px]">
                 <ClientOnlyChart label="시도별 차트" minHeight={260}>
-                  <ResponsiveContainer>
+                  <ResponsiveContainer
+                    width="100%"
+                    height="100%"
+                    minWidth={0}
+                    initialDimension={{ width: 320, height: 260 }}
+                  >
                     <BarChart
                       data={sidoCounts}
                       margin={{ top: 10, right: 10, left: -15, bottom: 0 }}
@@ -355,7 +459,12 @@ export default function DashboardPage() {
               <div className="grid grid-cols-1 items-center gap-3 sm:grid-cols-[1fr_auto] sm:gap-4">
                 <div className="h-[220px]">
                   <ClientOnlyChart label="용도별 차트" minHeight={220}>
-                    <ResponsiveContainer>
+                    <ResponsiveContainer
+                      width="100%"
+                      height="100%"
+                      minWidth={0}
+                      initialDimension={{ width: 320, height: 220 }}
+                    >
                       <PieChart>
                         <Pie
                           data={useDistribution}
@@ -433,7 +542,12 @@ export default function DashboardPage() {
               </header>
               <div className="h-[280px]">
                 <ClientOnlyChart label="운영 시나리오 차트" minHeight={280}>
-                  <ResponsiveContainer>
+                  <ResponsiveContainer
+                    width="100%"
+                    height="100%"
+                    minWidth={0}
+                    initialDimension={{ width: 640, height: 280 }}
+                  >
                     <AreaChart
                       data={monthlyTrend}
                       margin={{ top: 10, right: 20, left: -5, bottom: 0 }}
@@ -541,7 +655,7 @@ export default function DashboardPage() {
             <span>·</span>
             <span>국토지리정보원 위성영상</span>
             <span>·</span>
-            <span>안심구역 API</span>
+            <span>안심구역 데이터</span>
           </div>
         </div>
       </main>
@@ -599,10 +713,14 @@ function Top10Row({
   rank,
   house,
   profile,
+  status,
+  onStatusChange,
 }: {
   rank: number;
   house: House;
   profile: PriorityProfile;
+  status: CaseStatus;
+  onStatusChange: (status: CaseStatus) => void;
 }) {
   const color = USE_COLORS[house.recommendedUse];
   return (
@@ -636,6 +754,11 @@ function Top10Row({
           <span className="rounded-md bg-[color:var(--brand-50)] px-1.5 py-0.5 text-[9.5px] font-extrabold text-[color:var(--brand-800)]">
             우선순위 {profile.priorityScore}
           </span>
+          <span
+            className={`rounded-md px-1.5 py-0.5 text-[9.5px] font-extrabold ring-1 ring-inset ${CASE_STATUS_STYLES[status]}`}
+          >
+            {CASE_STATUS_LABELS[status]}
+          </span>
         </div>
         <div className="mt-1 truncate text-[13.5px] font-extrabold text-[color:var(--ink-strong)]">
           {house.address}
@@ -661,6 +784,18 @@ function Top10Row({
           {profile.urgencyLabel}
         </div>
       </div>
+      <select
+        value={status}
+        onChange={(event) => onStatusChange(event.target.value as CaseStatus)}
+        className="hidden w-[94px] shrink-0 rounded-lg border border-[color:var(--line)] bg-white px-2 py-1.5 text-[11px] font-bold text-[color:var(--ink-strong)] outline-none transition-colors hover:border-[color:var(--brand-500)] focus:border-[color:var(--brand-600)] focus:ring-2 focus:ring-[color:var(--brand-100)] md:block"
+        aria-label={`${house.id} 업무 상태 변경`}
+      >
+        {CASE_STATUSES.map((item) => (
+          <option key={item} value={item}>
+            {CASE_STATUS_LABELS[item]}
+          </option>
+        ))}
+      </select>
       <Link
         href={`/house/${house.id}`}
         className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[color:var(--surface-muted)] text-[color:var(--ink-muted)] transition-colors group-hover:bg-[color:var(--brand-800)] group-hover:text-white"

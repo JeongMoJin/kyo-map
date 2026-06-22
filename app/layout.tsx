@@ -3,17 +3,17 @@ import "./globals.css";
 import { ToastProvider } from "@/components/Toast";
 
 export const metadata: Metadata = {
-  title: "공가지도 (空家地圖) — AI가 찾아주는 전국 빈집 재생 플랫폼",
+  title: "공가지도 (空家地圖) — 공공데이터 기반 빈집 후보 검토 플랫폼",
   description:
-    "위성영상·전력사용량·건축물대장 데이터를 AI로 융합 분석해 전국 빈집을 자동 탐지하고 재생 용도를 추천합니다.",
+    "위성영상·전력사용량·건축물대장 데이터를 융합 분석해 빈집 후보를 추정하고 현장조사 우선순위와 재생 용도를 검토합니다.",
   metadataBase: new URL("https://kyo-map.vercel.app"),
   alternates: {
     canonical: "/",
   },
   openGraph: {
-    title: "공가지도 (空家地圖) — AI가 찾아주는 전국 빈집 재생 플랫폼",
+    title: "공가지도 (空家地圖) — 공공데이터 기반 빈집 후보 검토 플랫폼",
     description:
-      "위성영상·전력사용량·건축물대장 데이터를 AI로 융합 분석해 전국 빈집을 자동 탐지하고 재생 용도를 추천합니다.",
+      "위성영상·전력사용량·건축물대장 데이터를 융합 분석해 빈집 후보를 추정하고 현장조사 우선순위와 재생 용도를 검토합니다.",
     url: "https://kyo-map.vercel.app",
     siteName: "공가지도",
     locale: "ko_KR",
@@ -23,7 +23,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "공가지도 (空家地圖)",
     description:
-      "AI가 찾아주는 전국 빈집 재생 플랫폼",
+      "공공데이터 기반 빈집 후보 검토 플랫폼",
   },
 };
 

@@ -20,7 +20,7 @@ export function SiteHeader({ active }: { active?: "map" | "dashboard" }) {
               </span>
             </div>
             <div className="mt-1 hidden truncate text-[12px] font-medium text-[color:var(--ink-muted)] sm:block">
-              AI가 찾아주는 전국 빈집 재생 플랫폼
+              공공데이터 기반 빈집 후보 검토 플랫폼
             </div>
           </div>
         </Link>
@@ -58,7 +58,7 @@ export function SiteHeader({ active }: { active?: "map" | "dashboard" }) {
               <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-60" />
               <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-500" />
             </span>
-            AI 엔진 가동 중
+            후보 분석 모드
           </div>
           <div
             className="flex items-center gap-1.5 rounded-full border border-[color:var(--line)] bg-white px-3 py-1.5 text-[11px] font-bold text-[color:var(--brand-800)]"

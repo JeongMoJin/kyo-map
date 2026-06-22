@@ -6,10 +6,11 @@ import { SiteHeader } from "@/components/SiteHeader";
 import { LiveTicker } from "@/components/LiveTicker";
 import { FilterSidebar, type Filters } from "@/components/FilterSidebar";
 import { MobileFilterSheet } from "@/components/MobileFilterSheet";
-import { HOUSES, getSidoList } from "@/lib/houses";
+import { getSidoList } from "@/lib/houses";
+import { queryHouses } from "@/lib/house-service";
 import type { RecommendedUse } from "@/lib/types";
 import { USE_LABELS } from "@/lib/types";
-import { Sparkles, Cpu, Info } from "lucide-react";
+import { Cpu, Info, RotateCcw, SearchX, Sparkles } from "lucide-react";
 
 // AI 도구: ViT(위성영상 분류), LSTM(전력사용 학습), GPT-4o(용도 추천)
 const MapView = dynamic(() => import("@/components/HouseMap"), {
@@ -29,24 +30,37 @@ const MapView = dynamic(() => import("@/components/HouseMap"), {
 
 const INITIAL_FILTERS: Filters = {
   uses: { 귀촌: true, 창업: true, 철거: true },
+  search: "",
   sido: "",
   minConfidence: 0.6,
   disasterOnly: false,
+  sort: "priority",
 };
 
 export default function HomePage() {
   const [filters, setFilters] = useState<Filters>(INITIAL_FILTERS);
   const sidoList = useMemo(() => getSidoList(), []);
 
-  const filtered = useMemo(() => {
-    return HOUSES.filter((h) => {
-      if (!filters.uses[h.recommendedUse]) return false;
-      if (filters.sido && !h.address.startsWith(filters.sido)) return false;
-      if (h.aiConfidence < filters.minConfidence) return false;
-      if (filters.disasterOnly && !h.isDisasterZone) return false;
-      return true;
+  const queryResult = useMemo(() => {
+    const uses = (Object.keys(filters.uses) as RecommendedUse[]).filter(
+      (key) => filters.uses[key],
+    );
+
+    return queryHouses({
+      search: filters.search,
+      sido: filters.sido,
+      uses,
+      minConfidence: filters.minConfidence,
+      disasterOnly: filters.disasterOnly,
+      sort: filters.sort,
     });
   }, [filters]);
+
+  const filtered = useMemo(() => {
+    return queryResult.items.map((item) => item.house);
+  }, [queryResult]);
+
+  const resetFilters = () => setFilters(INITIAL_FILTERS);
 
   return (
     <div className="flex min-h-[100dvh] flex-col">
@@ -59,6 +73,7 @@ export default function HomePage() {
           <FilterSidebar
             filters={filters}
             setFilters={setFilters}
+            onReset={resetFilters}
             sidoList={sidoList}
             visible={filtered}
           />
@@ -68,12 +83,37 @@ export default function HomePage() {
         <div className="relative flex-1">
           <MapView houses={filtered} />
 
+          {filtered.length === 0 && (
+            <div className="pointer-events-none absolute inset-0 z-[350] flex items-center justify-center px-4">
+              <div className="card pointer-events-auto max-w-[360px] p-5 text-center">
+                <div className="mx-auto flex h-11 w-11 items-center justify-center rounded-full bg-[color:var(--surface-muted)] text-[color:var(--ink-muted)]">
+                  <SearchX className="h-5 w-5" />
+                </div>
+                <h2 className="mt-3 text-[17px] font-extrabold text-[color:var(--ink-strong)]">
+                  조건에 맞는 후보가 없습니다
+                </h2>
+                <p className="mt-1.5 text-[12.5px] font-medium leading-[1.6] text-[color:var(--ink-muted)]">
+                  검색어, 지역, AI 신뢰도 기준을 낮추면 더 많은 후보를 확인할 수
+                  있습니다.
+                </p>
+                <button
+                  type="button"
+                  onClick={resetFilters}
+                  className="mt-4 inline-flex items-center gap-1.5 rounded-full bg-[color:var(--brand-800)] px-4 py-2 text-[12.5px] font-extrabold text-white transition-colors hover:bg-[color:var(--brand-900)]"
+                >
+                  <RotateCcw className="h-3.5 w-3.5" />
+                  조건 초기화
+                </button>
+              </div>
+            </div>
+          )}
+
           {/* Top-left headline overlay */}
           <div className="pointer-events-none absolute left-3 top-3 z-[400] max-w-[calc(100vw-1.5rem)] sm:left-4 sm:top-4 sm:max-w-[380px]">
             <div className="card pointer-events-auto fade-in-up p-3.5 sm:p-5">
               <div className="flex items-center gap-1.5 text-[10px] font-extrabold uppercase tracking-[0.18em] text-[color:var(--brand-800)] sm:text-[10.5px]">
                 <Sparkles className="h-3 w-3" />
-                LIVE · 실시간 탐지 결과
+                운영 화면 · 후보 탐지 결과
               </div>
               <div className="font-display mt-1.5 text-[20px] font-extrabold leading-[1.15] text-[color:var(--ink-strong)] sm:mt-2 sm:text-[26px]">
                 전국 공가
@@ -162,6 +202,7 @@ export default function HomePage() {
           <MobileFilterSheet
             filters={filters}
             setFilters={setFilters}
+            onReset={resetFilters}
             sidoList={sidoList}
             visible={filtered}
           />

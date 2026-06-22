@@ -8,11 +8,13 @@ import type { House } from "@/lib/types";
 export function MobileFilterSheet({
   filters,
   setFilters,
+  onReset,
   sidoList,
   visible,
 }: {
   filters: Filters;
   setFilters: (f: Filters) => void;
+  onReset: () => void;
   sidoList: string[];
   visible: House[];
 }) {
@@ -22,10 +24,12 @@ export function MobileFilterSheet({
   const activeCount = (() => {
     let n = 0;
     const uses = filters.uses;
+    if (filters.search.trim()) n += 1;
     if (!(uses["귀촌"] && uses["창업"] && uses["철거"])) n += 1;
     if (filters.sido) n += 1;
     if (filters.minConfidence > 0.6) n += 1;
     if (filters.disasterOnly) n += 1;
+    if (filters.sort !== "priority") n += 1;
     return n;
   })();
 
@@ -96,6 +100,7 @@ export function MobileFilterSheet({
               <FilterSidebar
                 filters={filters}
                 setFilters={setFilters}
+                onReset={onReset}
                 sidoList={sidoList}
                 visible={visible}
               />

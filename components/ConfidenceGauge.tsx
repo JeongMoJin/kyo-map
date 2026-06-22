@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 
 export function ConfidenceGauge({
   value,
-  label = "빈집 확률",
+  label = "후보 신뢰도",
   size = 168,
   color = "#1E40AF",
 }: {

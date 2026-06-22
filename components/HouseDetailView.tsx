@@ -27,13 +27,23 @@ import {
   ShieldCheck,
   MessageCircle,
   Mail,
+  ClipboardCheck,
+  History,
+  Save,
 } from "lucide-react";
 import { ConfidenceGauge } from "@/components/ConfidenceGauge";
 import { ClientOnlyChart } from "@/components/ClientOnlyChart";
 import { useToast } from "@/components/Toast";
+import { useWorkCases } from "@/components/useWorkCases";
 import { getPriorityProfile } from "@/lib/priority";
 import type { House } from "@/lib/types";
 import { USE_COLORS, USE_LABELS } from "@/lib/types";
+import {
+  CASE_STATUSES,
+  CASE_STATUS_LABELS,
+  CASE_STATUS_STYLES,
+  type CaseStatus,
+} from "@/lib/workflow";
 
 type Tab = "info" | "ai" | "power";
 
@@ -52,9 +62,22 @@ const MONTH_LABELS = [
   "지난달",
 ];
 
+function formatCaseTime(value: string) {
+  return new Intl.DateTimeFormat("ko-KR", {
+    month: "2-digit",
+    day: "2-digit",
+    hour: "2-digit",
+    minute: "2-digit",
+  }).format(new Date(value));
+}
+
 export function HouseDetailView({ house }: { house: House }) {
   const [tab, setTab] = useState<Tab>("ai");
+  const [memoInput, setMemoInput] = useState("");
+  const [contactInput, setContactInput] = useState("");
   const toast = useToast();
+  const { getCase, getStatus, updateStatus, addNote, createSubmission } =
+    useWorkCases();
 
   const color = USE_COLORS[house.recommendedUse];
 
@@ -67,6 +90,67 @@ export function HouseDetailView({ house }: { house: House }) {
     house.powerUsage.slice(6).reduce((a, b) => a + b, 0) / 6;
   const avgPrev6 = house.powerUsage.slice(0, 6).reduce((a, b) => a + b, 0) / 6;
   const priority = getPriorityProfile(house);
+  const workCase = getCase(house.id);
+  const workflowStatus = getStatus(house.id);
+
+  function handleStatusChange(status: CaseStatus) {
+    updateStatus(
+      house.id,
+      status,
+      `상세 화면에서 ${CASE_STATUS_LABELS[status]} 상태로 변경`,
+    );
+    toast({
+      title: "업무 상태를 변경했습니다",
+      description: `${house.id} · ${CASE_STATUS_LABELS[status]}`,
+    });
+  }
+
+  function handleSaveMemo() {
+    const memo = memoInput.trim();
+    if (!memo) {
+      toast({
+        title: "메모 내용이 비어 있습니다",
+        description: "현장 확인 요청, 소유자 연락 결과 등을 입력해 주세요.",
+      });
+      return;
+    }
+
+    addNote(house.id, memo);
+    setMemoInput("");
+    toast({
+      title: "업무 메모를 저장했습니다",
+      description: `${house.id} 케이스 이력에 기록됩니다.`,
+    });
+  }
+
+  function handleCitizenInquiry() {
+    createSubmission({
+      houseId: house.id,
+      status: "처리중",
+      label: "관심 시민 상담 요청 접수",
+      note:
+        contactInput.trim() ||
+        `${USE_LABELS[house.recommendedUse]} 활용 가능성 상담 요청`,
+      contact: contactInput.trim() || undefined,
+    });
+    toast({
+      title: "상담 케이스를 생성했습니다",
+      description: "담당자가 활용 가능성과 소유자 협의 필요 여부를 검토합니다.",
+    });
+  }
+
+  function handleAdminReport() {
+    createSubmission({
+      houseId: house.id,
+      status: "현장확인",
+      label: "현장 확인 요청 접수",
+      note: `${priority.department}에 ${priority.actionLabel} 요청`,
+    });
+    toast({
+      title: "현장 확인 요청을 등록했습니다",
+      description: `${priority.department} · ${priority.urgencyLabel}`,
+    });
+  }
 
   return (
     <div className="flex min-h-[100dvh] flex-col">
@@ -312,7 +396,7 @@ export function HouseDetailView({ house }: { house: House }) {
                           분석 근거
                         </div>
                         • 건축물대장 · 한전 가명정보(월별 전력) · 국토지리정보원
-                        위성영상 교차검증 <br />• 안심구역 API와 결합해 붕괴위험
+                        위성영상 교차검증 <br />• 안심구역 데이터와 결합해 붕괴위험
                         지역 가중치 적용 <br />• 추천 용도는 인접 관광자원/교통
                         접근성 기반 후보지 스코어링 결과
                       </div>
@@ -391,7 +475,12 @@ export function HouseDetailView({ house }: { house: House }) {
 
                       <div className="h-[240px] sm:h-[280px]">
                         <ClientOnlyChart label="전력사용량 차트" minHeight={280}>
-                          <ResponsiveContainer>
+                          <ResponsiveContainer
+                            width="100%"
+                            height="100%"
+                            minWidth={0}
+                            initialDimension={{ width: 560, height: 280 }}
+                          >
                             <AreaChart
                               data={powerData}
                               margin={{
@@ -478,8 +567,7 @@ export function HouseDetailView({ house }: { house: House }) {
                           LSTM 탐지 시그널
                         </div>
                         최근 6개월 평균 전력사용량이 임계치(2kWh) 이하로 지속되고
-                        있습니다. 실거주 없이 계량기만 연결된 상태일 가능성이
-                        높습니다.
+                        있습니다. 장기 미사용 후보로 우선 검토할 필요가 있습니다.
                       </div>
                     </div>
                   )}
@@ -488,13 +576,23 @@ export function HouseDetailView({ house }: { house: House }) {
 
               {/* CTA row */}
               <div className="grid gap-3 sm:grid-cols-2">
+                <div className="card sm:col-span-2 p-4">
+                  <label
+                    htmlFor="case-contact"
+                    className="text-[11px] font-extrabold uppercase tracking-[0.14em] text-[color:var(--ink-muted)]"
+                  >
+                    연락처 또는 접수 메모
+                  </label>
+                  <input
+                    id="case-contact"
+                    value={contactInput}
+                    onChange={(event) => setContactInput(event.target.value)}
+                    placeholder="선택 입력 · 전화번호, 이메일, 담당자 메모"
+                    className="mt-2 w-full rounded-xl border border-[color:var(--line)] bg-white px-3 py-2.5 text-[13px] font-medium text-[color:var(--ink-strong)] outline-none transition-colors placeholder:text-[color:var(--ink-muted)] focus:border-[color:var(--brand-600)] focus:ring-2 focus:ring-[color:var(--brand-100)]"
+                  />
+                </div>
                 <button
-                  onClick={() =>
-                    toast({
-                      title: "귀촌 문의가 접수되었습니다",
-                      description: `지자체 담당자가 ${house.id} 물건에 대한 상담을 준비합니다.`,
-                    })
-                  }
+                  onClick={handleCitizenInquiry}
                   className="group flex items-center justify-between rounded-2xl border border-emerald-200 bg-gradient-to-br from-emerald-50 to-white p-5 text-left transition-all hover:-translate-y-0.5 hover:border-emerald-300 hover:shadow-lg"
                 >
                   <div>
@@ -512,12 +610,7 @@ export function HouseDetailView({ house }: { house: House }) {
                 </button>
 
                 <button
-                  onClick={() =>
-                    toast({
-                      title: "지자체로 제보를 전송했습니다",
-                      description: `${house.address.split(" ").slice(0, 2).join(" ")} 담당 부서가 확인 후 처리합니다.`,
-                    })
-                  }
+                  onClick={handleAdminReport}
                   className="group flex items-center justify-between rounded-2xl border border-[color:var(--brand-100)] bg-gradient-to-br from-[color:var(--brand-50)] to-white p-5 text-left transition-all hover:-translate-y-0.5 hover:border-[color:var(--brand-500)] hover:shadow-lg"
                 >
                   <div>
@@ -541,11 +634,11 @@ export function HouseDetailView({ house }: { house: House }) {
               <div className="card flex flex-col items-center p-6">
                 <ConfidenceGauge
                   value={house.aiConfidence}
-                  label="AI 빈집 확률"
+                  label="AI 후보 신뢰도"
                   color={color}
                 />
                 <div className="mt-3 text-center text-[12.5px] leading-relaxed text-[color:var(--ink-muted)]">
-                  ViT · LSTM · GPT-4o 세 가지 모델의 합의도 기반 확률입니다.
+                  ViT · LSTM · GPT-4o 세 가지 모델의 합의도 기반 검토 지표입니다.
                 </div>
                 <div className="mt-4 grid w-full grid-cols-3 gap-2">
                   <MiniStat label="지붕 손상" value="12%" />
@@ -591,10 +684,103 @@ export function HouseDetailView({ house }: { house: House }) {
                 </div>
               </div>
 
+              <div className="card p-5">
+                <div className="flex items-center gap-2">
+                  <ClipboardCheck className="h-4 w-4 text-[color:var(--brand-700)]" />
+                  <div className="text-[11px] font-bold uppercase tracking-[0.14em] text-[color:var(--ink-muted)]">
+                    업무 케이스
+                  </div>
+                </div>
+                <div className="mt-3 flex items-center justify-between gap-3">
+                  <span
+                    className={`rounded-full px-3 py-1 text-[11px] font-extrabold ring-1 ring-inset ${CASE_STATUS_STYLES[workflowStatus]}`}
+                  >
+                    {CASE_STATUS_LABELS[workflowStatus]}
+                  </span>
+                  <select
+                    value={workflowStatus}
+                    onChange={(event) =>
+                      handleStatusChange(event.target.value as CaseStatus)
+                    }
+                    className="rounded-lg border border-[color:var(--line)] bg-white px-2.5 py-1.5 text-[11.5px] font-bold text-[color:var(--ink-strong)] outline-none focus:border-[color:var(--brand-600)] focus:ring-2 focus:ring-[color:var(--brand-100)]"
+                    aria-label="업무 상태 변경"
+                  >
+                    {CASE_STATUSES.map((status) => (
+                      <option key={status} value={status}>
+                        {CASE_STATUS_LABELS[status]}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+                <div className="mt-3 rounded-xl bg-[color:var(--surface-muted)] px-3 py-2.5 text-[11.5px] leading-[1.65] text-[color:var(--ink-muted)]">
+                  {workCase ? (
+                    <>
+                      <div className="font-bold text-[color:var(--ink-strong)]">
+                        {workCase.id}
+                      </div>
+                      <div>최근 변경 {formatCaseTime(workCase.updatedAt)}</div>
+                      {workCase.contact && <div>연락/메모 {workCase.contact}</div>}
+                    </>
+                  ) : (
+                    "아직 저장된 케이스가 없습니다. 상태를 변경하거나 상담/제보를 접수하면 케이스가 생성됩니다."
+                  )}
+                </div>
+                <label
+                  htmlFor="case-memo"
+                  className="mt-4 block text-[11px] font-extrabold uppercase tracking-[0.14em] text-[color:var(--ink-muted)]"
+                >
+                  업무 메모
+                </label>
+                <textarea
+                  id="case-memo"
+                  value={memoInput}
+                  onChange={(event) => setMemoInput(event.target.value)}
+                  rows={3}
+                  placeholder="현장 확인 일정, 소유자 연락 결과, 보류 사유"
+                  className="mt-2 w-full resize-none rounded-xl border border-[color:var(--line)] bg-white px-3 py-2.5 text-[12.5px] font-medium leading-[1.55] text-[color:var(--ink-strong)] outline-none placeholder:text-[color:var(--ink-muted)] focus:border-[color:var(--brand-600)] focus:ring-2 focus:ring-[color:var(--brand-100)]"
+                />
+                <button
+                  type="button"
+                  onClick={handleSaveMemo}
+                  className="mt-2 flex w-full items-center justify-center gap-1.5 rounded-xl bg-[color:var(--brand-800)] px-3 py-2.5 text-[12.5px] font-extrabold text-white transition-colors hover:bg-[color:var(--brand-900)]"
+                >
+                  <Save className="h-3.5 w-3.5" />
+                  메모 저장
+                </button>
+                {workCase?.activity.length ? (
+                  <div className="mt-4">
+                    <div className="mb-2 flex items-center gap-1.5 text-[11px] font-extrabold uppercase tracking-[0.14em] text-[color:var(--ink-muted)]">
+                      <History className="h-3 w-3" />
+                      처리 이력
+                    </div>
+                    <ul className="space-y-2">
+                      {workCase.activity.slice(0, 4).map((item) => (
+                        <li
+                          key={item.id}
+                          className="rounded-lg border border-[color:var(--line)] bg-white px-3 py-2 text-[11.5px] leading-[1.5]"
+                        >
+                          <div className="font-bold text-[color:var(--ink-strong)]">
+                            {item.label}
+                          </div>
+                          <div className="text-[10.5px] text-[color:var(--ink-muted)]">
+                            {formatCaseTime(item.at)}
+                          </div>
+                          {item.note && (
+                            <div className="mt-1 text-[color:var(--ink-muted)]">
+                              {item.note}
+                            </div>
+                          )}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                ) : null}
+              </div>
+
               <div className="rounded-2xl border border-[color:var(--line)] bg-[color:var(--surface-muted)]/70 p-4 text-[11.5px] leading-relaxed text-[color:var(--ink-muted)]">
-                본 페이지는 2026 국토교통 데이터활용 경진대회 제출용 시제품
-                데모입니다. 모든 수치는 샘플 데이터로 실제 물건과 무관하며,
-                실증 단계에서는 지자체 빈집대장과 현장 확인 결과로 검증합니다.
+                본 페이지는 현장조사 전 사전 스크리닝 화면입니다. 현재 데이터는
+                샘플이며, 실증 단계에서는 지자체 빈집대장과 현장 확인 결과로
+                검증합니다.
               </div>
             </aside>
           </div>

@@ -8,26 +8,38 @@ import {
   ResponsiveContainer,
   Tooltip,
 } from "recharts";
-import { SlidersHorizontal, MapPin, Sparkles } from "lucide-react";
+import {
+  ArrowDownNarrowWide,
+  MapPin,
+  RotateCcw,
+  Search,
+  SlidersHorizontal,
+  Sparkles,
+} from "lucide-react";
 import { ClientOnlyChart } from "@/components/ClientOnlyChart";
+import type { HouseSortKey } from "@/lib/house-service";
 import type { House, RecommendedUse } from "@/lib/types";
 import { USE_COLORS, USE_LABELS } from "@/lib/types";
 
 export interface Filters {
   uses: Record<RecommendedUse, boolean>;
+  search: string;
   sido: string;
   minConfidence: number;
   disasterOnly: boolean;
+  sort: HouseSortKey;
 }
 
 export function FilterSidebar({
   filters,
   setFilters,
+  onReset,
   sidoList,
   visible,
 }: {
   filters: Filters;
   setFilters: (f: Filters) => void;
+  onReset: () => void;
   sidoList: string[];
   visible: House[];
 }) {
@@ -58,8 +70,64 @@ export function FilterSidebar({
           <span className="ml-auto rounded-full bg-[color:var(--brand-50)] px-2.5 py-1 text-[11.5px] font-extrabold tnum text-[color:var(--brand-800)]">
             {total.toLocaleString()}건
           </span>
+          <button
+            type="button"
+            onClick={onReset}
+            className="flex h-8 w-8 items-center justify-center rounded-full text-[color:var(--ink-muted)] transition-colors hover:bg-[color:var(--surface-muted)] hover:text-[color:var(--ink-strong)]"
+            aria-label="필터 초기화"
+            title="필터 초기화"
+          >
+            <RotateCcw className="h-3.5 w-3.5" />
+          </button>
         </div>
       </div>
+
+      {/* Search */}
+      <section className="border-b border-[color:var(--line)] px-5 py-4">
+        <label
+          htmlFor="candidate-search"
+          className="mb-2 flex items-center gap-1.5 text-[11px] font-extrabold uppercase tracking-[0.18em] text-[color:var(--ink-muted)]"
+        >
+          <Search className="h-3 w-3" /> 후보 검색
+        </label>
+        <div className="relative">
+          <Search className="pointer-events-none absolute left-3 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-[color:var(--ink-muted)]" />
+          <input
+            id="candidate-search"
+            value={filters.search}
+            onChange={(e) =>
+              setFilters({ ...filters, search: e.target.value })
+            }
+            placeholder="주소, ID, 분석 근거"
+            className="w-full rounded-lg border border-[color:var(--line)] bg-white py-2 pl-9 pr-3 text-[13.5px] font-medium text-[color:var(--foreground)] transition-colors placeholder:text-[color:var(--ink-muted)] focus:border-[color:var(--brand-600)] focus:outline-none focus:ring-2 focus:ring-[color:var(--brand-100)]"
+          />
+        </div>
+      </section>
+
+      {/* Sort */}
+      <section className="border-b border-[color:var(--line)] px-5 py-4">
+        <label
+          htmlFor="candidate-sort"
+          className="mb-2 flex items-center gap-1.5 text-[11px] font-extrabold uppercase tracking-[0.18em] text-[color:var(--ink-muted)]"
+        >
+          <ArrowDownNarrowWide className="h-3 w-3" /> 정렬 기준
+        </label>
+        <select
+          id="candidate-sort"
+          value={filters.sort}
+          onChange={(e) =>
+            setFilters({ ...filters, sort: e.target.value as HouseSortKey })
+          }
+          className="w-full rounded-lg border border-[color:var(--line)] bg-white px-3 py-2 text-[13.5px] font-medium text-[color:var(--foreground)] transition-colors focus:border-[color:var(--brand-600)] focus:outline-none focus:ring-2 focus:ring-[color:var(--brand-100)]"
+        >
+          <option value="priority">우선순위 높은 순</option>
+          <option value="confidence">AI 신뢰도 높은 순</option>
+          <option value="safety">안전 위험 높은 순</option>
+          <option value="power-low">전력 사용 낮은 순</option>
+          <option value="age">준공 오래된 순</option>
+          <option value="address">주소 가나다순</option>
+        </select>
+      </section>
 
       {/* Use type checkboxes */}
       <section className="border-b border-[color:var(--line)] px-5 py-4">
@@ -211,7 +279,12 @@ export function FilterSidebar({
         <div className="card -mx-1 p-3">
           <div className="h-36 sm:h-40">
             <ClientOnlyChart label="필터 분포 차트" minHeight={160}>
-              <ResponsiveContainer>
+              <ResponsiveContainer
+                width="100%"
+                height="100%"
+                minWidth={0}
+                initialDimension={{ width: 260, height: 160 }}
+              >
                 <PieChart>
                   <Pie
                     data={pieData}
@@ -267,7 +340,7 @@ export function FilterSidebar({
       <div className="mt-auto border-t border-[color:var(--line)] bg-[color:var(--surface-muted)] px-5 py-3 text-[10.5px] leading-relaxed text-[color:var(--ink-muted)]">
         <div className="font-bold text-[color:var(--foreground)]">데이터 출처</div>
         국토교통부 건축물대장 · 한국전력 가명정보 · 국토지리정보원 위성영상 ·
-        안심구역 API
+        안심구역 데이터
       </div>
     </aside>
   );
