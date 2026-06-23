@@ -9,14 +9,28 @@
         box-sizing: border-box;
       }
 
+      :root {
+        --navy: #0f2a44;
+        --blue: #2446b8;
+        --blue-2: #2f80ed;
+        --green: #12b981;
+        --red: #ef4444;
+        --amber: #f59e0b;
+        --ink: #182235;
+        --muted: #5d6f88;
+        --line: #d8e5f2;
+        --soft: #f7fafc;
+        --card: #ffffff;
+      }
+
       html,
       body {
         margin: 0;
         width: 1920px;
         height: 1080px;
         overflow: hidden;
-        background: #f7fafc;
-        color: #0f2a44;
+        background: var(--soft);
+        color: var(--ink);
         font-family: Arial, sans-serif;
       }
 
@@ -25,9 +39,7 @@
         width: 1920px;
         height: 1080px;
         overflow: hidden;
-        background:
-          linear-gradient(135deg, rgba(47, 128, 237, 0.08), transparent 48%),
-          linear-gradient(0deg, #ffffff, #f7fafc);
+        background: #f7fafc;
       }
 
       .scene {
@@ -35,61 +47,515 @@
         inset: 0;
         display: flex;
         flex-direction: column;
+        padding: 82px 110px 74px;
+        background:
+          radial-gradient(circle at 88% 8%, rgba(47, 128, 237, 0.12), transparent 34%),
+          linear-gradient(180deg, #ffffff 0%, #f7fafc 100%);
+      }
+
+      .scene.center {
+        align-items: center;
         justify-content: center;
-        padding: 120px 150px;
+        text-align: center;
       }
 
       .eyebrow {
         width: fit-content;
         border-radius: 999px;
         background: #e8f3ff;
-        color: #1e5fbf;
-        padding: 16px 26px;
-        font-size: 30px;
+        color: var(--blue);
+        padding: 12px 22px;
+        font-size: 25px;
         font-weight: 800;
-        letter-spacing: 0.02em;
+        letter-spacing: 0.04em;
       }
 
-      h1 {
-        margin: 42px 0 0;
-        font-size: 118px;
-        line-height: 1.04;
-        letter-spacing: -0.02em;
+      .scene-title {
+        margin-top: 28px;
+        color: var(--navy);
+        font-size: 76px;
+        line-height: 1.12;
+        letter-spacing: -0.03em;
+        font-weight: 900;
+        word-break: keep-all;
+      }
+
+      .scene-title .accent,
+      .hero-title .accent {
+        color: var(--blue-2);
+      }
+
+      .scene-subtitle {
+        margin-top: 18px;
+        max-width: 1220px;
+        color: var(--muted);
+        font-size: 31px;
+        line-height: 1.42;
+        font-weight: 700;
+        word-break: keep-all;
+      }
+
+      .hero-title {
+        margin-top: 30px;
+        color: var(--navy);
+        font-size: 128px;
+        line-height: 1;
+        letter-spacing: -0.04em;
         font-weight: 900;
       }
 
-      .subtitle {
-        margin-top: 34px;
-        max-width: 1120px;
-        color: #4b5563;
-        font-size: 42px;
-        line-height: 1.36;
+      .hero-sub {
+        margin-top: 30px;
+        max-width: 1240px;
+        color: #32445e;
+        font-size: 40px;
+        line-height: 1.38;
+        font-weight: 750;
+        word-break: keep-all;
+      }
+
+      .footer-note {
+        position: absolute;
+        left: 110px;
+        right: 110px;
+        bottom: 42px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 20px;
+        color: #6b7d94;
+        font-size: 18px;
+        font-weight: 700;
+      }
+
+      .source {
+        color: #6b7d94;
+        font-size: 18px;
         font-weight: 650;
       }
 
-      .pill-row {
-        display: flex;
-        gap: 18px;
-        margin-top: 72px;
+      .brand-line {
+        color: var(--blue);
+        font-weight: 900;
       }
 
-      .pill {
-        border: 2px solid #d8e5f2;
-        border-radius: 18px;
+      .image-frame {
+        margin-top: 38px;
+        width: 100%;
+        border: 1px solid var(--line);
+        border-radius: 24px;
+        overflow: hidden;
         background: #ffffff;
-        padding: 20px 28px;
-        color: #0f2a44;
-        font-size: 28px;
-        font-weight: 800;
+        box-shadow: 0 24px 70px rgba(15, 42, 68, 0.13);
       }
 
-      .url {
+      .image-frame img {
+        display: block;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+
+      .image-frame.map {
+        height: 650px;
+      }
+
+      .image-frame.detail {
+        height: 635px;
+      }
+
+      .image-frame.dashboard {
+        height: 640px;
+      }
+
+      .stats {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 30px;
+        margin-top: 56px;
+      }
+
+      .stat {
+        min-height: 300px;
+        border: 1px solid var(--line);
+        border-radius: 26px;
+        background: var(--card);
+        padding: 36px 36px 32px;
+        box-shadow: 0 18px 52px rgba(15, 42, 68, 0.08);
+      }
+
+      .stat .num {
+        color: var(--blue);
+        font-size: 92px;
+        line-height: 1;
+        letter-spacing: -0.04em;
+        font-weight: 900;
+        font-variant-numeric: tabular-nums;
+      }
+
+      .stat .label {
+        margin-top: 18px;
+        color: var(--navy);
+        font-size: 29px;
+        line-height: 1.34;
+        font-weight: 850;
+        word-break: keep-all;
+      }
+
+      .stat .desc {
+        margin-top: 14px;
+        color: var(--muted);
+        font-size: 22px;
+        line-height: 1.46;
+        font-weight: 650;
+        word-break: keep-all;
+      }
+
+      .compare-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 32px;
+        margin-top: 48px;
+      }
+
+      .compare-grid.three {
+        grid-template-columns: repeat(3, 1fr);
+      }
+
+      .compare-col {
+        min-height: 470px;
+        border: 1px solid var(--line);
+        border-radius: 28px;
+        background: #ffffff;
+        padding: 38px;
+        box-shadow: 0 18px 52px rgba(15, 42, 68, 0.08);
+      }
+
+      .compare-col.highlight {
+        border-color: rgba(47, 128, 237, 0.45);
+        background: linear-gradient(180deg, #eef6ff, #ffffff);
+      }
+
+      .compare-heading {
+        color: var(--navy);
+        font-size: 43px;
+        line-height: 1.18;
+        letter-spacing: -0.02em;
+        font-weight: 900;
+        word-break: keep-all;
+      }
+
+      .compare-kicker {
+        margin-bottom: 16px;
+        color: var(--blue);
+        font-size: 20px;
+        letter-spacing: 0.06em;
+        font-weight: 900;
+      }
+
+      .compare-list {
+        margin: 28px 0 0;
+        padding: 0;
+        list-style: none;
+      }
+
+      .compare-list li {
+        position: relative;
+        margin-top: 16px;
+        padding-left: 24px;
+        color: #344761;
+        font-size: 26px;
+        line-height: 1.36;
+        font-weight: 700;
+        word-break: keep-all;
+      }
+
+      .compare-list li::before {
+        content: "";
         position: absolute;
-        right: 150px;
-        bottom: 96px;
-        color: #2f80ed;
+        left: 0;
+        top: 15px;
+        width: 9px;
+        height: 9px;
+        border-radius: 50%;
+        background: var(--blue-2);
+      }
+
+      .flow {
+        display: grid;
+        grid-template-columns: 1fr 100px 1fr;
+        gap: 28px;
+        margin-top: 50px;
+        align-items: stretch;
+      }
+
+      .flow-col {
+        min-height: 480px;
+        border: 1px solid var(--line);
+        border-radius: 30px;
+        background: #ffffff;
+        padding: 42px;
+        box-shadow: 0 18px 52px rgba(15, 42, 68, 0.08);
+      }
+
+      .flow-col.after {
+        border-color: rgba(18, 185, 129, 0.48);
+        background: linear-gradient(180deg, #ecfdf5, #ffffff);
+      }
+
+      .flow-label {
+        width: fit-content;
+        border-radius: 999px;
+        background: #edf2f7;
+        color: #51657d;
+        padding: 10px 18px;
+        font-size: 21px;
+        font-weight: 900;
+      }
+
+      .flow-col.after .flow-label {
+        background: #d1fae5;
+        color: #047857;
+      }
+
+      .flow-heading {
+        margin-top: 22px;
+        color: var(--navy);
+        font-size: 48px;
+        line-height: 1.16;
+        font-weight: 900;
+        letter-spacing: -0.02em;
+        word-break: keep-all;
+      }
+
+      .flow-list {
+        margin: 26px 0 0;
+        padding: 0;
+        list-style: none;
+      }
+
+      .flow-list li {
+        margin-top: 18px;
+        color: #344761;
+        font-size: 27px;
+        line-height: 1.34;
+        font-weight: 700;
+        word-break: keep-all;
+      }
+
+      .flow-arrow {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--blue-2);
+        font-size: 78px;
+        font-weight: 900;
+      }
+
+      .steps {
+        display: grid;
+        grid-template-columns: repeat(5, 1fr);
+        gap: 22px;
+        margin: 54px 0 0;
+        padding: 0;
+        list-style: none;
+      }
+
+      .steps.four {
+        grid-template-columns: repeat(4, 1fr);
+      }
+
+      .step {
+        position: relative;
+        min-height: 320px;
+        border: 1px solid var(--line);
+        border-radius: 28px;
+        background: #ffffff;
+        padding: 32px 26px;
+        box-shadow: 0 18px 52px rgba(15, 42, 68, 0.08);
+      }
+
+      .step-num {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 58px;
+        height: 58px;
+        border-radius: 50%;
+        background: var(--blue);
+        color: #ffffff;
         font-size: 28px;
-        font-weight: 800;
+        font-weight: 900;
+      }
+
+      .step-body {
+        margin-top: 26px;
+        color: var(--navy);
+        font-size: 31px;
+        line-height: 1.24;
+        letter-spacing: -0.02em;
+        font-weight: 900;
+        word-break: keep-all;
+      }
+
+      .step-desc {
+        margin-top: 14px;
+        color: var(--muted);
+        font-size: 21px;
+        line-height: 1.42;
+        font-weight: 650;
+        word-break: keep-all;
+      }
+
+      .split-grid {
+        display: grid;
+        grid-template-columns: 0.95fr 1.05fr;
+        gap: 36px;
+        margin-top: 44px;
+        align-items: stretch;
+      }
+
+      .diagram-card,
+      .policy-card,
+      .roadmap-card {
+        border: 1px solid var(--line);
+        border-radius: 28px;
+        background: #ffffff;
+        padding: 34px;
+        box-shadow: 0 18px 52px rgba(15, 42, 68, 0.08);
+      }
+
+      .diagram-title {
+        color: var(--navy);
+        font-size: 32px;
+        font-weight: 900;
+      }
+
+      .chip-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 14px;
+        margin-top: 24px;
+      }
+
+      .chip {
+        border-radius: 999px;
+        background: #eef6ff;
+        color: var(--blue);
+        padding: 13px 18px;
+        font-size: 23px;
+        font-weight: 850;
+      }
+
+      .arrow-down {
+        margin: 28px auto;
+        color: var(--blue-2);
+        font-size: 48px;
+        font-weight: 900;
+        text-align: center;
+      }
+
+      .output-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 14px;
+        margin-top: 22px;
+      }
+
+      .output {
+        border-radius: 18px;
+        background: #ecfdf5;
+        color: #047857;
+        padding: 18px;
+        font-size: 24px;
+        font-weight: 900;
+        text-align: center;
+      }
+
+      .quote {
+        margin-top: 46px;
+        border-left: 8px solid var(--green);
+        padding: 26px 34px;
+        color: var(--navy);
+        background: #ffffff;
+        border-radius: 0 24px 24px 0;
+        font-size: 34px;
+        line-height: 1.42;
+        font-weight: 850;
+        box-shadow: 0 18px 52px rgba(15, 42, 68, 0.08);
+        word-break: keep-all;
+      }
+
+      .closing-grid {
+        display: grid;
+        grid-template-columns: 1.25fr 0.75fr;
+        gap: 42px;
+        align-items: center;
+        margin-top: 54px;
+      }
+
+      .roadmap {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 18px;
+      }
+
+      .roadmap-card {
+        min-height: 210px;
+        padding: 28px;
+      }
+
+      .roadmap-card strong {
+        display: block;
+        color: var(--blue);
+        font-size: 23px;
+        font-weight: 900;
+      }
+
+      .roadmap-card span {
+        display: block;
+        margin-top: 14px;
+        color: var(--navy);
+        font-size: 28px;
+        line-height: 1.24;
+        font-weight: 900;
+        word-break: keep-all;
+      }
+
+      .qr-card {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        border: 1px solid var(--line);
+        border-radius: 34px;
+        background: #ffffff;
+        padding: 34px;
+        box-shadow: 0 18px 52px rgba(15, 42, 68, 0.08);
+      }
+
+      .qr-card img {
+        width: 260px;
+        height: 260px;
+      }
+
+      .qr-card .url-text {
+        margin-top: 22px;
+        color: var(--blue);
+        font-size: 26px;
+        font-weight: 900;
+      }
+
+      .caption-badge {
+        position: absolute;
+        right: 132px;
+        top: 96px;
+        border-radius: 999px;
+        background: #ecfdf5;
+        color: #047857;
+        padding: 13px 22px;
+        font-size: 21px;
+        font-weight: 900;
       }
     </style>
   </head>
@@ -98,36 +564,232 @@
       id="root"
       data-composition-id="main"
       data-start="0"
-      data-duration="8"
+      data-duration="96"
       data-width="1920"
       data-height="1080"
     >
-      <section
-        id="cover"
-        class="scene clip"
-        data-skill="title"
-        data-start="0"
-        data-duration="8"
-        data-track-index="0"
-      >
-        <div class="eyebrow">5분 발표 영상 · 공공데이터 활용 MVP</div>
-        <h1>공가지도</h1>
-        <p class="subtitle">
-          공공데이터와 AI로 미등록 빈집 후보를 찾아내고,
-          지자체 현장조사 우선순위를 추천하는 도시 데이터 플랫폼
-        </p>
-        <div class="pill-row">
-          <div class="pill">사전 스크리닝</div>
-          <div class="pill">우선조사 추천</div>
-          <div class="pill">GPT 분석</div>
+      <section id="s-1" class="scene clip title-image" data-skill="title-image" data-start="0" data-duration="8" data-track-index="0">
+        <div class="eyebrow">2026 국토교통 데이터활용 경진대회</div>
+        <div class="scene-title">공가지도</div>
+        <div class="scene-subtitle">공공데이터와 AI로 미등록 빈집 후보를 먼저 찾고, 지자체 현장조사 우선순위를 추천합니다.</div>
+        <div class="image-frame map"><img src="assets/01-main-map.png" alt="공가지도 메인 지도 화면" /></div>
+        <div class="footer-note"><span class="brand-line">조회 지도가 아니라 사전 탐지 플랫폼</span><span>https://kyo-map.vercel.app</span></div>
+      </section>
+
+      <section id="s-2" class="scene clip" data-skill="stat" data-start="8" data-duration="8" data-track-index="1">
+        <div class="eyebrow">문제 규모</div>
+        <div class="scene-title">빈집 문제는 커지고 있습니다</div>
+        <div class="scene-subtitle">빈집은 단순한 공실이 아니라 안전, 미관, 정주환경, 행정비용과 연결되는 도시 관리 문제입니다.</div>
+        <div class="stats">
+          <div class="stat"><div class="num">약 160만</div><div class="label">2024년 미거주 주택</div><div class="desc">전체 주택의 약 8% 수준으로 집계됩니다.</div></div>
+          <div class="stat"><div class="num">13만</div><div class="label">법령상 빈집 관리 대상</div><div class="desc">전국 단위 일제 조사 기준 약 13만 호입니다.</div></div>
+          <div class="stat"><div class="num">0.7%</div><div class="label">법령상 빈집 비율</div><div class="desc">통계상 미거주 주택과 관리 대상 사이의 간극이 큽니다.</div></div>
         </div>
-        <div class="url">kyo-map.vercel.app</div>
+        <div class="footer-note"><span class="source">출처: 국가데이터처 2024 인구주택총조사, 국토연구원 국토정책Brief No.1042</span><span>02 / 12</span></div>
+      </section>
+
+      <section id="s-3" class="scene clip" data-skill="compare" data-start="16" data-duration="8" data-track-index="2">
+        <div class="eyebrow">핵심 문제</div>
+        <div class="scene-title">더 큰 문제는 ‘통계와 현장 관리의 간극’입니다</div>
+        <div class="scene-subtitle">빈집이 많다는 사실보다, 관리해야 할 후보를 선별하는 체계가 부족하다는 점이 핵심입니다.</div>
+        <div class="compare-grid">
+          <div class="compare-col">
+            <div class="compare-kicker">통계상 미거주 주택</div>
+            <div class="compare-heading">사람이 살지 않는 주택을 폭넓게 집계</div>
+            <ul class="compare-list">
+              <li>2024년 기준 약 160만 호</li>
+              <li>공실, 일시 미거주, 사용 중단 가능성 포함</li>
+              <li>행정 조치 대상과 바로 일치하지 않음</li>
+            </ul>
+          </div>
+          <div class="compare-col highlight">
+            <div class="compare-kicker">법령상 관리 빈집</div>
+            <div class="compare-heading">현장 확인과 제도 기준을 거친 관리 대상</div>
+            <ul class="compare-list">
+              <li>2024년 전국 조사 기준 약 13만 호</li>
+              <li>지자체 조사와 정비 업무의 실제 기준</li>
+              <li>미등록·누락 후보를 먼저 좁히는 절차 필요</li>
+            </ul>
+          </div>
+        </div>
+        <div class="footer-note"><span class="source">출처: KOSIS 미거주 주택 통계, 국토연구원 빈집 실태 파악 및 관리체계 브리프</span><span>03 / 12</span></div>
+      </section>
+
+      <section id="s-4" class="scene clip" data-skill="compare" data-start="24" data-duration="8" data-track-index="3">
+        <div class="eyebrow">기존 방식의 한계</div>
+        <div class="scene-title">현재 방식은 확인된 빈집 중심입니다</div>
+        <div class="scene-subtitle">기존 시스템은 꼭 필요하지만, 현장조사 전 후보 선별과 우선순위 판단을 보완할 앞단이 필요합니다.</div>
+        <div class="compare-grid three">
+          <div class="compare-col"><div class="compare-heading">발견이 늦다</div><ul class="compare-list"><li>등록·신고 이후에야 관리가 시작됩니다.</li><li>실제 빈집이지만 누락되는 사례가 생길 수 있습니다.</li></ul></div>
+          <div class="compare-col"><div class="compare-heading">우선순위가 어렵다</div><ul class="compare-list"><li>인력과 시간이 제한된 상황에서 전체를 같은 강도로 볼 수 없습니다.</li><li>위험도와 활용 가능성을 한 화면에서 보기 어렵습니다.</li></ul></div>
+          <div class="compare-col highlight"><div class="compare-heading">활용 연결이 약하다</div><ul class="compare-list"><li>정비, 매입, 귀촌, 창업 정책으로 이어지는 판단 흐름이 분리됩니다.</li><li>현장조사 전 검토 기준이 필요합니다.</li></ul></div>
+        </div>
+        <div class="footer-note"><span class="source">출처: 국토연구원 Brief — 실제 빈집 누락·과다 등록 사례 및 실태 파악 한계 지적</span><span>04 / 12</span></div>
+      </section>
+
+      <section id="s-5" class="scene clip" data-skill="evolution-flow" data-start="32" data-duration="8" data-track-index="0">
+        <div class="eyebrow">핵심 전환</div>
+        <div class="scene-title">조회에서 사전 탐지로</div>
+        <div class="scene-subtitle">공가지도는 빈집을 확정 판정하지 않고, 현장조사 전에 확인해야 할 후보와 순서를 제안합니다.</div>
+        <div class="flow">
+          <div class="flow-col"><div class="flow-label">기존</div><div class="flow-heading">등록 빈집 조회</div><ul class="flow-list"><li>이미 확인된 정보를 확인</li><li>현황 관리 중심</li><li>미등록 후보는 별도 조사 필요</li></ul></div>
+          <div class="flow-arrow">→</div>
+          <div class="flow-col after"><div class="flow-label">공가지도</div><div class="flow-heading">후보 탐지와 우선조사 추천</div><ul class="flow-list"><li>공공데이터로 의심 후보 선별</li><li>위험도·활용 가능성 동시 점수화</li><li>담당자가 먼저 볼 주소를 제안</li></ul></div>
+        </div>
+        <div class="footer-note"><span class="brand-line">확정 판정이 아니라 사전 스크리닝</span><span>05 / 12</span></div>
+      </section>
+
+      <section id="s-6" class="scene clip" data-skill="steps" data-start="40" data-duration="8" data-track-index="1">
+        <div class="eyebrow">솔루션 구조</div>
+        <div class="scene-title">공공데이터에서 행정 조치까지 연결합니다</div>
+        <div class="scene-subtitle">분석 결과를 지도에 띄우는 데서 끝내지 않고, 담당자의 다음 행동까지 이어지게 설계했습니다.</div>
+        <ol class="steps">
+          <li class="step"><div class="step-num">1</div><div class="step-body">공공데이터 수집</div><div class="step-desc">건축물, 에너지, 입지, 정책 데이터</div></li>
+          <li class="step"><div class="step-num">2</div><div class="step-body">AI 후보 탐지</div><div class="step-desc">장기 미사용·관리 흔적·입지 패턴 분석</div></li>
+          <li class="step"><div class="step-num">3</div><div class="step-body">위험·활용 점수</div><div class="step-desc">안전 위험과 재생 가능성 동시 계산</div></li>
+          <li class="step"><div class="step-num">4</div><div class="step-body">지도 시각화</div><div class="step-desc">필터와 우선순위로 후보 탐색</div></li>
+          <li class="step"><div class="step-num">5</div><div class="step-body">행정 조치</div><div class="step-desc">현장확인, 정비, 상담, 리포트</div></li>
+        </ol>
+        <div class="footer-note"><span class="brand-line">담당자의 의사결정을 돕는 제품 흐름</span><span>06 / 12</span></div>
+      </section>
+
+      <section id="s-7" class="scene clip title-image" data-skill="title-image" data-start="48" data-duration="8" data-track-index="2">
+        <div class="eyebrow">실제 구현 화면 1</div>
+        <div class="scene-title">지도에서 후보와 판단 근거를 한 번에 확인합니다</div>
+        <div class="scene-subtitle">위치, 추천 용도, 신뢰도, 안심구역 여부를 필터링하며 확인할 수 있습니다.</div>
+        <div class="caption-badge">실제 배포 화면</div>
+        <div class="image-frame map"><img src="assets/07-main-map.png" alt="공가지도 지도 화면" /></div>
+        <div class="footer-note"><span class="source">캡처: https://kyo-map.vercel.app</span><span>07 / 12</span></div>
+      </section>
+
+      <section id="s-8" class="scene clip title-image" data-skill="title-image" data-start="56" data-duration="8" data-track-index="3">
+        <div class="eyebrow">실제 구현 화면 2</div>
+        <div class="scene-title">상세 화면에서 GPT 체크리스트까지 생성합니다</div>
+        <div class="scene-subtitle">전력 패턴, 건축 정보, AI 신뢰도, 현장 확인 체크리스트를 한 화면에서 검토합니다.</div>
+        <div class="caption-badge">OpenAI 응답 확인</div>
+        <div class="image-frame detail"><img src="assets/08-detail-gpt.png" alt="공가지도 상세 GPT 분석 화면" /></div>
+        <div class="footer-note"><span class="source">캡처: /house/H00001 · GPT 분석 생성 결과</span><span>08 / 12</span></div>
+      </section>
+
+      <section id="s-9" class="scene clip title-image" data-skill="title-image" data-start="64" data-duration="8" data-track-index="0">
+        <div class="eyebrow">실제 구현 화면 3</div>
+        <div class="scene-title">단순 지도에서 끝나지 않고 행정 업무로 연결합니다</div>
+        <div class="scene-subtitle">우선순위, 현장확인 필요, CSV 내보내기, 월간 리포트 흐름까지 구현했습니다.</div>
+        <div class="caption-badge">지자체 대시보드</div>
+        <div class="image-frame dashboard"><img src="assets/09-dashboard.png" alt="공가지도 지자체 대시보드 화면" /></div>
+        <div class="footer-note"><span class="source">캡처: /dashboard</span><span>09 / 12</span></div>
+      </section>
+
+      <section id="s-10" class="scene clip split" data-skill="split" data-start="72" data-duration="8" data-track-index="1">
+        <div class="eyebrow">데이터·AI 활용 구조</div>
+        <div class="scene-title">여러 데이터를 융합해 후보를 좁힙니다</div>
+        <div class="scene-subtitle">현재는 샘플 데이터 기반 MVP이며, 기관 API 승인 후 같은 구조로 실데이터를 연결합니다.</div>
+        <div class="split-grid">
+          <div class="diagram-card">
+            <div class="diagram-title">입력 데이터</div>
+            <div class="chip-row">
+              <span class="chip">건축물대장</span><span class="chip">전력·에너지</span><span class="chip">위성영상</span><span class="chip">교통 접근성</span><span class="chip">인구·상권</span><span class="chip">정책·정비 데이터</span>
+            </div>
+            <div class="arrow-down">↓</div>
+            <div class="diagram-title">AI 분석 엔진</div>
+            <div class="chip-row"><span class="chip">빈집 후보 점수</span><span class="chip">위험도</span><span class="chip">활용 가능성</span></div>
+          </div>
+          <div class="diagram-card">
+            <div class="diagram-title">행정 활용 출력</div>
+            <div class="output-grid">
+              <div class="output">우선조사 추천</div>
+              <div class="output">현장확인 체크리스트</div>
+              <div class="output">담당부서 배정</div>
+              <div class="output">정비·활용 시나리오</div>
+            </div>
+            <div class="quote">“공공데이터만으로 확정하지 않고, 현장조사를 더 잘 시작하도록 돕습니다.”</div>
+          </div>
+        </div>
+        <div class="footer-note"><span class="source">실서비스 전환 시 건축HUB, 한전·건물에너지, 지자체 빈집대장 연동 필요</span><span>10 / 12</span></div>
+      </section>
+
+      <section id="s-11" class="scene clip" data-skill="steps" data-start="80" data-duration="8" data-track-index="2">
+        <div class="eyebrow">정책 활용 시나리오</div>
+        <div class="scene-title">현장조사를 대체하지 않고, 준비를 효율화합니다</div>
+        <div class="scene-subtitle">후보 탐지 결과는 지자체 실태조사와 정비·활용 정책으로 이어지는 출발점이 됩니다.</div>
+        <ol class="steps five">
+          <li class="step"><div class="step-num">1</div><div class="step-body">후보 탐지</div><div class="step-desc">공공데이터 기반 의심 주소 도출</div></li>
+          <li class="step"><div class="step-num">2</div><div class="step-body">우선순위</div><div class="step-desc">위험도·활용성 기준으로 정렬</div></li>
+          <li class="step"><div class="step-num">3</div><div class="step-body">현장확인</div><div class="step-desc">지자체 절차와 담당자 판단</div></li>
+          <li class="step"><div class="step-num">4</div><div class="step-body">정비·매입</div><div class="step-desc">철거, 매입, 안전 조치 검토</div></li>
+          <li class="step"><div class="step-num">5</div><div class="step-body">활용 연계</div><div class="step-desc">귀촌, 주거, 창업 공간으로 전환</div></li>
+        </ol>
+        <div class="footer-note"><span class="source">정책 맥락: 범정부 빈집 관리 종합계획, 빈집애 플랫폼, 지자체 업무 효율화</span><span>11 / 12</span></div>
+      </section>
+
+      <section id="s-12" class="scene clip" data-skill="title" data-start="88" data-duration="8" data-track-index="3">
+        <div class="eyebrow">확장 계획</div>
+        <div class="scene-title">방치된 공간을 도시 자산으로 바꾸겠습니다</div>
+        <div class="scene-subtitle">지자체 실증에서 시작해 공공데이터 연동, 업무 DB, 유휴공간 플랫폼으로 확장합니다.</div>
+        <div class="closing-grid">
+          <div>
+            <div class="roadmap">
+              <div class="roadmap-card"><strong>1단계</strong><span>운영형 MVP 배포 완료</span></div>
+              <div class="roadmap-card"><strong>2단계</strong><span>지자체 실증과 현장 검증</span></div>
+              <div class="roadmap-card"><strong>3단계</strong><span>공공데이터 API·DB 연동</span></div>
+              <div class="roadmap-card"><strong>4단계</strong><span>폐교·빈상가 등 유휴공간 확장</span></div>
+            </div>
+            <div class="quote">공가지도는 “나중에 확인하는 지도”가 아니라, “먼저 발견하고 다시 연결하는” 도시 데이터 플랫폼입니다.</div>
+          </div>
+          <div class="qr-card">
+            <img src="assets/12-qr-kyo-map.svg" alt="공가지도 QR 코드" />
+            <div class="url-text">kyo-map.vercel.app</div>
+          </div>
+        </div>
+        <div class="footer-note"><span class="brand-line">현장조사 전 사전 스크리닝 · 우선조사 추천</span><span>12 / 12</span></div>
       </section>
     </div>
 
     <script>
       window.__timelines = window.__timelines || {};
       window.__timelines["main"] = gsap.timeline({ paused: true });
+      (() => {
+        const params = new URLSearchParams(window.location.search);
+        if (!params.has("overview")) return;
+
+        const editableSelector = "div, span, strong, p, li";
+
+        function showSlide(id) {
+          const targetId = id || window.location.hash.replace("#", "") || "s-1";
+          document.querySelectorAll("section.scene").forEach((section) => {
+            section.classList.remove("clip");
+            section.style.display = section.id === targetId ? "flex" : "none";
+            section.style.position = "absolute";
+            section.style.inset = "0";
+          });
+          document.documentElement.style.overflow = "hidden";
+          document.body.style.overflow = "hidden";
+        }
+
+        function toggleEdit(id, editing) {
+          const section = document.getElementById(id);
+          if (!section) return;
+          section.querySelectorAll("[contenteditable]").forEach((node) => {
+            node.removeAttribute("contenteditable");
+            node.style.outline = "";
+          });
+          if (!editing) return;
+          section.querySelectorAll(editableSelector).forEach((node) => {
+            if (node.children.length > 0 || !node.textContent.trim()) return;
+            node.setAttribute("contenteditable", "true");
+            node.style.outline = "2px dashed rgba(18, 185, 129, 0.55)";
+            node.style.outlineOffset = "3px";
+          });
+        }
+
+        window.addEventListener("message", (event) => {
+          const data = event.data || {};
+          if (data.type === "show-slide") showSlide(data.id);
+          if (data.type === "toggle-edit") toggleEdit(data.id, Boolean(data.editing));
+        });
+
+        showSlide();
+      })();
     </script>
   </body>
 </html>

@@ -1,0 +1,460 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>공가지도 발표자료 Overview</title>
+    <style>
+      * {
+        box-sizing: border-box;
+      }
+
+      :root {
+        --navy: #0f2a44;
+        --blue: #2446b8;
+        --green: #12b981;
+        --ink: #182235;
+        --muted: #617189;
+        --line: #d8e5f2;
+        --soft: #f5f8fb;
+        --card: #ffffff;
+      }
+
+      body {
+        margin: 0;
+        min-height: 100vh;
+        background: var(--soft);
+        color: var(--ink);
+        font-family: Arial, sans-serif;
+      }
+
+      button {
+        font: inherit;
+      }
+
+      .app {
+        display: grid;
+        grid-template-columns: 320px minmax(0, 1fr);
+        min-height: 100vh;
+      }
+
+      .sidebar {
+        border-right: 1px solid var(--line);
+        background: #ffffff;
+        padding: 22px 18px;
+        overflow-y: auto;
+      }
+
+      .brand {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        padding-bottom: 18px;
+        border-bottom: 1px solid var(--line);
+      }
+
+      .brand strong {
+        color: var(--navy);
+        font-size: 22px;
+      }
+
+      .brand span {
+        color: var(--muted);
+        font-size: 13px;
+        line-height: 1.45;
+      }
+
+      .thumbs {
+        display: grid;
+        gap: 10px;
+        margin-top: 18px;
+      }
+
+      .thumb {
+        display: grid;
+        grid-template-columns: 38px 1fr;
+        gap: 12px;
+        width: 100%;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: #ffffff;
+        padding: 12px;
+        text-align: left;
+        cursor: pointer;
+      }
+
+      .thumb[aria-current="true"] {
+        border-color: var(--blue);
+        box-shadow: 0 0 0 2px rgba(36, 70, 184, 0.12);
+      }
+
+      .num {
+        display: grid;
+        place-items: center;
+        width: 38px;
+        height: 38px;
+        border-radius: 8px;
+        background: #eef4ff;
+        color: var(--blue);
+        font-weight: 800;
+      }
+
+      .thumb-title {
+        color: var(--navy);
+        font-size: 14px;
+        font-weight: 800;
+        line-height: 1.35;
+      }
+
+      .thumb-point {
+        margin-top: 4px;
+        color: var(--muted);
+        font-size: 12px;
+        line-height: 1.35;
+      }
+
+      .main {
+        display: flex;
+        flex-direction: column;
+        min-width: 0;
+        padding: 22px;
+        gap: 16px;
+      }
+
+      .toolbar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+      }
+
+      .slide-label {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+      }
+
+      .slide-label strong {
+        color: var(--navy);
+        font-size: 22px;
+      }
+
+      .slide-label span {
+        color: var(--muted);
+        font-size: 13px;
+      }
+
+      .actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        justify-content: flex-end;
+      }
+
+      .action {
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: #ffffff;
+        color: var(--navy);
+        padding: 10px 13px;
+        font-weight: 800;
+        cursor: pointer;
+      }
+
+      .action.primary {
+        border-color: var(--blue);
+        background: var(--blue);
+        color: #ffffff;
+      }
+
+      .action.editing,
+      .edit-btn.editing {
+        border-color: var(--green);
+        background: var(--green);
+        color: #ffffff;
+      }
+
+      .viewport {
+        position: relative;
+        width: 100%;
+        max-width: 1280px;
+        aspect-ratio: 16 / 9;
+        overflow: hidden;
+        border: 1px solid var(--line);
+        border-radius: 10px;
+        background: #ffffff;
+        box-shadow: 0 18px 50px rgba(15, 42, 68, 0.14);
+      }
+
+      #deckFrame {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 1920px;
+        height: 1080px;
+        border: 0;
+        transform-origin: 0 0;
+      }
+
+      .bottom {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) 360px;
+        gap: 16px;
+        max-width: 1280px;
+      }
+
+      .panel {
+        border: 1px solid var(--line);
+        border-radius: 10px;
+        background: var(--card);
+        padding: 16px;
+      }
+
+      .panel h2 {
+        margin: 0 0 8px;
+        color: var(--navy);
+        font-size: 16px;
+      }
+
+      .panel p {
+        margin: 0;
+        color: var(--muted);
+        font-size: 14px;
+        line-height: 1.55;
+      }
+
+      .panel a {
+        color: var(--blue);
+        font-weight: 800;
+      }
+
+      .edit-hint {
+        border-color: rgba(18, 185, 129, 0.42);
+        background: #f0fdf7;
+      }
+
+      .hidden {
+        display: none;
+      }
+
+      @media (max-width: 980px) {
+        .app {
+          grid-template-columns: 1fr;
+        }
+
+        .sidebar {
+          max-height: 320px;
+          border-right: 0;
+          border-bottom: 1px solid var(--line);
+        }
+
+        .bottom {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="app">
+      <aside class="sidebar">
+        <div class="brand">
+          <strong>공가지도 발표자료</strong>
+          <span>5분 발표 영상용 12장 구성입니다. 본편은 index.html, 이 파일은 검토와 문구 조정용 overview입니다.</span>
+        </div>
+        <div class="thumbs" id="thumbs"></div>
+      </aside>
+
+      <main class="main">
+        <div class="toolbar">
+          <div class="slide-label">
+            <strong id="activeTitle">공가지도</strong>
+            <span id="activePoint">공공데이터와 AI로 미등록 빈집 후보를 먼저 찾는다</span>
+          </div>
+          <div class="actions">
+            <button class="action" id="prevBtn" type="button">이전</button>
+            <button class="action" id="nextBtn" type="button">다음</button>
+            <button class="action" id="aimBtn" type="button">기획 의도</button>
+            <button class="action edit-btn" id="editBtn" type="button">문구 편집</button>
+            <a class="action primary" href="index.html" target="_blank" rel="noreferrer">본편 열기</a>
+          </div>
+        </div>
+
+        <div class="viewport" id="viewport">
+          <iframe id="deckFrame" src="index.html?overview=1#s-1" title="공가지도 발표자료"></iframe>
+        </div>
+
+        <div class="bottom">
+          <section class="panel" id="aimPanel">
+            <h2>기획 의도</h2>
+            <p id="aimText"></p>
+          </section>
+          <section class="panel edit-hint hidden" id="editPanel">
+            <h2>문구 편집 모드</h2>
+            <p>현재 장의 제목, 문장, 카드 문구를 바로 눌러 임시로 수정할 수 있습니다. 실제 파일 반영은 수정 내용을 확정한 뒤 Codex에게 요청하면 됩니다.</p>
+          </section>
+          <section class="panel">
+            <h2>제출 체크</h2>
+            <p>
+              본편 lint는 통과했습니다. 영상 렌더링은 overview 확인 후
+              <strong>명시적으로 요청</strong>하면 진행합니다. URL:
+              <a href="https://kyo-map.vercel.app" target="_blank" rel="noreferrer">kyo-map.vercel.app</a>
+            </p>
+          </section>
+        </div>
+      </main>
+    </div>
+
+    <script>
+      const slides = [
+        {
+          id: "s-1",
+          title: "공가지도",
+          point: "공공데이터와 AI로 미등록 빈집 후보를 먼저 찾는다",
+          aim: "첫 장은 실서비스 화면과 QR을 전면에 두고, 공가지도가 조회 서비스가 아니라 사전 탐지 플랫폼임을 한 문장으로 고정합니다.",
+        },
+        {
+          id: "s-2",
+          title: "빈집 문제는 커지고 있습니다",
+          point: "미거주 주택은 안전, 미관, 정주환경, 행정비용 문제로 이어진다",
+          aim: "문제 크기는 숫자로 빠르게 설득합니다. 2024년 미거주 주택 약 159.9만 호, 전체 주택 약 8.1%를 크게 보여줍니다.",
+        },
+        {
+          id: "s-3",
+          title: "더 큰 문제는 통계와 현장 관리의 간극입니다",
+          point: "통계상 미거주 주택과 법령상 관리 빈집은 기준이 다르다",
+          aim: "발표의 핵심 문제정의입니다. 빈집이 많다는 이야기보다 관리해야 할 후보를 선별하는 체계가 부족하다는 메시지를 남깁니다.",
+        },
+        {
+          id: "s-4",
+          title: "기존 방식은 확인된 빈집 중심입니다",
+          point: "등록된 빈집 조회만으로는 미등록 후보와 우선순위 판단이 어렵다",
+          aim: "기존 정책과 플랫폼을 부정하지 않고, 현장조사 앞단을 보완하는 역할로 공가지도의 위치를 잡습니다.",
+        },
+        {
+          id: "s-5",
+          title: "핵심 전환: 조회에서 탐지로",
+          point: "필요한 것은 확정 판정이 아니라 후보 탐지와 우선조사 추천이다",
+          aim: "공가지도의 차별점을 한 장으로 정리합니다. 심사위원이 기억할 문장은 사전 스크리닝과 우선조사 추천입니다.",
+        },
+        {
+          id: "s-6",
+          title: "솔루션 구조",
+          point: "공공데이터에서 행정 조치까지 이어지는 5단계 의사결정 흐름",
+          aim: "기술을 나열하지 않고 행정 담당자의 판단을 돕는 프로세스로 설명합니다.",
+        },
+        {
+          id: "s-7",
+          title: "실제 구현 화면: 지도",
+          point: "후보 위치, 필터, 신뢰도, 추천 용도를 지도에서 확인한다",
+          aim: "실제로 배포되어 돌아가는 서비스라는 신뢰를 줍니다. 지도 화면을 크게 보여주는 장입니다.",
+        },
+        {
+          id: "s-8",
+          title: "실제 구현 화면: 상세 분석",
+          point: "전력 패턴, 건축 정보, AI 근거, GPT 체크리스트를 한 화면에서 확인한다",
+          aim: "데모 임팩트가 가장 강한 장입니다. GPT 분석은 담당자의 현장조사 준비를 돕는 체크리스트로 설명합니다.",
+        },
+        {
+          id: "s-9",
+          title: "실제 구현 화면: 지자체 대시보드",
+          point: "우선순위, 상태 변경, CSV, 리포트 흐름까지 행정 업무로 연결한다",
+          aim: "단순 지도에서 끝나지 않고 담당자 업무 흐름까지 구현했다는 점을 보여줍니다.",
+        },
+        {
+          id: "s-10",
+          title: "데이터·AI 활용 구조",
+          point: "건축물, 에너지, 위성, 교통·상권 데이터를 융합해 후보를 산출한다",
+          aim: "현재는 샘플·모의 데이터 기반 MVP임을 투명하게 밝히고, 실서비스 전환 시 연동할 데이터 구조를 보여줍니다.",
+        },
+        {
+          id: "s-11",
+          title: "정책 활용 시나리오",
+          point: "후보 탐지에서 현장확인, 정비·매입·활용 연계까지 이어진다",
+          aim: "공가지도가 현장조사를 대체하지 않고 준비를 효율화한다는 안전한 정책 포지션을 재확인합니다.",
+        },
+        {
+          id: "s-12",
+          title: "방치된 공간을 도시 자산으로 바꾸겠습니다",
+          point: "지자체 실증에서 공공데이터 연동과 유휴공간 플랫폼으로 확장한다",
+          aim: "마지막은 로드맵과 QR로 마무리합니다. 메시지는 도시 자산 전환이라는 비전입니다.",
+        },
+      ];
+
+      const thumbs = document.getElementById("thumbs");
+      const frame = document.getElementById("deckFrame");
+      const viewport = document.getElementById("viewport");
+      const activeTitle = document.getElementById("activeTitle");
+      const activePoint = document.getElementById("activePoint");
+      const aimText = document.getElementById("aimText");
+      const editBtn = document.getElementById("editBtn");
+      const editPanel = document.getElementById("editPanel");
+      let active = 0;
+      let editing = false;
+
+      function fitFrame() {
+        const rect = viewport.getBoundingClientRect();
+        const scale = Math.min(rect.width / 1920, rect.height / 1080);
+        frame.style.transform = `scale(${scale})`;
+      }
+
+      function sendToDeck(message) {
+        if (!frame.contentWindow) return;
+        frame.contentWindow.postMessage(message, "*");
+      }
+
+      function applySlide() {
+        const current = slides[active];
+        activeTitle.textContent = current.title;
+        activePoint.textContent = current.point;
+        aimText.textContent = current.aim;
+        [...thumbs.children].forEach((button, index) => {
+          button.setAttribute("aria-current", index === active ? "true" : "false");
+        });
+        sendToDeck({ type: "show-slide", id: current.id });
+        sendToDeck({ type: "toggle-edit", id: current.id, editing });
+      }
+
+      function applyEditing() {
+        sendToDeck({ type: "toggle-edit", id: slides[active].id, editing });
+      }
+
+      function go(index) {
+        active = (index + slides.length) % slides.length;
+        applySlide();
+      }
+
+      slides.forEach((slide, index) => {
+        const button = document.createElement("button");
+        button.className = "thumb";
+        button.type = "button";
+        button.innerHTML = `
+          <span class="num">${String(index + 1).padStart(2, "0")}</span>
+          <span>
+            <span class="thumb-title">${slide.title}</span>
+            <span class="thumb-point">${slide.point}</span>
+          </span>
+        `;
+        button.addEventListener("click", () => go(index));
+        thumbs.appendChild(button);
+      });
+
+      document.getElementById("prevBtn").addEventListener("click", () => go(active - 1));
+      document.getElementById("nextBtn").addEventListener("click", () => go(active + 1));
+      document.getElementById("aimBtn").addEventListener("click", () => {
+        document.getElementById("aimPanel").scrollIntoView({ behavior: "smooth", block: "nearest" });
+      });
+      editBtn.addEventListener("click", () => {
+        editing = !editing;
+        editBtn.classList.toggle("editing", editing);
+        editPanel.classList.toggle("hidden", !editing);
+        applyEditing();
+      });
+
+      frame.addEventListener("load", () => {
+        fitFrame();
+        applySlide();
+      });
+      window.addEventListener("resize", fitFrame);
+    </script>
+  </body>
+</html>
