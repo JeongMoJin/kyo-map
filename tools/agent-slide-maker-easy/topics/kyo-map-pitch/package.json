@@ -1,0 +1,12 @@
+{
+  "name": "kyo-map-pitch",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "pnpm dlx hyperframes@0.6.121 preview",
+    "lint": "pnpm dlx hyperframes@0.6.121 lint",
+    "snapshot": "pnpm dlx hyperframes@0.6.121 snapshot",
+    "render": "pnpm dlx hyperframes@0.6.121 render",
+    "publish": "pnpm dlx hyperframes@0.6.121 publish"
+  }
+}

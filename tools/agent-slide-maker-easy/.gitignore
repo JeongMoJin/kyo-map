@@ -1,0 +1,42 @@
+# OS
+.DS_Store
+
+# Rendered outputs
+renders/
+**/renders/
+**/.thumbnails/
+*.mp4
+*.webm
+*.mov
+*.wav
+*.mp3
+
+# Archive
+_archive/
+
+# Unsupported agent skill wrappers
+.agents/
+.commandcode/
+.factory/
+.goose/
+.kilocode/
+.kiro/
+.neovate/
+.openhands/
+.pi/
+.qoder/
+.roo/
+.trae/
+.windsurf/
+.zencoder/
+
+# Topics — only keep hangul-600 and _template as samples
+topics/*
+!topics/hangul-600/
+!topics/_template/
+!topics/vibe-coding-class/
+!topics/vibe-coding-class/**
+!topics/kyo-map-pitch/
+!topics/kyo-map-pitch/**
+topics/vibe-coding-class/.DS_Store
+topics/vibe-coding-class/snapshots/

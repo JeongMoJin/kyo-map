@@ -5,7 +5,10 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "start": "next start"
+    "start": "next start",
+    "slides:dev": "pnpm --dir tools/agent-slide-maker-easy/topics/kyo-map-pitch run dev",
+    "slides:lint": "pnpm --dir tools/agent-slide-maker-easy/topics/kyo-map-pitch run lint",
+    "slides:render": "pnpm --dir tools/agent-slide-maker-easy/topics/kyo-map-pitch run render"
   },
   "dependencies": {
     "@types/leaflet": "^1.9.21",

@@ -1,0 +1,133 @@
+<!doctype html>
+<html lang="ko" data-resolution="landscape">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1920, height=1080" />
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+    <style>
+      * {
+        box-sizing: border-box;
+      }
+
+      html,
+      body {
+        margin: 0;
+        width: 1920px;
+        height: 1080px;
+        overflow: hidden;
+        background: #f7fafc;
+        color: #0f2a44;
+        font-family: Arial, sans-serif;
+      }
+
+      #root {
+        position: relative;
+        width: 1920px;
+        height: 1080px;
+        overflow: hidden;
+        background:
+          linear-gradient(135deg, rgba(47, 128, 237, 0.08), transparent 48%),
+          linear-gradient(0deg, #ffffff, #f7fafc);
+      }
+
+      .scene {
+        position: absolute;
+        inset: 0;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        padding: 120px 150px;
+      }
+
+      .eyebrow {
+        width: fit-content;
+        border-radius: 999px;
+        background: #e8f3ff;
+        color: #1e5fbf;
+        padding: 16px 26px;
+        font-size: 30px;
+        font-weight: 800;
+        letter-spacing: 0.02em;
+      }
+
+      h1 {
+        margin: 42px 0 0;
+        font-size: 118px;
+        line-height: 1.04;
+        letter-spacing: -0.02em;
+        font-weight: 900;
+      }
+
+      .subtitle {
+        margin-top: 34px;
+        max-width: 1120px;
+        color: #4b5563;
+        font-size: 42px;
+        line-height: 1.36;
+        font-weight: 650;
+      }
+
+      .pill-row {
+        display: flex;
+        gap: 18px;
+        margin-top: 72px;
+      }
+
+      .pill {
+        border: 2px solid #d8e5f2;
+        border-radius: 18px;
+        background: #ffffff;
+        padding: 20px 28px;
+        color: #0f2a44;
+        font-size: 28px;
+        font-weight: 800;
+      }
+
+      .url {
+        position: absolute;
+        right: 150px;
+        bottom: 96px;
+        color: #2f80ed;
+        font-size: 28px;
+        font-weight: 800;
+      }
+    </style>
+  </head>
+  <body>
+    <div
+      id="root"
+      data-composition-id="main"
+      data-start="0"
+      data-duration="8"
+      data-width="1920"
+      data-height="1080"
+    >
+      <section
+        id="cover"
+        class="scene clip"
+        data-skill="title"
+        data-start="0"
+        data-duration="8"
+        data-track-index="0"
+      >
+        <div class="eyebrow">5분 발표 영상 · 공공데이터 활용 MVP</div>
+        <h1>공가지도</h1>
+        <p class="subtitle">
+          공공데이터와 AI로 미등록 빈집 후보를 찾아내고,
+          지자체 현장조사 우선순위를 추천하는 도시 데이터 플랫폼
+        </p>
+        <div class="pill-row">
+          <div class="pill">사전 스크리닝</div>
+          <div class="pill">우선조사 추천</div>
+          <div class="pill">GPT 분석</div>
+        </div>
+        <div class="url">kyo-map.vercel.app</div>
+      </section>
+    </div>
+
+    <script>
+      window.__timelines = window.__timelines || {};
+      window.__timelines["main"] = gsap.timeline({ paused: true });
+    </script>
+  </body>
+</html>
