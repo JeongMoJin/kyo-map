@@ -44,6 +44,7 @@ interface RecommendationPayload {
 
 const DEFAULT_MODEL = "gpt-5-nano";
 const DEFAULT_MAX_OUTPUT_TOKENS = 500;
+const DEFAULT_TIMEOUT_MS = 20_000;
 
 const responseSchema = {
   type: "object",
@@ -86,9 +87,13 @@ export async function createAiRecommendation(
     return createLocalFallback(record, model, generatedAt, "OPENAI_API_KEY 미설정");
   }
 
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), getOpenAiTimeoutMs());
+
   try {
     const response = await fetch("https://api.openai.com/v1/responses", {
       method: "POST",
+      signal: controller.signal,
       headers: {
         Authorization: `Bearer ${apiKey}`,
         "Content-Type": "application/json",
@@ -170,7 +175,18 @@ export async function createAiRecommendation(
     };
   } catch {
     return createLocalFallback(record, model, generatedAt, "OpenAI 호출 예외");
+  } finally {
+    clearTimeout(timeoutId);
   }
+}
+
+export function getAiRuntimeStatus() {
+  return {
+    openAiConfigured: Boolean(process.env.OPENAI_API_KEY),
+    model: getOpenAiModel(),
+    maxOutputTokens: getMaxOutputTokens(),
+    timeoutMs: getOpenAiTimeoutMs(),
+  };
 }
 
 function getOpenAiModel() {
@@ -181,6 +197,12 @@ function getMaxOutputTokens() {
   const raw = Number(process.env.OPENAI_MAX_COMPLETION_TOKENS);
   if (!Number.isFinite(raw)) return DEFAULT_MAX_OUTPUT_TOKENS;
   return Math.max(200, Math.min(1200, Math.round(raw)));
+}
+
+function getOpenAiTimeoutMs() {
+  const raw = Number(process.env.OPENAI_TIMEOUT_MS);
+  if (!Number.isFinite(raw)) return DEFAULT_TIMEOUT_MS;
+  return Math.max(5_000, Math.min(60_000, Math.round(raw)));
 }
 
 function buildRecommendationInput(record: HouseRecord) {

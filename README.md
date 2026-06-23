@@ -70,6 +70,7 @@ npm run start
 | `OPENAI_API_KEY` | 필수 | `sk-...` | 상세 화면의 GPT 실시간 분석 생성에 사용합니다. 서버 Route Handler에서만 읽습니다. |
 | `OPENAI_MODEL` | 선택 | `gpt-5-nano` | 비용을 가장 낮게 잡은 기본 모델입니다. 품질을 더 올리고 싶으면 `gpt-5.4-nano`로 바꿔 비교합니다. |
 | `OPENAI_MAX_COMPLETION_TOKENS` | 선택 | `500` | GPT 응답 최대 토큰 수입니다. 비용 관리를 위해 500으로 시작합니다. |
+| `OPENAI_TIMEOUT_MS` | 선택 | `20000` | OpenAI 응답을 기다리는 최대 시간입니다. 초과하면 로컬 fallback으로 대체합니다. |
 
 프로젝트 루트의 `.env.local`에 아래처럼 넣습니다. `.env.local`과 `api.txt`는 커밋하지 않습니다.
 
@@ -77,6 +78,7 @@ npm run start
 OPENAI_API_KEY=sk-여기에_발급받은_키
 OPENAI_MODEL=gpt-5-nano
 OPENAI_MAX_COMPLETION_TOKENS=500
+OPENAI_TIMEOUT_MS=20000
 ```
 
 ### OpenAI API 키 발급 방법
@@ -109,6 +111,7 @@ OPENAI_MAX_COMPLETION_TOKENS=500
 - 프로덕션 URL: `https://kyo-map.vercel.app`
 - 배포 설정: `vercel.json`
 - 빌드 명령: `next build`
+- 최종 점검 문서: `docs/PRODUCTION_CHECKLIST.md`
 
 재배포가 필요하면 Vercel 인증 상태를 확인한 뒤 실행합니다.
 
