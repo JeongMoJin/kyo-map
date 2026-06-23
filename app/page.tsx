@@ -12,7 +12,7 @@ import type { RecommendedUse } from "@/lib/types";
 import { USE_LABELS } from "@/lib/types";
 import { Cpu, Info, RotateCcw, SearchX, Sparkles } from "lucide-react";
 
-// AI 도구: ViT(위성영상 분류), LSTM(전력사용 학습), GPT-4o(용도 추천)
+// AI 도구: ViT(위성영상 분류), LSTM(전력사용 학습), GPT(용도 추천)
 const MapView = dynamic(() => import("@/components/HouseMap"), {
   ssr: false,
   loading: () => (
@@ -163,7 +163,7 @@ export default function HomePage() {
                 <span className="font-bold text-[color:var(--ink-strong)]">
                   AI 파이프라인
                 </span>{" "}
-                · ViT로 위성영상 분류 → LSTM으로 월별 전력패턴 학습 → GPT-4o가
+                · ViT로 위성영상 분류 → LSTM으로 월별 전력패턴 학습 → GPT가
                 용도 추천
               </div>
             </div>

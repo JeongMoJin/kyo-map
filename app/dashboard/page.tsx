@@ -44,7 +44,7 @@ import {
   type CaseStatus,
 } from "@/lib/workflow";
 
-// AI 도구: ViT(위성영상 분류), LSTM(전력사용 학습), GPT-4o(용도 추천)
+// AI 도구: ViT(위성영상 분류), LSTM(전력사용 학습), GPT(용도 추천)
 export default function DashboardPage() {
   const toast = useToast();
   const regionalChartRef = useRef<HTMLDivElement>(null);
@@ -254,7 +254,7 @@ export default function DashboardPage() {
               label="평균 AI 신뢰도"
               value={(avgConfidence * 100).toFixed(1)}
               unit="%"
-              trend="ViT+LSTM+GPT-4o"
+              trend="ViT+LSTM+GPT"
               tone="info"
             />
             <Kpi
@@ -452,7 +452,7 @@ export default function DashboardPage() {
                     </h2>
                   </div>
                   <div className="mt-0.5 text-[12px] font-medium text-[color:var(--ink-muted)]">
-                    GPT-4o 추천 결과 집계
+                    GPT 추천 결과 집계
                   </div>
                 </div>
               </header>

@@ -33,6 +33,7 @@ import {
 } from "lucide-react";
 import { ConfidenceGauge } from "@/components/ConfidenceGauge";
 import { ClientOnlyChart } from "@/components/ClientOnlyChart";
+import { AiRecommendationPanel } from "@/components/AiRecommendationPanel";
 import { useToast } from "@/components/Toast";
 import { useWorkCases } from "@/components/useWorkCases";
 import { getPriorityProfile } from "@/lib/priority";
@@ -335,7 +336,7 @@ export function HouseDetailView({ house }: { house: House }) {
                         </div>
                         <div>
                           <div className="text-[11px] font-bold uppercase tracking-[0.14em] text-[color:var(--brand-800)]">
-                            GPT-4o 용도 추천
+                            GPT-5 nano 용도 추천
                           </div>
                           <div className="mt-0.5 text-[15px] font-bold text-[color:var(--foreground)]">
                             {USE_LABELS[house.recommendedUse]} 재생 제안
@@ -346,6 +347,8 @@ export function HouseDetailView({ house }: { house: House }) {
                       <p className="text-[15.5px] font-medium leading-[1.78] tracking-[-0.002em] text-[color:var(--ink-strong)]">
                         {house.reason}
                       </p>
+
+                      <AiRecommendationPanel house={house} />
 
                       <div className="grid gap-3 md:grid-cols-3">
                         <PipelineCard
@@ -361,7 +364,7 @@ export function HouseDetailView({ house }: { house: House }) {
                           hint={`최근 6개월 평균 (이전: ${avgPrev6.toFixed(1)})`}
                         />
                         <PipelineCard
-                          model="GPT-4o"
+                          model="GPT-5 nano"
                           label="용도 추천"
                           value={USE_LABELS[house.recommendedUse]}
                           hint="교통·상권·토지이용 맥락 반영"
@@ -638,7 +641,7 @@ export function HouseDetailView({ house }: { house: House }) {
                   color={color}
                 />
                 <div className="mt-3 text-center text-[12.5px] leading-relaxed text-[color:var(--ink-muted)]">
-                  ViT · LSTM · GPT-4o 세 가지 모델의 합의도 기반 검토 지표입니다.
+                  ViT · LSTM · GPT 세 가지 모델의 합의도 기반 검토 지표입니다.
                 </div>
                 <div className="mt-4 grid w-full grid-cols-3 gap-2">
                   <MiniStat label="지붕 손상" value="12%" />
