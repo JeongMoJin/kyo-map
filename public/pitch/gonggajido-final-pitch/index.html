@@ -1,0 +1,1432 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <title>공가지도 실서비스 검증 발표자료</title>
+    <link rel="icon" href="data:,">
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+    <style>
+      @font-face {
+        font-family: "Paperlogy";
+        font-style: normal;
+        font-weight: 100;
+        src: url("assets/fonts/Paperlogy-1Thin.ttf") format("truetype");
+      }
+      @font-face {
+        font-family: "Paperlogy";
+        font-style: normal;
+        font-weight: 200;
+        src: url("assets/fonts/Paperlogy-2ExtraLight.ttf") format("truetype");
+      }
+      @font-face {
+        font-family: "Paperlogy";
+        font-style: normal;
+        font-weight: 300;
+        src: url("assets/fonts/Paperlogy-3Light.ttf") format("truetype");
+      }
+      @font-face {
+        font-family: "Paperlogy";
+        font-style: normal;
+        font-weight: 400;
+        src: url("assets/fonts/Paperlogy-4Regular.ttf") format("truetype");
+      }
+      @font-face {
+        font-family: "Paperlogy";
+        font-style: normal;
+        font-weight: 500;
+        src: url("assets/fonts/Paperlogy-5Medium.ttf") format("truetype");
+      }
+      @font-face {
+        font-family: "Paperlogy";
+        font-style: normal;
+        font-weight: 600;
+        src: url("assets/fonts/Paperlogy-6SemiBold.ttf") format("truetype");
+      }
+      @font-face {
+        font-family: "Paperlogy";
+        font-style: normal;
+        font-weight: 700;
+        src: url("assets/fonts/Paperlogy-7Bold.ttf") format("truetype");
+      }
+      @font-face {
+        font-family: "Paperlogy";
+        font-style: normal;
+        font-weight: 800;
+        src: url("assets/fonts/Paperlogy-8ExtraBold.ttf") format("truetype");
+      }
+      @font-face {
+        font-family: "Paperlogy";
+        font-style: normal;
+        font-weight: 900;
+        src: url("assets/fonts/Paperlogy-9Black.ttf") format("truetype");
+      }
+
+      :root {
+        --bg: #f7fafc;
+        --surface: #ffffff;
+        --surface-blue: #f1f6ff;
+        --surface-green: #f0fbf6;
+        --text: #0f2742;
+        --text-dim: #52657a;
+        --text-meta: #728197;
+        --line: #d8e2ee;
+        --accent: #1d4ed8;
+        --accent-dark: #1e3a8a;
+        --green: #059669;
+        --green-dark: #047857;
+        --red: #dc2626;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      html,
+      body {
+        margin: 0;
+        width: 1920px;
+        height: 1080px;
+        overflow: hidden;
+        background: var(--bg);
+        color: var(--text);
+        font-family: "Paperlogy";
+        -webkit-font-smoothing: antialiased;
+      }
+
+      #root {
+        position: relative;
+        width: 1920px;
+        height: 1080px;
+        overflow: hidden;
+        background: var(--bg);
+      }
+
+      /* SCENE_STYLE_START */
+      .scene {
+        position: absolute;
+        inset: 0;
+        width: 1920px;
+        height: 1080px;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+        padding: 78px 112px 106px;
+        background: var(--bg);
+      }
+
+      .scene::before {
+        content: "";
+        position: absolute;
+        left: 112px;
+        right: 112px;
+        top: 64px;
+        height: 1px;
+        background: var(--line);
+      }
+
+      .scene::after {
+        content: "";
+        position: absolute;
+        left: 112px;
+        right: 112px;
+        bottom: 74px;
+        height: 1px;
+        background: rgba(216, 226, 238, 0.82);
+      }
+
+      .eyebrow {
+        position: relative;
+        z-index: 2;
+        margin-bottom: 18px;
+        color: var(--accent);
+        font-size: 23px;
+        line-height: 1.2;
+        font-weight: 900;
+        letter-spacing: 0;
+        text-transform: uppercase;
+      }
+
+      .scene-title {
+        position: relative;
+        z-index: 2;
+        max-width: 1540px;
+        color: var(--text);
+        font-size: 82px;
+        line-height: 1.06;
+        font-weight: 900;
+        letter-spacing: 0;
+        word-break: keep-all;
+      }
+
+      .scene-subtitle {
+        position: relative;
+        z-index: 2;
+        max-width: 1260px;
+        margin-top: 22px;
+        color: var(--text-dim);
+        font-size: 31px;
+        line-height: 1.36;
+        font-weight: 800;
+        word-break: keep-all;
+      }
+
+      .keyword {
+        color: var(--green-dark);
+        font-weight: 900;
+      }
+
+      .accent {
+        color: var(--accent-dark);
+        font-weight: 900;
+      }
+
+      .source-note {
+        position: absolute;
+        left: 112px;
+        right: 360px;
+        bottom: 30px;
+        z-index: 6;
+        color: var(--text-meta);
+        font-size: 15px;
+        line-height: 1.35;
+        font-weight: 700;
+        word-break: keep-all;
+      }
+
+      .slide-num {
+        position: absolute;
+        right: 112px;
+        bottom: 30px;
+        z-index: 6;
+        color: var(--text-meta);
+        font-size: 18px;
+        font-weight: 800;
+        letter-spacing: 0;
+      }
+
+      .slide-num .skill {
+        display: inline-block;
+        margin-right: 10px;
+        padding: 4px 9px;
+        border-radius: 8px;
+        color: var(--accent-dark);
+        background: #e8f1ff;
+        letter-spacing: 0;
+      }
+
+      .slide-num .sep {
+        margin: 0 8px;
+      }
+
+      .screenshot-frame {
+        position: relative;
+        overflow: hidden;
+        border-radius: 8px;
+        border: 1px solid #c9d7e8;
+        background: var(--surface);
+        box-shadow: 0 14px 36px rgba(15, 39, 66, 0.1);
+      }
+
+      .screenshot-frame img {
+        display: block;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+
+      .screenshot-frame.contain img {
+        object-fit: contain;
+        background: #ffffff;
+      }
+
+      .card {
+        border-radius: 8px;
+        background: var(--surface);
+        border: 1px solid var(--line);
+        box-shadow: 0 10px 28px rgba(15, 39, 66, 0.06);
+      }
+
+      .pill {
+        display: inline-flex;
+        align-items: center;
+        width: fit-content;
+        padding: 9px 15px;
+        border-radius: 999px;
+        color: var(--accent-dark);
+        background: var(--surface-blue);
+        border: 1px solid #c8dbff;
+        font-size: 20px;
+        line-height: 1.2;
+        font-weight: 900;
+        word-break: keep-all;
+      }
+
+      .hero-grid {
+        position: relative;
+        z-index: 2;
+        display: grid;
+        grid-template-columns: 0.82fr 1.18fr;
+        gap: 58px;
+        align-items: center;
+        flex: 1;
+      }
+
+      .hero-title {
+        margin-top: 12px;
+        color: var(--text);
+        font-size: 142px;
+        line-height: 0.98;
+        font-weight: 900;
+        letter-spacing: 0;
+      }
+
+      .hero-sub {
+        margin-top: 30px;
+        color: var(--text-dim);
+        font-size: 37px;
+        line-height: 1.34;
+        font-weight: 800;
+        word-break: keep-all;
+      }
+
+      .team-line {
+        display: grid;
+        gap: 12px;
+        margin-top: 44px;
+      }
+
+      .team-line div {
+        color: var(--text-meta);
+        font-size: 22px;
+        font-weight: 800;
+      }
+
+      .hero-shot {
+        aspect-ratio: 16 / 9;
+      }
+
+      .proof-grid {
+        position: relative;
+        z-index: 2;
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 24px;
+        margin-top: 48px;
+      }
+
+      .proof-card {
+        min-height: 270px;
+        padding: 32px 32px 30px;
+      }
+
+      .proof-num {
+        width: 58px;
+        height: 58px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #ffffff;
+        background: var(--accent);
+        font-size: 29px;
+        font-weight: 900;
+        font-variant-numeric: tabular-nums;
+      }
+
+      .proof-title {
+        margin-top: 26px;
+        color: var(--text);
+        font-size: 34px;
+        line-height: 1.18;
+        font-weight: 900;
+        word-break: keep-all;
+      }
+
+      .proof-text {
+        margin-top: 18px;
+        color: var(--text-dim);
+        font-size: 24px;
+        line-height: 1.38;
+        font-weight: 750;
+        word-break: keep-all;
+      }
+
+      .evidence-strip {
+        position: relative;
+        z-index: 2;
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 22px;
+        margin-top: 28px;
+      }
+
+      .evidence-shot {
+        height: 166px;
+        border-radius: 8px;
+        overflow: hidden;
+        border: 1px solid var(--line);
+        background: #ffffff;
+      }
+
+      .evidence-shot img {
+        width: 100%;
+        height: 100%;
+        display: block;
+        object-fit: cover;
+      }
+
+      .two-col {
+        position: relative;
+        z-index: 2;
+        display: grid;
+        grid-template-columns: 0.92fr 1.08fr;
+        gap: 40px;
+        align-items: stretch;
+        margin-top: 40px;
+        flex: 1;
+        min-height: 0;
+      }
+
+      .two-col.reverse {
+        grid-template-columns: 1.08fr 0.92fr;
+      }
+
+      .stat-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 22px;
+      }
+
+      .stat-card {
+        min-height: 212px;
+        padding: 30px 32px;
+      }
+
+      .stat-card.wide {
+        grid-column: span 2;
+        min-height: 190px;
+        background: var(--surface-green);
+        border-color: #c7eadb;
+      }
+
+      .num {
+        color: var(--accent-dark);
+        font-size: 82px;
+        line-height: 0.96;
+        font-weight: 900;
+        letter-spacing: 0;
+        font-variant-numeric: tabular-nums;
+      }
+
+      .stat-card.wide .num {
+        color: var(--green-dark);
+      }
+
+      .label {
+        margin-top: 18px;
+        color: var(--text);
+        font-size: 28px;
+        line-height: 1.24;
+        font-weight: 900;
+        word-break: keep-all;
+      }
+
+      .caption {
+        margin-top: 12px;
+        color: var(--text-meta);
+        font-size: 20px;
+        line-height: 1.35;
+        font-weight: 700;
+        word-break: keep-all;
+      }
+
+      .target-card {
+        padding: 34px;
+      }
+
+      .target-title {
+        color: var(--accent-dark);
+        font-size: 42px;
+        line-height: 1.12;
+        font-weight: 900;
+      }
+
+      .target-list {
+        list-style: none;
+        margin: 30px 0 0;
+        padding: 0;
+        display: grid;
+        gap: 18px;
+      }
+
+      .target-list li {
+        position: relative;
+        padding-left: 28px;
+        color: var(--text);
+        font-size: 29px;
+        line-height: 1.34;
+        font-weight: 800;
+        word-break: keep-all;
+      }
+
+      .target-list li::before {
+        content: "";
+        position: absolute;
+        left: 0;
+        top: 17px;
+        width: 11px;
+        height: 11px;
+        border-radius: 50%;
+        background: var(--green);
+      }
+
+      .insight-grid {
+        position: relative;
+        z-index: 2;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 28px;
+        margin-top: 46px;
+      }
+
+      .insight-card {
+        min-height: 330px;
+        padding: 36px;
+      }
+
+      .insight-card.highlight {
+        background: var(--surface-green);
+        border-color: #c7eadb;
+      }
+
+      .insight-kicker {
+        color: var(--text-meta);
+        font-size: 22px;
+        line-height: 1.2;
+        font-weight: 900;
+      }
+
+      .insight-title {
+        margin-top: 20px;
+        color: var(--text);
+        font-size: 46px;
+        line-height: 1.12;
+        font-weight: 900;
+        word-break: keep-all;
+      }
+
+      .insight-text {
+        margin-top: 22px;
+        color: var(--text-dim);
+        font-size: 27px;
+        line-height: 1.36;
+        font-weight: 800;
+        word-break: keep-all;
+      }
+
+      .quote-line {
+        position: relative;
+        z-index: 2;
+        margin-top: 26px;
+        padding: 24px 32px;
+        border-radius: 8px;
+        background: #0f2742;
+        color: #ffffff;
+        font-size: 33px;
+        line-height: 1.25;
+        font-weight: 900;
+        word-break: keep-all;
+      }
+
+      .definition-box {
+        position: relative;
+        z-index: 2;
+        margin-top: 46px;
+        padding: 42px 48px;
+        border-radius: 8px;
+        color: #ffffff;
+        background: #0f2742;
+      }
+
+      .definition-text {
+        max-width: 1360px;
+        font-size: 48px;
+        line-height: 1.28;
+        font-weight: 900;
+        word-break: keep-all;
+      }
+
+      .flow-row {
+        position: relative;
+        z-index: 2;
+        display: grid;
+        grid-template-columns: repeat(5, 1fr);
+        gap: 18px;
+        margin-top: 34px;
+      }
+
+      .flow-step {
+        min-height: 145px;
+        padding: 24px 24px 22px;
+      }
+
+      .flow-step .step-no {
+        color: var(--accent);
+        font-size: 23px;
+        font-weight: 900;
+        font-variant-numeric: tabular-nums;
+      }
+
+      .flow-step .step-title {
+        margin-top: 18px;
+        color: var(--text);
+        font-size: 28px;
+        line-height: 1.22;
+        font-weight: 900;
+        word-break: keep-all;
+      }
+
+      .workflow-grid {
+        position: relative;
+        z-index: 2;
+        display: grid;
+        grid-template-columns: 1.16fr 0.84fr;
+        gap: 38px;
+        margin-top: 36px;
+        flex: 1;
+        min-height: 0;
+      }
+
+      .workflow-shot {
+        min-height: 0;
+      }
+
+      .workflow-steps {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 16px;
+      }
+
+      .workflow-step {
+        display: grid;
+        grid-template-columns: 58px 1fr;
+        gap: 18px;
+        align-items: center;
+        min-height: 92px;
+        padding: 18px 22px;
+      }
+
+      .circle-no {
+        width: 58px;
+        height: 58px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #ffffff;
+        background: var(--accent);
+        font-size: 27px;
+        font-weight: 900;
+        font-variant-numeric: tabular-nums;
+      }
+
+      .workflow-title {
+        color: var(--text);
+        font-size: 28px;
+        line-height: 1.22;
+        font-weight: 900;
+        word-break: keep-all;
+      }
+
+      .workflow-text {
+        margin-top: 6px;
+        color: var(--text-dim);
+        font-size: 20px;
+        line-height: 1.28;
+        font-weight: 750;
+        word-break: keep-all;
+      }
+
+      .data-grid {
+        position: relative;
+        z-index: 2;
+        display: grid;
+        grid-template-columns: 0.8fr 1.2fr;
+        gap: 34px;
+        margin-top: 38px;
+        flex: 1;
+        min-height: 0;
+      }
+
+      .data-table {
+        display: grid;
+        gap: 14px;
+      }
+
+      .data-row {
+        display: grid;
+        grid-template-columns: 188px 1fr;
+        gap: 18px;
+        min-height: 82px;
+        align-items: center;
+        padding: 18px 22px;
+      }
+
+      .data-key {
+        color: var(--accent-dark);
+        font-size: 24px;
+        font-weight: 900;
+      }
+
+      .data-val {
+        color: var(--text);
+        font-size: 24px;
+        line-height: 1.28;
+        font-weight: 800;
+        word-break: keep-all;
+      }
+
+      .source-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 18px;
+      }
+
+      .source-card {
+        min-height: 150px;
+        padding: 24px;
+        background: var(--surface-blue);
+        border-color: #c8dbff;
+      }
+
+      .source-org {
+        color: var(--accent);
+        font-size: 22px;
+        line-height: 1.2;
+        font-weight: 900;
+      }
+
+      .source-desc {
+        margin-top: 14px;
+        color: var(--text);
+        font-size: 25px;
+        line-height: 1.25;
+        font-weight: 900;
+        word-break: keep-all;
+      }
+
+      .feature-grid {
+        position: relative;
+        z-index: 2;
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 24px;
+        margin-top: 42px;
+      }
+
+      .feature-card {
+        min-height: 570px;
+        overflow: hidden;
+      }
+
+      .feature-img {
+        height: 250px;
+        overflow: hidden;
+        border-bottom: 1px solid var(--line);
+        background: #ffffff;
+      }
+
+      .feature-img img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
+      }
+
+      .feature-body {
+        padding: 28px 30px;
+      }
+
+      .feature-title {
+        color: var(--text);
+        font-size: 34px;
+        line-height: 1.16;
+        font-weight: 900;
+        word-break: keep-all;
+      }
+
+      .feature-problem {
+        margin-top: 18px;
+        color: var(--red);
+        font-size: 22px;
+        line-height: 1.28;
+        font-weight: 900;
+        word-break: keep-all;
+      }
+
+      .feature-value {
+        margin-top: 12px;
+        color: var(--text-dim);
+        font-size: 24px;
+        line-height: 1.34;
+        font-weight: 800;
+        word-break: keep-all;
+      }
+
+      .compare-table {
+        position: relative;
+        z-index: 2;
+        display: grid;
+        grid-template-columns: 0.9fr 1.1fr;
+        gap: 28px;
+        margin-top: 40px;
+        flex: 1;
+        min-height: 0;
+      }
+
+      .compare-col {
+        padding: 32px;
+        display: flex;
+        flex-direction: column;
+      }
+
+      .compare-col.highlight {
+        background: var(--surface-green);
+        border-color: #c7eadb;
+      }
+
+      .compare-head {
+        color: var(--accent-dark);
+        font-size: 39px;
+        line-height: 1.12;
+        font-weight: 900;
+      }
+
+      .compare-list {
+        list-style: none;
+        display: grid;
+        gap: 18px;
+        margin: 28px 0 0;
+        padding: 0;
+      }
+
+      .compare-list li {
+        position: relative;
+        padding-left: 30px;
+        color: var(--text);
+        font-size: 29px;
+        line-height: 1.3;
+        font-weight: 800;
+        word-break: keep-all;
+      }
+
+      .compare-list li::before {
+        content: "";
+        position: absolute;
+        left: 0;
+        top: 17px;
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        background: var(--accent);
+      }
+
+      .compare-col.highlight .compare-list li::before {
+        background: var(--green);
+      }
+
+      .small-shot {
+        height: 190px;
+        margin-top: auto;
+      }
+
+      .ops-grid {
+        position: relative;
+        z-index: 2;
+        display: grid;
+        grid-template-columns: 0.92fr 1.08fr;
+        gap: 36px;
+        margin-top: 38px;
+        flex: 1;
+        min-height: 0;
+      }
+
+      .ops-status {
+        display: grid;
+        gap: 14px;
+      }
+
+      .status-row {
+        display: grid;
+        grid-template-columns: 180px 1fr;
+        gap: 18px;
+        align-items: center;
+        min-height: 76px;
+        padding: 18px 22px;
+      }
+
+      .status-key {
+        color: var(--accent-dark);
+        font-size: 22px;
+        font-weight: 900;
+      }
+
+      .status-val {
+        color: var(--text);
+        font-size: 24px;
+        line-height: 1.25;
+        font-weight: 850;
+        word-break: keep-all;
+      }
+
+      .metric-row {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 18px;
+        margin-top: 18px;
+      }
+
+      .metric-card {
+        padding: 24px;
+        background: var(--surface-blue);
+        border-color: #c8dbff;
+      }
+
+      .metric-num {
+        color: var(--accent-dark);
+        font-size: 48px;
+        line-height: 1;
+        font-weight: 900;
+      }
+
+      .metric-label {
+        margin-top: 10px;
+        color: var(--text-dim);
+        font-size: 20px;
+        line-height: 1.28;
+        font-weight: 800;
+        word-break: keep-all;
+      }
+
+      .value-grid {
+        position: relative;
+        z-index: 2;
+        display: grid;
+        grid-template-columns: repeat(5, 1fr);
+        gap: 18px;
+        margin-top: 42px;
+      }
+
+      .value-card {
+        min-height: 300px;
+        padding: 28px 24px;
+      }
+
+      .value-card.green {
+        background: var(--surface-green);
+        border-color: #c7eadb;
+      }
+
+      .value-key {
+        color: var(--accent);
+        font-size: 23px;
+        line-height: 1.2;
+        font-weight: 900;
+      }
+
+      .value-title {
+        margin-top: 18px;
+        color: var(--text);
+        font-size: 30px;
+        line-height: 1.18;
+        font-weight: 900;
+        word-break: keep-all;
+      }
+
+      .value-text {
+        margin-top: 18px;
+        color: var(--text-dim);
+        font-size: 22px;
+        line-height: 1.34;
+        font-weight: 800;
+        word-break: keep-all;
+      }
+
+      .closing-grid {
+        position: relative;
+        z-index: 2;
+        display: grid;
+        grid-template-columns: 1fr 420px;
+        gap: 44px;
+        align-items: stretch;
+        margin-top: 42px;
+        flex: 1;
+        min-height: 0;
+      }
+
+      .effect-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 20px;
+      }
+
+      .effect-card {
+        min-height: 180px;
+        padding: 28px 30px;
+      }
+
+      .effect-key {
+        color: var(--accent);
+        font-size: 22px;
+        line-height: 1.2;
+        font-weight: 900;
+      }
+
+      .effect-text {
+        margin-top: 18px;
+        color: var(--text);
+        font-size: 29px;
+        line-height: 1.24;
+        font-weight: 900;
+        word-break: keep-all;
+      }
+
+      .qr-panel {
+        padding: 34px;
+        border-radius: 8px;
+        background: #0f2742;
+        color: #ffffff;
+      }
+
+      .qr-panel img {
+        display: block;
+        width: 100%;
+        border-radius: 8px;
+        background: #ffffff;
+      }
+
+      .qr-title {
+        margin-top: 24px;
+        font-size: 38px;
+        line-height: 1.16;
+        font-weight: 900;
+      }
+
+      .qr-url {
+        margin-top: 14px;
+        color: #b7d7ff;
+        font-size: 24px;
+        line-height: 1.24;
+        font-weight: 800;
+        word-break: break-all;
+      }
+
+      .final-line {
+        position: relative;
+        z-index: 2;
+        margin-top: 26px;
+        color: var(--accent-dark);
+        font-size: 48px;
+        line-height: 1.18;
+        font-weight: 900;
+        word-break: keep-all;
+      }
+      /* SCENE_STYLE_END */
+    </style>
+  </head>
+  <body>
+    <div id="root" data-composition-id="main" data-start="0" data-duration="67.6" data-width="1920" data-height="1080">
+      <div id="s-1" class="scene clip title-image" data-skill="title-image" data-start="0" data-duration="6" data-track-index="0">
+        <div class="hero-grid">
+          <div>
+            <div class="eyebrow">2026 국토교통 데이터 활용 경진대회</div>
+            <div class="pill">실서비스 운영형 발표</div>
+            <div class="hero-title">공가지도</div>
+            <div class="hero-sub">공공데이터와 AI로 미등록 빈집 후보의 <span class="keyword">우선조사 순서</span>를 제공합니다.</div>
+            <div class="team-line">
+              <div>팀명: 공가지도</div>
+              <div>서비스 URL: https://kyo-map.vercel.app</div>
+            </div>
+          </div>
+          <div class="screenshot-frame hero-shot">
+            <img src="assets/service-main.png" alt="공가지도 배포 서비스 메인 지도 화면" />
+          </div>
+        </div>
+        <div class="source-note">서비스 화면: 공가지도 배포 서비스 캡처. 핵심 포지션: 빈집 확정 판정이 아니라 현장조사 전 사전 스크리닝.</div>
+        <div class="slide-num"><span class="skill">title-image</span>1<span class="sep">/</span>12</div>
+      </div>
+
+      <div id="s-2" class="scene clip" data-skill="title-bullets" data-start="5.6" data-duration="6" data-track-index="1">
+        <div class="eyebrow">Proof first</div>
+        <div class="scene-title">오늘 저희는 세 가지를 증명하겠습니다</div>
+        <div class="scene-subtitle">아이디어 가능성이 아니라, 실제 문제와 작동하는 서비스, 확장 가능한 공공데이터 활용성을 보여드립니다.</div>
+        <div class="proof-grid">
+          <div class="card proof-card" id="s-2-p1">
+            <div class="proof-num">1</div>
+            <div class="proof-title">명확한 사용자 문제</div>
+            <div class="proof-text">지자체 담당자는 현장조사 전에 어떤 후보를 먼저 볼지 판단해야 합니다.</div>
+          </div>
+          <div class="card proof-card" id="s-2-p2">
+            <div class="proof-num">2</div>
+            <div class="proof-title">이미 작동하는 서비스</div>
+            <div class="proof-text">지도, 상세 분석, 대시보드까지 배포 URL에서 확인 가능한 흐름으로 구현했습니다.</div>
+          </div>
+          <div class="card proof-card" id="s-2-p3">
+            <div class="proof-num">3</div>
+            <div class="proof-title">정책 확장 가능성</div>
+            <div class="proof-text">공공데이터와 AI를 결합해 지자체 빈집 관리와 유휴공간 활용으로 확장합니다.</div>
+          </div>
+        </div>
+        <div class="evidence-strip" id="s-2-evidence">
+          <div class="evidence-shot"><img src="assets/service-main-map-proof.png" alt="공가지도 지도 화면" /></div>
+          <div class="evidence-shot"><img src="assets/service-house-gpt-proof.png" alt="공가지도 상세 GPT 분석 화면" /></div>
+          <div class="evidence-shot"><img src="assets/service-dashboard-proof.png" alt="공가지도 대시보드 화면" /></div>
+        </div>
+        <div class="source-note">검증 화면: 지도, 상세 분석, 지자체 대시보드 실제 서비스 캡처.</div>
+        <div class="slide-num"><span class="skill">title-bullets</span>2<span class="sep">/</span>12</div>
+      </div>
+
+      <div id="s-3" class="scene clip split" data-skill="split" data-start="11.2" data-duration="6" data-track-index="0">
+        <div class="eyebrow">Problem & target</div>
+        <div class="scene-title">문제는 ‘빈집 수’가 아니라, 먼저 볼 후보를 고르는 일입니다</div>
+        <div class="scene-subtitle">저희가 먼저 집중한 사용자는 지자체 빈집·도시재생·정비 담당자입니다.</div>
+        <div class="two-col">
+          <div class="stat-grid">
+            <div class="card stat-card" id="s-3-st1">
+              <div class="num">159.9만</div>
+              <div class="label">2024년 미거주 주택</div>
+              <div class="caption">전체 주택 약 1,987만 호 중 8% 수준</div>
+            </div>
+            <div class="card stat-card" id="s-3-st2">
+              <div class="num">8.0%</div>
+              <div class="label">전체 주택 중 비율</div>
+              <div class="caption">지역별 관리 난이도와 행정 부담 증가</div>
+            </div>
+            <div class="card stat-card wide" id="s-3-st3">
+              <div class="num">13만</div>
+              <div class="label">법령상 기준으로 파악된 2024년 전국 빈집</div>
+              <div class="caption">통계상 미거주 주택과 관리 빈집의 기준 차이가 큽니다.</div>
+            </div>
+          </div>
+          <div class="card target-card" id="s-3-target">
+            <div class="target-title">1차 핵심 사용자: 지자체 현장조사 준비 담당자</div>
+            <ul class="target-list">
+              <li>빈집대장·민원·현장정보를 따로 확인해야 합니다.</li>
+              <li>조사 인력은 제한적이고 후보는 넓게 흩어져 있습니다.</li>
+              <li>현장조사 전 우선순위 판단 근거가 필요합니다.</li>
+              <li>결과는 정비·매입·귀촌·창업 정책으로 이어져야 합니다.</li>
+            </ul>
+          </div>
+        </div>
+        <div class="source-note">출처: 국가데이터처 2024년 인구주택총조사 결과, KOSIS 미거주 주택 통계, 국토연구원 국토정책Brief 1042호.</div>
+        <div class="slide-num"><span class="skill">split</span>3<span class="sep">/</span>12</div>
+      </div>
+
+      <div id="s-4" class="scene clip compare" data-skill="compare" data-start="16.8" data-duration="6" data-track-index="1">
+        <div class="eyebrow">Core insight</div>
+        <div class="scene-title">실제로 적용해보니, 병목은 데이터 부족이 아니었습니다</div>
+        <div class="scene-subtitle">흩어진 데이터를 담당자가 바로 판단할 수 있는 후보·점수·근거로 바꾸는 과정이 진짜 병목이었습니다.</div>
+        <div class="insight-grid">
+          <div class="card insight-card" id="s-4-i1">
+            <div class="insight-kicker">겉으로 보이는 문제</div>
+            <div class="insight-title">빈집 또는 미거주 주택 정보가 많고 기준이 다릅니다</div>
+            <div class="insight-text">통계상 미거주 주택, 법령상 관리 빈집, 플랫폼 등록 빈집은 서로 다른 목적과 기준으로 관리됩니다.</div>
+          </div>
+          <div class="card insight-card highlight" id="s-4-i2">
+            <div class="insight-kicker">서비스가 해결해야 할 병목</div>
+            <div class="insight-title">현장조사 전에 관리 후보를 좁히고 순서를 정해야 합니다</div>
+            <div class="insight-text">공가지도는 확정 판정 대신 후보 탐지, 위험도, 활용 가능성을 함께 보여주는 사전 스크리닝 레이어입니다.</div>
+          </div>
+        </div>
+        <div class="quote-line" id="s-4-quote">저희의 인사이트는 “빈집을 찾아낸다”가 아니라 “어디를 먼저 확인할지 결정하게 한다”입니다.</div>
+        <div class="source-note">출처: 법제처 「빈집 및 소규모주택 정비에 관한 특례법」, 국토연구원 빈집 실태·관리체계 브리프, 한국경제 빈집 통계 관련 보도.</div>
+        <div class="slide-num"><span class="skill">compare</span>4<span class="sep">/</span>12</div>
+      </div>
+
+      <div id="s-5" class="scene clip" data-skill="evolution-flow" data-start="22.4" data-duration="6" data-track-index="0">
+        <div class="eyebrow">Service definition</div>
+        <div class="scene-title">공가지도는 현장조사 전 우선조사 추천 서비스입니다</div>
+        <div class="definition-box" id="s-5-def">
+          <div class="definition-text">공가지도는 국토교통·지역 공공데이터와 AI 분석을 활용해 지자체 담당자가 미등록 빈집 후보를 쉽게 검토하고, 먼저 확인할 후보를 정할 수 있도록 돕는 웹 기반 서비스입니다.</div>
+        </div>
+        <div class="flow-row" id="s-5-flow">
+          <div class="card flow-step"><div class="step-no">01</div><div class="step-title">공공데이터 결합</div></div>
+          <div class="card flow-step"><div class="step-no">02</div><div class="step-title">AI 후보 탐지</div></div>
+          <div class="card flow-step"><div class="step-no">03</div><div class="step-title">위험도·활용 점수</div></div>
+          <div class="card flow-step"><div class="step-no">04</div><div class="step-title">지도·대시보드 확인</div></div>
+          <div class="card flow-step"><div class="step-no">05</div><div class="step-title">현장조사 연결</div></div>
+        </div>
+        <div class="source-note">핵심 표현: 빈집 확정 판정 서비스가 아니라, 현장조사 전 사전 스크리닝 및 우선조사 추천 서비스.</div>
+        <div class="slide-num"><span class="skill">evolution-flow</span>5<span class="sep">/</span>12</div>
+      </div>
+
+      <div id="s-6" class="scene clip split" data-skill="split" data-start="28.0" data-duration="6" data-track-index="1">
+        <div class="eyebrow">Live workflow</div>
+        <div class="scene-title">서비스는 현재 이렇게 작동합니다</div>
+        <div class="scene-subtitle">접속부터 후보 검토, AI 근거 확인, 행정 업무 연결까지 실제 화면으로 이어집니다.</div>
+        <div class="workflow-grid">
+          <div class="screenshot-frame workflow-shot" id="s-6-shot">
+            <img src="assets/service-main-map.png" alt="공가지도 후보 탐지 지도 화면" />
+          </div>
+          <div class="workflow-steps" id="s-6-steps">
+            <div class="card workflow-step"><div class="circle-no">1</div><div><div class="workflow-title">서비스 접속</div><div class="workflow-text">웹에서 바로 지도 화면 확인</div></div></div>
+            <div class="card workflow-step"><div class="circle-no">2</div><div><div class="workflow-title">조건 선택</div><div class="workflow-text">용도, 신뢰도, 위험도 필터 적용</div></div></div>
+            <div class="card workflow-step"><div class="circle-no">3</div><div><div class="workflow-title">AI 분석</div><div class="workflow-text">전력·위성·건축 정보 기반 후보 산출</div></div></div>
+            <div class="card workflow-step"><div class="circle-no">4</div><div><div class="workflow-title">결과 시각화</div><div class="workflow-text">지도와 상세 화면에서 근거 확인</div></div></div>
+            <div class="card workflow-step"><div class="circle-no">5</div><div><div class="workflow-title">행정 행동</div><div class="workflow-text">상태 변경, CSV, 리포트로 연결</div></div></div>
+          </div>
+        </div>
+        <div class="source-note">실제 배포 서비스 캡처: https://kyo-map.vercel.app</div>
+        <div class="slide-num"><span class="skill">split</span>6<span class="sep">/</span>12</div>
+      </div>
+
+      <div id="s-7" class="scene clip compare" data-skill="compare" data-start="33.6" data-duration="6" data-track-index="0">
+        <div class="eyebrow">Data & AI</div>
+        <div class="scene-title">공공데이터를 실제 사용자 판단 정보로 변환합니다</div>
+        <div class="data-grid">
+          <div class="data-table" id="s-7-table">
+            <div class="card data-row"><div class="data-key">활용 데이터</div><div class="data-val">건축물대장, 에너지 사용 패턴, 위성영상, 교통·상권·안심구역 데이터</div></div>
+            <div class="card data-row"><div class="data-key">데이터 출처</div><div class="data-val">공공데이터포털, 국가데이터처/KOSIS, 국토교통 데이터 오픈마켓, 지자체 빈집대장 연계 가능</div></div>
+            <div class="card data-row"><div class="data-key">데이터 처리</div><div class="data-val">주소 정제, 좌표화, 후보 단위 결합, 지도 시각화, 업무 상태화</div></div>
+            <div class="card data-row"><div class="data-key">AI 활용</div><div class="data-val">후보 분류, 위험도·활용 점수, GPT 근거 요약과 체크리스트 생성</div></div>
+            <div class="card data-row"><div class="data-key">사용자 결과</div><div class="data-val">후보 신뢰도, 우선조사 추천, 현장확인 체크리스트, 행정 리포트</div></div>
+          </div>
+          <div class="source-grid" id="s-7-sources">
+            <div class="card source-card"><div class="source-org">국가데이터처 / KOSIS</div><div class="source-desc">2024 인구주택총조사와 미거주 주택 통계</div></div>
+            <div class="card source-card"><div class="source-org">국토교통부</div><div class="source-desc">범정부 빈집 관리 종합계획과 플랫폼 정책 방향</div></div>
+            <div class="card source-card"><div class="source-org">국토연구원</div><div class="source-desc">빈집 실태 파악 및 관리체계 개선 브리프</div></div>
+            <div class="card source-card"><div class="source-org">한국부동산원 / 빈집애</div><div class="source-desc">빈집정보시스템과 빈집정비 통합지원 체계</div></div>
+          </div>
+        </div>
+        <div class="source-note">출처: 공공데이터포털, KOSIS, 국토교통부, 국토연구원, 한국부동산원, 빈집애. 현재 시제품은 샘플 데이터를 사용하며 실증 단계에서 지자체 데이터 연동 검증 예정.</div>
+        <div class="slide-num"><span class="skill">compare</span>7<span class="sep">/</span>12</div>
+      </div>
+
+      <div id="s-8" class="scene clip" data-skill="title-image" data-start="39.2" data-duration="6" data-track-index="1">
+        <div class="eyebrow">Core features</div>
+        <div class="scene-title">문제 해결을 위해 설계된 3가지 핵심 기능</div>
+        <div class="feature-grid">
+          <div class="card feature-card" id="s-8-f1">
+            <div class="feature-img"><img src="assets/service-main-map-feature.png" alt="지도 기반 후보 탐지 기능" /></div>
+            <div class="feature-body">
+              <div class="feature-title">AI 후보 지도</div>
+              <div class="feature-problem">해결 문제: 데이터 탐색 어려움</div>
+              <div class="feature-value">후보 위치, 신뢰도, 추천 용도를 지도에서 한눈에 확인합니다.</div>
+            </div>
+          </div>
+          <div class="card feature-card" id="s-8-f2">
+            <div class="feature-img"><img src="assets/service-house-gpt-feature.png" alt="상세 분석과 GPT 체크리스트 기능" /></div>
+            <div class="feature-body">
+              <div class="feature-title">상세 분석·GPT 체크리스트</div>
+              <div class="feature-problem">해결 문제: 판단 기준 부족</div>
+              <div class="feature-value">전력 패턴, 건축 정보, AI 근거와 다음 행동을 함께 정리합니다.</div>
+            </div>
+          </div>
+          <div class="card feature-card" id="s-8-f3">
+            <div class="feature-img"><img src="assets/service-dashboard-feature.png" alt="지자체 대시보드 기능" /></div>
+            <div class="feature-body">
+              <div class="feature-title">지자체 대시보드</div>
+              <div class="feature-problem">해결 문제: 행동 연결 부족</div>
+              <div class="feature-value">우선순위, 상태 변경, CSV와 월간 리포트 흐름을 제공합니다.</div>
+            </div>
+          </div>
+        </div>
+        <div class="source-note">실제 구현 화면: 공가지도 지도, 상세 분석, 지자체 대시보드 캡처.</div>
+        <div class="slide-num"><span class="skill">title-image</span>8<span class="sep">/</span>12</div>
+      </div>
+
+      <div id="s-9" class="scene clip compare" data-skill="compare" data-start="44.8" data-duration="6" data-track-index="0">
+        <div class="eyebrow">Differentiation</div>
+        <div class="scene-title">차별점은 데이터를 보여주는 데서 끝나지 않는다는 점입니다</div>
+        <div class="compare-table">
+          <div class="card compare-col" id="s-9-before">
+            <div class="compare-head">기존 방식</div>
+            <ul class="compare-list">
+              <li>등록·조사된 빈집 정보 제공 중심</li>
+              <li>단일 플랫폼 또는 단일 데이터 확인</li>
+              <li>정보 조회 후 판단은 담당자 몫</li>
+              <li>정책·현황 관리 중심</li>
+            </ul>
+            <div class="screenshot-frame small-shot contain"><img src="assets/binzibe-map.png" alt="빈집애 참고 화면" /></div>
+          </div>
+          <div class="card compare-col highlight" id="s-9-after">
+            <div class="compare-head">공가지도</div>
+            <ul class="compare-list">
+              <li>미등록 후보 탐지와 우선조사 추천</li>
+              <li>건축·에너지·위성·생활권 데이터 결합</li>
+              <li>AI 근거, 점수, 체크리스트까지 제공</li>
+              <li>지도에서 대시보드, 리포트까지 연결</li>
+            </ul>
+            <div class="quote-line" style="margin-top:auto;">사용자가 판단하고 행동할 수 있는 형태로 데이터를 바꿉니다.</div>
+          </div>
+        </div>
+        <div class="source-note">참고: 한국부동산원 빈집정보시스템, REB 빈집정비통합시스템 빈집애. 공가지도는 기존 플랫폼의 앞단 탐지·우선순위 레이어로 포지셔닝.</div>
+        <div class="slide-num"><span class="skill">compare</span>9<span class="sep">/</span>12</div>
+      </div>
+
+      <div id="s-10" class="scene clip split" data-skill="split" data-start="50.4" data-duration="6" data-track-index="1">
+        <div class="eyebrow">Readiness & validation</div>
+        <div class="scene-title">서비스 완성도와 테스트 결과입니다</div>
+        <div class="ops-grid">
+          <div>
+            <div class="ops-status" id="s-10-status">
+              <div class="card status-row"><div class="status-key">서비스 형태</div><div class="status-val">웹 기반 배포 서비스</div></div>
+              <div class="card status-row"><div class="status-key">접속 경로</div><div class="status-val">https://kyo-map.vercel.app</div></div>
+              <div class="card status-row"><div class="status-key">구현 기능</div><div class="status-val">지도, 상세 분석, 지자체 대시보드 구현</div></div>
+              <div class="card status-row"><div class="status-key">데이터 상태</div><div class="status-val">샘플 후보 100건 기준 시연 가능</div></div>
+              <div class="card status-row"><div class="status-key">검증 방식</div><div class="status-val">후보 탐색→상세 확인→업무 연결 내부 플로우 테스트</div></div>
+            </div>
+            <div class="metric-row" id="s-10-metrics">
+              <div class="card metric-card"><div class="metric-num">3개</div><div class="metric-label">핵심 화면 구현</div></div>
+              <div class="card metric-card"><div class="metric-num">100건</div><div class="metric-label">샘플 후보 데이터</div></div>
+              <div class="card metric-card"><div class="metric-num">5단계</div><div class="metric-label">사용 흐름 검증</div></div>
+            </div>
+          </div>
+          <div class="screenshot-frame workflow-shot" id="s-10-shot">
+            <img src="assets/service-dashboard.png" alt="공가지도 지자체 대시보드 운영 화면" />
+          </div>
+        </div>
+        <div class="source-note">운영 현황: 배포 URL 기준 접근 가능. 사용자 수·기관 로그는 지자체 실증 단계에서 정량 수집 예정이며, 현재는 내부 시나리오 테스트와 화면 플로우 검증 기준.</div>
+        <div class="slide-num"><span class="skill">split</span>10<span class="sep">/</span>12</div>
+      </div>
+
+      <div id="s-11" class="scene clip" data-skill="title-tags" data-start="56.0" data-duration="6" data-track-index="0">
+        <div class="eyebrow">Public value & scalability</div>
+        <div class="scene-title">공공데이터 활용 가치와 정책 확장성이 분명합니다</div>
+        <div class="value-grid">
+          <div class="card value-card" id="s-11-v1">
+            <div class="value-key">데이터 활용성</div>
+            <div class="value-title">흩어진 공공데이터를 서비스로 전환</div>
+            <div class="value-text">건축, 에너지, 위치, 생활권 정보를 후보 단위로 결합합니다.</div>
+          </div>
+          <div class="card value-card green" id="s-11-v2">
+            <div class="value-key">시민 편익</div>
+            <div class="value-title">위험 방치와 정보 접근성 개선</div>
+            <div class="value-text">방치 공간을 더 빨리 확인하고 활용 가능성을 찾습니다.</div>
+          </div>
+          <div class="card value-card" id="s-11-v3">
+            <div class="value-key">행정 활용</div>
+            <div class="value-title">현장조사 준비와 배정 효율화</div>
+            <div class="value-text">제한된 인력으로 먼저 볼 곳을 정하는 근거를 제공합니다.</div>
+          </div>
+          <div class="card value-card green" id="s-11-v4">
+            <div class="value-key">정책 연계</div>
+            <div class="value-title">정비·매입·귀촌·창업 연결</div>
+            <div class="value-text">빈집 관리를 유휴공간 활용 정책으로 확장합니다.</div>
+          </div>
+          <div class="card value-card" id="s-11-v5">
+            <div class="value-key">AI 혁신성</div>
+            <div class="value-title">분석·추천·요약 자동화</div>
+            <div class="value-text">데이터를 담당자가 이해 가능한 판단 정보로 바꿉니다.</div>
+          </div>
+        </div>
+        <div class="quote-line" id="s-11-quote">현재 구현된 서비스를 기반으로, 데이터 범위와 적용 지역을 넓혀 더 많은 지자체가 활용하는 공공데이터 기반 서비스로 고도화하겠습니다.</div>
+        <div class="source-note">출처: 국토교통부 범정부 빈집 관리 종합계획, 정책브리핑 빈집정책, 국토연구원 빈집 관리체계 개선 제안.</div>
+        <div class="slide-num"><span class="skill">title-tags</span>11<span class="sep">/</span>12</div>
+      </div>
+
+      <div id="s-12" class="scene clip split" data-skill="split" data-start="61.6" data-duration="6" data-track-index="1">
+        <div class="eyebrow">Impact & closing</div>
+        <div class="scene-title">공가지도는 공공데이터를 실제 문제 해결 경험으로 연결합니다</div>
+        <div class="closing-grid">
+          <div>
+            <div class="effect-grid" id="s-12-effects">
+              <div class="card effect-card"><div class="effect-key">사용자</div><div class="effect-text">후보 탐색 시간 감소, 현장조사 준비 편의 향상</div></div>
+              <div class="card effect-card"><div class="effect-key">공공데이터</div><div class="effect-text">개방 데이터의 실제 행정 활용 사례 창출</div></div>
+              <div class="card effect-card"><div class="effect-key">지역 정책</div><div class="effect-text">정비 수요 발굴과 유휴공간 활용 가능성 확대</div></div>
+              <div class="card effect-card"><div class="effect-key">확장성</div><div class="effect-text">다른 지역과 생활·관광·안전 분야로 확장 가능</div></div>
+            </div>
+            <div class="final-line" id="s-12-line">저희는 공공데이터와 AI로 방치된 공간을 도시 자산으로 바꾸겠습니다.</div>
+          </div>
+          <div class="qr-panel" id="s-12-qr">
+            <img src="assets/qr-kyo-map-generated.png" alt="공가지도 서비스 접속 QR" />
+            <div class="qr-title">공가지도<br>서비스 접속</div>
+            <div class="qr-url">https://kyo-map.vercel.app</div>
+          </div>
+        </div>
+        <div class="source-note">QR 생성 대상 URL: https://kyo-map.vercel.app</div>
+        <div class="slide-num"><span class="skill">split</span>12<span class="sep">/</span>12</div>
+      </div>
+    </div>
+
+    <script>
+      window.__timelines = window.__timelines || {};
+      var tl = gsap.timeline({ paused: true });
+
+      function slideIn(selector, start) {
+        if (start === 0) return;
+        tl.fromTo(selector, { x: 110, opacity: 0 }, { x: 0, opacity: 1, duration: 0.48, ease: "power3.inOut", overwrite: "auto" }, start);
+      }
+
+      function basicIntro(slide, start) {
+        tl.from(slide + " .eyebrow", { y: -16, opacity: 0, duration: 0.42, ease: "power3.out", overwrite: "auto" }, start + 0.18);
+        tl.from(slide + " .scene-title, " + slide + " .hero-title", { y: 38, opacity: 0, duration: 0.62, ease: "power3.out", overwrite: "auto" }, start + 0.32);
+        tl.from(slide + " .scene-subtitle, " + slide + " .hero-sub", { y: 22, opacity: 0, duration: 0.5, ease: "power2.out", overwrite: "auto" }, start + 0.72);
+      }
+
+      basicIntro("#s-1", 0);
+      tl.from("#s-1 .pill", { y: 16, opacity: 0, duration: 0.46, ease: "power2.out" }, 0.35);
+      tl.from("#s-1 .screenshot-frame", { y: 42, opacity: 0, duration: 0.72, ease: "power3.out" }, 0.85);
+      tl.from("#s-1 .team-line div", { y: 16, opacity: 0, duration: 0.42, stagger: 0.08, ease: "power2.out" }, 1.1);
+
+      slideIn("#s-2", 5.6);
+      basicIntro("#s-2", 5.6);
+      tl.from("#s-2 .proof-card", { y: 28, opacity: 0, duration: 0.48, stagger: 0.1, ease: "power2.out" }, 6.52);
+      tl.from("#s-2 .evidence-shot", { y: 18, opacity: 0, duration: 0.42, stagger: 0.08, ease: "power2.out" }, 7.02);
+
+      slideIn("#s-3", 11.2);
+      basicIntro("#s-3", 11.2);
+      tl.from("#s-3 .stat-card", { y: 26, opacity: 0, duration: 0.5, stagger: 0.09, ease: "power2.out" }, 12.18);
+      tl.from("#s-3-target", { x: 34, opacity: 0, duration: 0.58, ease: "power3.out" }, 12.34);
+
+      slideIn("#s-4", 16.8);
+      basicIntro("#s-4", 16.8);
+      tl.from("#s-4-i1", { x: -34, opacity: 0, duration: 0.58, ease: "power3.out" }, 17.78);
+      tl.from("#s-4-i2", { x: 34, opacity: 0, duration: 0.58, ease: "power3.out" }, 17.95);
+      tl.from("#s-4-quote", { y: 20, opacity: 0, duration: 0.45, ease: "power2.out" }, 18.48);
+
+      slideIn("#s-5", 22.4);
+      basicIntro("#s-5", 22.4);
+      tl.from("#s-5-def", { y: 28, opacity: 0, duration: 0.58, ease: "power3.out" }, 23.24);
+      tl.from("#s-5-flow .flow-step", { y: 24, opacity: 0, duration: 0.42, stagger: 0.08, ease: "power2.out" }, 23.82);
+
+      slideIn("#s-6", 28.0);
+      basicIntro("#s-6", 28.0);
+      tl.from("#s-6-shot", { x: -36, opacity: 0, duration: 0.62, ease: "power3.out" }, 29.0);
+      tl.from("#s-6-steps .workflow-step", { x: 28, opacity: 0, duration: 0.4, stagger: 0.08, ease: "power2.out" }, 29.2);
+
+      slideIn("#s-7", 33.6);
+      basicIntro("#s-7", 33.6);
+      tl.from("#s-7-table .data-row", { x: -28, opacity: 0, duration: 0.4, stagger: 0.07, ease: "power2.out" }, 34.55);
+      tl.from("#s-7-sources .source-card", { y: 24, opacity: 0, duration: 0.42, stagger: 0.08, ease: "power2.out" }, 34.78);
+
+      slideIn("#s-8", 39.2);
+      basicIntro("#s-8", 39.2);
+      tl.from("#s-8 .feature-card", { y: 32, opacity: 0, duration: 0.5, stagger: 0.1, ease: "power2.out" }, 40.18);
+
+      slideIn("#s-9", 44.8);
+      basicIntro("#s-9", 44.8);
+      tl.from("#s-9-before", { x: -36, opacity: 0, duration: 0.56, ease: "power3.out" }, 45.78);
+      tl.from("#s-9-after", { x: 36, opacity: 0, duration: 0.56, ease: "power3.out" }, 45.96);
+
+      slideIn("#s-10", 50.4);
+      basicIntro("#s-10", 50.4);
+      tl.from("#s-10-status .status-row", { x: -28, opacity: 0, duration: 0.38, stagger: 0.06, ease: "power2.out" }, 51.28);
+      tl.from("#s-10-metrics .metric-card", { y: 18, opacity: 0, duration: 0.38, stagger: 0.08, ease: "power2.out" }, 51.86);
+      tl.from("#s-10-shot", { x: 36, opacity: 0, duration: 0.6, ease: "power3.out" }, 51.55);
+
+      slideIn("#s-11", 56.0);
+      basicIntro("#s-11", 56.0);
+      tl.from("#s-11 .value-card", { y: 28, opacity: 0, duration: 0.44, stagger: 0.08, ease: "power2.out" }, 56.92);
+      tl.from("#s-11-quote", { y: 18, opacity: 0, duration: 0.45, ease: "power2.out" }, 57.65);
+
+      slideIn("#s-12", 61.6);
+      basicIntro("#s-12", 61.6);
+      tl.from("#s-12-effects .effect-card", { y: 28, opacity: 0, duration: 0.42, stagger: 0.08, ease: "power2.out" }, 62.52);
+      tl.from("#s-12-line", { y: 22, opacity: 0, duration: 0.5, ease: "power2.out" }, 63.12);
+      tl.from("#s-12-qr", { x: 34, opacity: 0, duration: 0.58, ease: "power3.out" }, 62.86);
+
+      window.__timelines.main = tl;
+    </script>
+  </body>
+</html>

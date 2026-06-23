@@ -1,0 +1,2049 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <title>gonggajido-final-pitch · Overview</title>
+    <link rel="icon" href="data:,">
+    <style>
+@font-face {
+        font-family: "Paperlogy";
+        font-style: normal;
+        font-weight: 100;
+        src: url("assets/fonts/Paperlogy-1Thin.ttf") format("truetype");
+      }
+      @font-face {
+        font-family: "Paperlogy";
+        font-style: normal;
+        font-weight: 200;
+        src: url("assets/fonts/Paperlogy-2ExtraLight.ttf") format("truetype");
+      }
+      @font-face {
+        font-family: "Paperlogy";
+        font-style: normal;
+        font-weight: 300;
+        src: url("assets/fonts/Paperlogy-3Light.ttf") format("truetype");
+      }
+      @font-face {
+        font-family: "Paperlogy";
+        font-style: normal;
+        font-weight: 400;
+        src: url("assets/fonts/Paperlogy-4Regular.ttf") format("truetype");
+      }
+      @font-face {
+        font-family: "Paperlogy";
+        font-style: normal;
+        font-weight: 500;
+        src: url("assets/fonts/Paperlogy-5Medium.ttf") format("truetype");
+      }
+      @font-face {
+        font-family: "Paperlogy";
+        font-style: normal;
+        font-weight: 600;
+        src: url("assets/fonts/Paperlogy-6SemiBold.ttf") format("truetype");
+      }
+      @font-face {
+        font-family: "Paperlogy";
+        font-style: normal;
+        font-weight: 700;
+        src: url("assets/fonts/Paperlogy-7Bold.ttf") format("truetype");
+      }
+      @font-face {
+        font-family: "Paperlogy";
+        font-style: normal;
+        font-weight: 800;
+        src: url("assets/fonts/Paperlogy-8ExtraBold.ttf") format("truetype");
+      }
+      @font-face {
+        font-family: "Paperlogy";
+        font-style: normal;
+        font-weight: 900;
+        src: url("assets/fonts/Paperlogy-9Black.ttf") format("truetype");
+      }
+
+      /* ============================================================
+       * :root — topic 고유 색/타이포 변수 + overview UI 크롬 변수
+       *   {{SCENE_VARS}} 부분에 topic index.html의 :root { ... } 내용을 그대로 붙여넣는다.
+       *   UI 변수(--ui-*)는 어느 topic에서도 동일하게 유지.
+       * ============================================================ */
+      :root {
+        /* === {{SCENE_VARS}} — topic 팔레트 === */--bg: #f7fafc;
+        --surface: #ffffff;
+        --surface-blue: #f1f6ff;
+        --surface-green: #f0fbf6;
+        --text: #0f2742;
+        --text-dim: #52657a;
+        --text-meta: #728197;
+        --line: #d8e2ee;
+        --accent: #1d4ed8;
+        --accent-dark: #1e3a8a;
+        --green: #059669;
+        --green-dark: #047857;
+        --red: #dc2626;
+        /* === UI chrome (공통) === */
+        --ui-bg: #e6e6e6;
+        --ui-strip: #ddd;
+        --ui-card: #ffffff;
+        --ui-text: #222222;
+        --ui-text-dim: #6a6a6a;
+        --ui-text-disabled: rgba(0, 0, 0, 0.24);
+        --ui-surface-light: #f2f2f2;
+        --ui-accent: #1D4ED8;
+        --ui-accent-rgb: 29, 78, 216;
+      }
+
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      html, body {
+        background: var(--ui-bg);
+        color: var(--ui-text);
+        font-family: "Paperlogy";
+        -webkit-font-smoothing: antialiased;
+      }
+      body { display: flex; height: 100vh; overflow: hidden; }
+
+      /* ============ Left strip ============ */
+      .strip {
+        width: 340px; flex-shrink: 0;
+        height: 100vh; overflow-y: auto;
+        padding: 16px;
+        background: var(--ui-strip);
+        border-right: 1px solid rgba(0, 0, 0, 0.08);
+      }
+      .strip-header {
+        font-size: 11px; font-weight: 700;
+        letter-spacing: 2px; color: var(--ui-text-dim);
+        text-transform: uppercase;
+        padding: 4px 4px 12px;
+        display: flex; align-items: center; gap: 8px;
+      }
+      .strip-header::before {
+        content: ""; width: 8px; height: 8px;
+        background: var(--ui-accent); border-radius: 50%;
+      }
+      .strip-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+      .thumb {
+        container-type: inline-size;
+        position: relative; width: 100%;
+        aspect-ratio: 16 / 9; overflow: hidden;
+        border-radius: 8px;
+        background: var(--bg, #000);
+        cursor: pointer;
+        border: 2px solid transparent;
+        box-shadow: rgba(0, 0, 0, 0.22) 0px 2px 8px;
+        transition: border-color 0.15s ease;
+      }
+      .thumb:hover { border-color: rgba(var(--ui-accent-rgb), 0.45); }
+      .thumb.active {
+        border-color: var(--ui-accent);
+        box-shadow: rgba(var(--ui-accent-rgb), 0.35) 0px 4px 14px;
+      }
+      .thumb .scene {
+        position: absolute; top: 0; left: 0;
+        transform-origin: top left;
+        transform: scale(calc(100cqw / 1920px));
+        display: flex;
+        pointer-events: none;
+      }
+      .thumb-label {
+        position: absolute; top: 4px; left: 6px;
+        background: rgba(0, 0, 0, 0.82); color: #fff;
+        padding: 2px 6px; border-radius: 4px;
+        font-size: 9px; font-weight: 600; letter-spacing: 0.5px;
+        z-index: 10; font-family: "Paperlogy";
+        display: inline-flex; align-items: center; gap: 4px;
+      }
+      .thumb-label code {
+        background: var(--ui-accent); color: #fff;
+        padding: 1px 4px; border-radius: 2px;
+        font-size: 8px; font-family: "Paperlogy";
+      }
+      .thumb-label {
+        opacity: 0;
+        transition: opacity 0.12s ease;
+      }
+      .thumb:hover .thumb-label { opacity: 0.92; }
+
+      /* ============ Right main (detail) ============ */
+      .main {
+        flex: 1; min-width: 0;
+        height: 100vh;
+        display: flex; flex-direction: column;
+        padding: 20px 24px 24px;
+      }
+      .main-header {
+        display: flex; align-items: center; justify-content: space-between;
+        margin-bottom: 16px; flex-shrink: 0;
+      }
+      .main-title {
+        font-size: 22px; font-weight: 700; letter-spacing: -0.3px;
+        display: flex; align-items: center; gap: 10px;
+      }
+      .main-title::before {
+        content: ""; width: 12px; height: 12px;
+        background: var(--ui-accent); border-radius: 50%;
+      }
+      .main-nav {
+        display: flex; align-items: center; gap: 12px;
+        font-family: "Paperlogy";
+      }
+      .nav-btn {
+        width: 36px; height: 36px; border-radius: 50%;
+        background: var(--ui-card);
+        border: 1px solid rgba(0, 0, 0, 0.12);
+        color: var(--ui-text);
+        cursor: pointer; font-size: 18px;
+        display: flex; align-items: center; justify-content: center;
+        transition: background 0.15s ease, border-color 0.15s ease;
+      }
+      .nav-btn:hover { background: var(--ui-accent); color: #fff; border-color: var(--ui-accent); }
+      .nav-btn:disabled {
+        opacity: 0.35; cursor: default;
+        background: var(--ui-card); color: var(--ui-text);
+        border-color: rgba(0,0,0,0.08);
+      }
+      .nav-index {
+        font-size: 14px; font-weight: 700;
+        letter-spacing: 2px; color: var(--ui-text);
+        min-width: 90px; text-align: center;
+      }
+      .nav-index .current { color: var(--ui-accent); }
+      .nav-index .skill {
+        display: inline-block; margin-left: 12px;
+        padding: 3px 8px;
+        background: var(--ui-surface-light);
+        border-radius: 5px;
+        font-size: 11px; letter-spacing: 0.5px;
+        color: var(--ui-text);
+      }
+      .detail {
+        flex: 1; min-height: 0;
+        container-type: size;
+        display: flex; align-items: center; justify-content: center;
+      }
+      .detail-frame {
+        width: min(100cqw, calc(100cqh * 16 / 9));
+        aspect-ratio: 16 / 9;
+        overflow: hidden; border-radius: 16px;
+        background: var(--bg, #000);
+        box-shadow:
+          rgba(0, 0, 0, 0.05) 0px 0px 0px 1px,
+          rgba(0, 0, 0, 0.28) 0px 10px 36px;
+        position: relative;
+        container-type: inline-size;
+      }
+      .detail-frame .scene {
+        position: absolute; top: 0; left: 0;
+        transform-origin: top left;
+        transform: scale(calc(100cqw / 1920px));
+        display: none;
+      }
+      .detail-frame .scene.active { display: flex; }
+
+      /* ============ Aim inspector ============ */
+      .header-right { display: flex; align-items: center; gap: 14px; }
+      .aim-btn {
+        padding: 7px 14px; border-radius: 8px;
+        background: var(--ui-card);
+        border: 1px solid rgba(0, 0, 0, 0.12);
+        color: var(--ui-text);
+        cursor: pointer; font-size: 13px; font-weight: 600;
+        font-family: "Paperlogy";
+        display: inline-flex; align-items: center; gap: 8px;
+        transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+      }
+      .aim-btn::before {
+        content: ""; width: 12px; height: 12px;
+        border: 2px solid currentColor; border-radius: 50%;
+        position: relative;
+        box-shadow: inset 0 0 0 2px var(--ui-card);
+        background: currentColor;
+      }
+      .aim-btn:hover { border-color: var(--ui-accent); color: var(--ui-accent); }
+      .aim-btn.active {
+        background: var(--ui-accent); color: #fff;
+        border-color: var(--ui-accent);
+        box-shadow: rgba(var(--ui-accent-rgb), 0.35) 0px 4px 12px;
+      }
+      .aim-btn.active::before { box-shadow: inset 0 0 0 2px var(--ui-accent); }
+      body.aim-active { cursor: crosshair; }
+      body.aim-active *:not(.aim-overlay):not(.aim-tooltip):not(.aim-toast):not(.aim-toast *) { cursor: crosshair !important; }
+      .aim-overlay {
+        position: fixed;
+        border: 2px solid var(--ui-accent);
+        background: rgba(var(--ui-accent-rgb), 0.12);
+        pointer-events: none; z-index: 9998;
+        border-radius: 2px; display: none;
+        box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.4);
+      }
+      .aim-tooltip {
+        position: fixed;
+        background: #222; color: #fff;
+        padding: 6px 10px; border-radius: 6px;
+        font-family: "Paperlogy"; font-size: 11px;
+        max-width: 500px; overflow: hidden;
+        text-overflow: ellipsis; white-space: nowrap;
+        pointer-events: none; z-index: 9999; display: none;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+      }
+      .aim-tooltip .tag-part { color: #8ab4ff; }
+      .aim-tooltip .cls-part { color: #ffd27a; }
+      .aim-tooltip .sep-part { color: rgba(255,255,255,0.4); }
+      .aim-toast {
+        position: fixed; bottom: 24px; right: 24px;
+        background: #222; color: #fff;
+        padding: 14px 20px; border-radius: 10px;
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+        z-index: 10000; opacity: 0;
+        transform: translateY(12px);
+        transition: opacity 0.2s ease, transform 0.2s ease;
+        pointer-events: none; max-width: 420px;
+      }
+      .aim-toast.show { opacity: 1; transform: translateY(0); }
+      .aim-toast .toast-title {
+        font-size: 13px; font-weight: 700;
+        color: var(--ui-accent);
+        margin-bottom: 4px; letter-spacing: 0.3px;
+      }
+      .aim-toast .toast-sel {
+        font-family: "Paperlogy"; font-size: 11px;
+        color: rgba(255, 255, 255, 0.75);
+        word-break: break-all; line-height: 1.4;
+      }
+
+      /* ============ Text edit mode ============ */
+      .edit-btn {
+        padding: 7px 14px; border-radius: 8px;
+        background: var(--ui-card);
+        border: 1px solid rgba(0, 0, 0, 0.12);
+        color: var(--ui-text);
+        cursor: pointer; font-size: 13px; font-weight: 600;
+        font-family: "Paperlogy";
+        display: inline-flex; align-items: center; gap: 8px;
+        transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+      }
+      .edit-btn::before { content: "✎"; font-size: 15px; line-height: 1; }
+      .edit-btn:hover { border-color: #2196F3; color: #2196F3; }
+      .edit-btn.active {
+        background: #2196F3; color: #fff; border-color: #2196F3;
+        box-shadow: 0 4px 12px rgba(33, 150, 243, 0.35);
+      }
+      body.edit-mode #detail-frame [contenteditable="true"] {
+        outline: 2px dashed rgba(33, 150, 243, 0.45);
+        outline-offset: 2px;
+        cursor: text;
+        transition: outline-color 0.12s, background 0.12s;
+      }
+      body.edit-mode #detail-frame [contenteditable="true"]:hover {
+        outline-color: rgba(33, 150, 243, 0.8);
+        background: rgba(33, 150, 243, 0.05);
+      }
+      body.edit-mode #detail-frame [contenteditable="true"]:focus {
+        outline: 2px solid #2196F3;
+        outline-offset: 3px;
+        background: rgba(33, 150, 243, 0.08);
+      }
+
+      @page {
+        size: 16in 9in;
+        margin: 0;
+      }
+      @media print {
+        html, body {
+          width: auto;
+          height: auto;
+          overflow: visible;
+          display: block;
+          background: #fff;
+        }
+        .strip,
+        .main-header,
+        .aim-overlay,
+        .aim-tooltip,
+        .aim-toast {
+          display: none !important;
+        }
+        .main {
+          display: block;
+          width: auto;
+          height: auto;
+          padding: 0;
+          overflow: visible;
+        }
+        .detail {
+          display: block;
+          width: auto;
+          height: auto;
+          overflow: visible;
+          container-type: normal;
+        }
+        .detail-frame {
+          display: block;
+          width: auto;
+          height: auto;
+          aspect-ratio: auto;
+          overflow: visible;
+          border-radius: 0;
+          box-shadow: none;
+          background: transparent;
+          container-type: normal;
+        }
+        .detail-frame .scene,
+        .detail-frame .scene.active {
+          display: flex !important;
+          position: relative;
+          top: auto;
+          left: auto;
+          width: 1920px;
+          height: 1080px;
+          transform: none;
+          break-after: page;
+          page-break-after: always;
+        }
+        .detail-frame .scene:last-child {
+          break-after: auto;
+          page-break-after: auto;
+        }
+      }
+
+      /* ============================================================
+       * {{SCENE_STYLES}} — topic index.html의 씬 관련 CSS를 그대로 붙여넣는다.
+       *   .scene, .scene::before, .year-mark, .eyebrow, .scene-title,
+       *   .hero-title, .hero-sub, .bullets, .stats, .stat, .flow, .flow-col,
+       *   .flow-arrow, .scene.quote, .quote-body, .quote-attrib 등.
+       *   단, body/html에 1920x1080 크기를 고정하는 규칙은 빼야 한다
+       *   (overview는 body가 뷰포트 전체).
+       * ============================================================ */.scene {
+        position: absolute;
+        inset: 0;
+        width: 1920px;
+        height: 1080px;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+        padding: 78px 112px 106px;
+        background: var(--bg);
+      }
+
+      .scene::before {
+        content: "";
+        position: absolute;
+        left: 112px;
+        right: 112px;
+        top: 64px;
+        height: 1px;
+        background: var(--line);
+      }
+
+      .scene::after {
+        content: "";
+        position: absolute;
+        left: 112px;
+        right: 112px;
+        bottom: 74px;
+        height: 1px;
+        background: rgba(216, 226, 238, 0.82);
+      }
+
+      .eyebrow {
+        position: relative;
+        z-index: 2;
+        margin-bottom: 18px;
+        color: var(--accent);
+        font-size: 23px;
+        line-height: 1.2;
+        font-weight: 900;
+        letter-spacing: 0;
+        text-transform: uppercase;
+      }
+
+      .scene-title {
+        position: relative;
+        z-index: 2;
+        max-width: 1540px;
+        color: var(--text);
+        font-size: 82px;
+        line-height: 1.06;
+        font-weight: 900;
+        letter-spacing: 0;
+        word-break: keep-all;
+      }
+
+      .scene-subtitle {
+        position: relative;
+        z-index: 2;
+        max-width: 1260px;
+        margin-top: 22px;
+        color: var(--text-dim);
+        font-size: 31px;
+        line-height: 1.36;
+        font-weight: 800;
+        word-break: keep-all;
+      }
+
+      .keyword {
+        color: var(--green-dark);
+        font-weight: 900;
+      }
+
+      .accent {
+        color: var(--accent-dark);
+        font-weight: 900;
+      }
+
+      .source-note {
+        position: absolute;
+        left: 112px;
+        right: 360px;
+        bottom: 30px;
+        z-index: 6;
+        color: var(--text-meta);
+        font-size: 15px;
+        line-height: 1.35;
+        font-weight: 700;
+        word-break: keep-all;
+      }
+
+      .slide-num {
+        position: absolute;
+        right: 112px;
+        bottom: 30px;
+        z-index: 6;
+        color: var(--text-meta);
+        font-size: 18px;
+        font-weight: 800;
+        letter-spacing: 0;
+      }
+
+      .slide-num .skill {
+        display: inline-block;
+        margin-right: 10px;
+        padding: 4px 9px;
+        border-radius: 8px;
+        color: var(--accent-dark);
+        background: #e8f1ff;
+        letter-spacing: 0;
+      }
+
+      .slide-num .sep {
+        margin: 0 8px;
+      }
+
+      .screenshot-frame {
+        position: relative;
+        overflow: hidden;
+        border-radius: 8px;
+        border: 1px solid #c9d7e8;
+        background: var(--surface);
+        box-shadow: 0 14px 36px rgba(15, 39, 66, 0.1);
+      }
+
+      .screenshot-frame img {
+        display: block;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+
+      .screenshot-frame.contain img {
+        object-fit: contain;
+        background: #ffffff;
+      }
+
+      .card {
+        border-radius: 8px;
+        background: var(--surface);
+        border: 1px solid var(--line);
+        box-shadow: 0 10px 28px rgba(15, 39, 66, 0.06);
+      }
+
+      .pill {
+        display: inline-flex;
+        align-items: center;
+        width: fit-content;
+        padding: 9px 15px;
+        border-radius: 999px;
+        color: var(--accent-dark);
+        background: var(--surface-blue);
+        border: 1px solid #c8dbff;
+        font-size: 20px;
+        line-height: 1.2;
+        font-weight: 900;
+        word-break: keep-all;
+      }
+
+      .hero-grid {
+        position: relative;
+        z-index: 2;
+        display: grid;
+        grid-template-columns: 0.82fr 1.18fr;
+        gap: 58px;
+        align-items: center;
+        flex: 1;
+      }
+
+      .hero-title {
+        margin-top: 12px;
+        color: var(--text);
+        font-size: 142px;
+        line-height: 0.98;
+        font-weight: 900;
+        letter-spacing: 0;
+      }
+
+      .hero-sub {
+        margin-top: 30px;
+        color: var(--text-dim);
+        font-size: 37px;
+        line-height: 1.34;
+        font-weight: 800;
+        word-break: keep-all;
+      }
+
+      .team-line {
+        display: grid;
+        gap: 12px;
+        margin-top: 44px;
+      }
+
+      .team-line div {
+        color: var(--text-meta);
+        font-size: 22px;
+        font-weight: 800;
+      }
+
+      .hero-shot {
+        aspect-ratio: 16 / 9;
+      }
+
+      .proof-grid {
+        position: relative;
+        z-index: 2;
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 24px;
+        margin-top: 48px;
+      }
+
+      .proof-card {
+        min-height: 270px;
+        padding: 32px 32px 30px;
+      }
+
+      .proof-num {
+        width: 58px;
+        height: 58px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #ffffff;
+        background: var(--accent);
+        font-size: 29px;
+        font-weight: 900;
+        font-variant-numeric: tabular-nums;
+      }
+
+      .proof-title {
+        margin-top: 26px;
+        color: var(--text);
+        font-size: 34px;
+        line-height: 1.18;
+        font-weight: 900;
+        word-break: keep-all;
+      }
+
+      .proof-text {
+        margin-top: 18px;
+        color: var(--text-dim);
+        font-size: 24px;
+        line-height: 1.38;
+        font-weight: 750;
+        word-break: keep-all;
+      }
+
+      .evidence-strip {
+        position: relative;
+        z-index: 2;
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 22px;
+        margin-top: 28px;
+      }
+
+      .evidence-shot {
+        height: 166px;
+        border-radius: 8px;
+        overflow: hidden;
+        border: 1px solid var(--line);
+        background: #ffffff;
+      }
+
+      .evidence-shot img {
+        width: 100%;
+        height: 100%;
+        display: block;
+        object-fit: cover;
+      }
+
+      .two-col {
+        position: relative;
+        z-index: 2;
+        display: grid;
+        grid-template-columns: 0.92fr 1.08fr;
+        gap: 40px;
+        align-items: stretch;
+        margin-top: 40px;
+        flex: 1;
+        min-height: 0;
+      }
+
+      .two-col.reverse {
+        grid-template-columns: 1.08fr 0.92fr;
+      }
+
+      .stat-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 22px;
+      }
+
+      .stat-card {
+        min-height: 212px;
+        padding: 30px 32px;
+      }
+
+      .stat-card.wide {
+        grid-column: span 2;
+        min-height: 190px;
+        background: var(--surface-green);
+        border-color: #c7eadb;
+      }
+
+      .num {
+        color: var(--accent-dark);
+        font-size: 82px;
+        line-height: 0.96;
+        font-weight: 900;
+        letter-spacing: 0;
+        font-variant-numeric: tabular-nums;
+      }
+
+      .stat-card.wide .num {
+        color: var(--green-dark);
+      }
+
+      .label {
+        margin-top: 18px;
+        color: var(--text);
+        font-size: 28px;
+        line-height: 1.24;
+        font-weight: 900;
+        word-break: keep-all;
+      }
+
+      .caption {
+        margin-top: 12px;
+        color: var(--text-meta);
+        font-size: 20px;
+        line-height: 1.35;
+        font-weight: 700;
+        word-break: keep-all;
+      }
+
+      .target-card {
+        padding: 34px;
+      }
+
+      .target-title {
+        color: var(--accent-dark);
+        font-size: 42px;
+        line-height: 1.12;
+        font-weight: 900;
+      }
+
+      .target-list {
+        list-style: none;
+        margin: 30px 0 0;
+        padding: 0;
+        display: grid;
+        gap: 18px;
+      }
+
+      .target-list li {
+        position: relative;
+        padding-left: 28px;
+        color: var(--text);
+        font-size: 29px;
+        line-height: 1.34;
+        font-weight: 800;
+        word-break: keep-all;
+      }
+
+      .target-list li::before {
+        content: "";
+        position: absolute;
+        left: 0;
+        top: 17px;
+        width: 11px;
+        height: 11px;
+        border-radius: 50%;
+        background: var(--green);
+      }
+
+      .insight-grid {
+        position: relative;
+        z-index: 2;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 28px;
+        margin-top: 46px;
+      }
+
+      .insight-card {
+        min-height: 330px;
+        padding: 36px;
+      }
+
+      .insight-card.highlight {
+        background: var(--surface-green);
+        border-color: #c7eadb;
+      }
+
+      .insight-kicker {
+        color: var(--text-meta);
+        font-size: 22px;
+        line-height: 1.2;
+        font-weight: 900;
+      }
+
+      .insight-title {
+        margin-top: 20px;
+        color: var(--text);
+        font-size: 46px;
+        line-height: 1.12;
+        font-weight: 900;
+        word-break: keep-all;
+      }
+
+      .insight-text {
+        margin-top: 22px;
+        color: var(--text-dim);
+        font-size: 27px;
+        line-height: 1.36;
+        font-weight: 800;
+        word-break: keep-all;
+      }
+
+      .quote-line {
+        position: relative;
+        z-index: 2;
+        margin-top: 26px;
+        padding: 24px 32px;
+        border-radius: 8px;
+        background: #0f2742;
+        color: #ffffff;
+        font-size: 33px;
+        line-height: 1.25;
+        font-weight: 900;
+        word-break: keep-all;
+      }
+
+      .definition-box {
+        position: relative;
+        z-index: 2;
+        margin-top: 46px;
+        padding: 42px 48px;
+        border-radius: 8px;
+        color: #ffffff;
+        background: #0f2742;
+      }
+
+      .definition-text {
+        max-width: 1360px;
+        font-size: 48px;
+        line-height: 1.28;
+        font-weight: 900;
+        word-break: keep-all;
+      }
+
+      .flow-row {
+        position: relative;
+        z-index: 2;
+        display: grid;
+        grid-template-columns: repeat(5, 1fr);
+        gap: 18px;
+        margin-top: 34px;
+      }
+
+      .flow-step {
+        min-height: 145px;
+        padding: 24px 24px 22px;
+      }
+
+      .flow-step .step-no {
+        color: var(--accent);
+        font-size: 23px;
+        font-weight: 900;
+        font-variant-numeric: tabular-nums;
+      }
+
+      .flow-step .step-title {
+        margin-top: 18px;
+        color: var(--text);
+        font-size: 28px;
+        line-height: 1.22;
+        font-weight: 900;
+        word-break: keep-all;
+      }
+
+      .workflow-grid {
+        position: relative;
+        z-index: 2;
+        display: grid;
+        grid-template-columns: 1.16fr 0.84fr;
+        gap: 38px;
+        margin-top: 36px;
+        flex: 1;
+        min-height: 0;
+      }
+
+      .workflow-shot {
+        min-height: 0;
+      }
+
+      .workflow-steps {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 16px;
+      }
+
+      .workflow-step {
+        display: grid;
+        grid-template-columns: 58px 1fr;
+        gap: 18px;
+        align-items: center;
+        min-height: 92px;
+        padding: 18px 22px;
+      }
+
+      .circle-no {
+        width: 58px;
+        height: 58px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #ffffff;
+        background: var(--accent);
+        font-size: 27px;
+        font-weight: 900;
+        font-variant-numeric: tabular-nums;
+      }
+
+      .workflow-title {
+        color: var(--text);
+        font-size: 28px;
+        line-height: 1.22;
+        font-weight: 900;
+        word-break: keep-all;
+      }
+
+      .workflow-text {
+        margin-top: 6px;
+        color: var(--text-dim);
+        font-size: 20px;
+        line-height: 1.28;
+        font-weight: 750;
+        word-break: keep-all;
+      }
+
+      .data-grid {
+        position: relative;
+        z-index: 2;
+        display: grid;
+        grid-template-columns: 0.8fr 1.2fr;
+        gap: 34px;
+        margin-top: 38px;
+        flex: 1;
+        min-height: 0;
+      }
+
+      .data-table {
+        display: grid;
+        gap: 14px;
+      }
+
+      .data-row {
+        display: grid;
+        grid-template-columns: 188px 1fr;
+        gap: 18px;
+        min-height: 82px;
+        align-items: center;
+        padding: 18px 22px;
+      }
+
+      .data-key {
+        color: var(--accent-dark);
+        font-size: 24px;
+        font-weight: 900;
+      }
+
+      .data-val {
+        color: var(--text);
+        font-size: 24px;
+        line-height: 1.28;
+        font-weight: 800;
+        word-break: keep-all;
+      }
+
+      .source-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 18px;
+      }
+
+      .source-card {
+        min-height: 150px;
+        padding: 24px;
+        background: var(--surface-blue);
+        border-color: #c8dbff;
+      }
+
+      .source-org {
+        color: var(--accent);
+        font-size: 22px;
+        line-height: 1.2;
+        font-weight: 900;
+      }
+
+      .source-desc {
+        margin-top: 14px;
+        color: var(--text);
+        font-size: 25px;
+        line-height: 1.25;
+        font-weight: 900;
+        word-break: keep-all;
+      }
+
+      .feature-grid {
+        position: relative;
+        z-index: 2;
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 24px;
+        margin-top: 42px;
+      }
+
+      .feature-card {
+        min-height: 570px;
+        overflow: hidden;
+      }
+
+      .feature-img {
+        height: 250px;
+        overflow: hidden;
+        border-bottom: 1px solid var(--line);
+        background: #ffffff;
+      }
+
+      .feature-img img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
+      }
+
+      .feature-body {
+        padding: 28px 30px;
+      }
+
+      .feature-title {
+        color: var(--text);
+        font-size: 34px;
+        line-height: 1.16;
+        font-weight: 900;
+        word-break: keep-all;
+      }
+
+      .feature-problem {
+        margin-top: 18px;
+        color: var(--red);
+        font-size: 22px;
+        line-height: 1.28;
+        font-weight: 900;
+        word-break: keep-all;
+      }
+
+      .feature-value {
+        margin-top: 12px;
+        color: var(--text-dim);
+        font-size: 24px;
+        line-height: 1.34;
+        font-weight: 800;
+        word-break: keep-all;
+      }
+
+      .compare-table {
+        position: relative;
+        z-index: 2;
+        display: grid;
+        grid-template-columns: 0.9fr 1.1fr;
+        gap: 28px;
+        margin-top: 40px;
+        flex: 1;
+        min-height: 0;
+      }
+
+      .compare-col {
+        padding: 32px;
+        display: flex;
+        flex-direction: column;
+      }
+
+      .compare-col.highlight {
+        background: var(--surface-green);
+        border-color: #c7eadb;
+      }
+
+      .compare-head {
+        color: var(--accent-dark);
+        font-size: 39px;
+        line-height: 1.12;
+        font-weight: 900;
+      }
+
+      .compare-list {
+        list-style: none;
+        display: grid;
+        gap: 18px;
+        margin: 28px 0 0;
+        padding: 0;
+      }
+
+      .compare-list li {
+        position: relative;
+        padding-left: 30px;
+        color: var(--text);
+        font-size: 29px;
+        line-height: 1.3;
+        font-weight: 800;
+        word-break: keep-all;
+      }
+
+      .compare-list li::before {
+        content: "";
+        position: absolute;
+        left: 0;
+        top: 17px;
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        background: var(--accent);
+      }
+
+      .compare-col.highlight .compare-list li::before {
+        background: var(--green);
+      }
+
+      .small-shot {
+        height: 190px;
+        margin-top: auto;
+      }
+
+      .ops-grid {
+        position: relative;
+        z-index: 2;
+        display: grid;
+        grid-template-columns: 0.92fr 1.08fr;
+        gap: 36px;
+        margin-top: 38px;
+        flex: 1;
+        min-height: 0;
+      }
+
+      .ops-status {
+        display: grid;
+        gap: 14px;
+      }
+
+      .status-row {
+        display: grid;
+        grid-template-columns: 180px 1fr;
+        gap: 18px;
+        align-items: center;
+        min-height: 76px;
+        padding: 18px 22px;
+      }
+
+      .status-key {
+        color: var(--accent-dark);
+        font-size: 22px;
+        font-weight: 900;
+      }
+
+      .status-val {
+        color: var(--text);
+        font-size: 24px;
+        line-height: 1.25;
+        font-weight: 850;
+        word-break: keep-all;
+      }
+
+      .metric-row {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 18px;
+        margin-top: 18px;
+      }
+
+      .metric-card {
+        padding: 24px;
+        background: var(--surface-blue);
+        border-color: #c8dbff;
+      }
+
+      .metric-num {
+        color: var(--accent-dark);
+        font-size: 48px;
+        line-height: 1;
+        font-weight: 900;
+      }
+
+      .metric-label {
+        margin-top: 10px;
+        color: var(--text-dim);
+        font-size: 20px;
+        line-height: 1.28;
+        font-weight: 800;
+        word-break: keep-all;
+      }
+
+      .value-grid {
+        position: relative;
+        z-index: 2;
+        display: grid;
+        grid-template-columns: repeat(5, 1fr);
+        gap: 18px;
+        margin-top: 42px;
+      }
+
+      .value-card {
+        min-height: 300px;
+        padding: 28px 24px;
+      }
+
+      .value-card.green {
+        background: var(--surface-green);
+        border-color: #c7eadb;
+      }
+
+      .value-key {
+        color: var(--accent);
+        font-size: 23px;
+        line-height: 1.2;
+        font-weight: 900;
+      }
+
+      .value-title {
+        margin-top: 18px;
+        color: var(--text);
+        font-size: 30px;
+        line-height: 1.18;
+        font-weight: 900;
+        word-break: keep-all;
+      }
+
+      .value-text {
+        margin-top: 18px;
+        color: var(--text-dim);
+        font-size: 22px;
+        line-height: 1.34;
+        font-weight: 800;
+        word-break: keep-all;
+      }
+
+      .closing-grid {
+        position: relative;
+        z-index: 2;
+        display: grid;
+        grid-template-columns: 1fr 420px;
+        gap: 44px;
+        align-items: stretch;
+        margin-top: 42px;
+        flex: 1;
+        min-height: 0;
+      }
+
+      .effect-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 20px;
+      }
+
+      .effect-card {
+        min-height: 180px;
+        padding: 28px 30px;
+      }
+
+      .effect-key {
+        color: var(--accent);
+        font-size: 22px;
+        line-height: 1.2;
+        font-weight: 900;
+      }
+
+      .effect-text {
+        margin-top: 18px;
+        color: var(--text);
+        font-size: 29px;
+        line-height: 1.24;
+        font-weight: 900;
+        word-break: keep-all;
+      }
+
+      .qr-panel {
+        padding: 34px;
+        border-radius: 8px;
+        background: #0f2742;
+        color: #ffffff;
+      }
+
+      .qr-panel img {
+        display: block;
+        width: 100%;
+        border-radius: 8px;
+        background: #ffffff;
+      }
+
+      .qr-title {
+        margin-top: 24px;
+        font-size: 38px;
+        line-height: 1.16;
+        font-weight: 900;
+      }
+
+      .qr-url {
+        margin-top: 14px;
+        color: #b7d7ff;
+        font-size: 24px;
+        line-height: 1.24;
+        font-weight: 800;
+        word-break: break-all;
+      }
+
+      .final-line {
+        position: relative;
+        z-index: 2;
+        margin-top: 26px;
+        color: var(--accent-dark);
+        font-size: 48px;
+        line-height: 1.18;
+        font-weight: 900;
+        word-break: keep-all;
+      }
+      .slide-num {
+        position: absolute;
+        bottom: 48px; right: 140px;
+        font-family: "Paperlogy";
+        font-size: 20px; font-weight: 500;
+        letter-spacing: 4px;
+        color: var(--text-meta, var(--ui-text-dim));
+        z-index: 50;
+      }
+      .slide-num .skill {
+        display: inline-block;
+        padding: 4px 10px;
+        background: rgba(245, 245, 247, 0.08);
+        border-radius: 8px;
+        margin-right: 10px;
+        color: var(--text, var(--ui-text));
+        font-family: "Paperlogy";
+        letter-spacing: 1px;
+      }
+      .slide-num .sep { margin: 0 8px; color: var(--text-meta, var(--ui-text-dim)); }
+    </style>
+  </head>
+  <body>
+
+    <aside class="strip">
+      <div class="strip-header">gonggajido-final-pitch · 12 slides</div>
+      <div class="strip-grid" id="strip-grid"></div>
+    </aside>
+
+    <main class="main">
+      <header class="main-header">
+        <div class="main-title">gonggajido-final-pitch · Overview</div>
+        <div class="header-right">
+          <button class="edit-btn" id="nav-edit" aria-label="text edit">Edit</button>
+          <button class="aim-btn" id="nav-aim" aria-label="aim inspector">Aim</button>
+          <div class="main-nav">
+            <button class="nav-btn" id="nav-prev" aria-label="이전">←</button>
+            <div class="nav-index">
+              <span class="current" id="nav-current">01</span>
+              <span style="opacity: 0.4; margin: 0 6px;">/</span>
+              <span>12</span>
+              <span class="skill" id="nav-skill">title</span>
+            </div>
+            <button class="nav-btn" id="nav-next" aria-label="다음">→</button>
+          </div>
+        </div>
+      </header>
+
+      <div class="detail">
+        <div class="detail-frame" id="detail-frame">
+
+          <!-- ============================================================
+           * {{SLIDES_HTML}} — 각 슬라이드 <div class="scene ..." data-slide="N" data-skill="..."> ... </div>
+           *   - id / clip / data-start / data-duration / data-track-index 제거
+           *   - 마지막 자식으로 .brand + .slide-num 추가
+           * ============================================================ --><div class="scene title-image" data-slide="1" data-skill="title-image">
+        <div class="hero-grid">
+          <div>
+            <div class="eyebrow">2026 국토교통 데이터 활용 경진대회</div>
+            <div class="pill">실서비스 운영형 발표</div>
+            <div class="hero-title">공가지도</div>
+            <div class="hero-sub">공공데이터와 AI로 미등록 빈집 후보의 <span class="keyword">우선조사 순서</span>를 제공합니다.</div>
+            <div class="team-line">
+              <div>팀명: 공가지도</div>
+              <div>서비스 URL: https://kyo-map.vercel.app</div>
+            </div>
+          </div>
+          <div class="screenshot-frame hero-shot">
+            <img src="assets/service-main.png" alt="공가지도 배포 서비스 메인 지도 화면" />
+          </div>
+        </div>
+        <div class="source-note">서비스 화면: 공가지도 배포 서비스 캡처. 핵심 포지션: 빈집 확정 판정이 아니라 현장조사 전 사전 스크리닝.</div>
+        <div class="slide-num"><span class="skill">title-image</span>1<span class="sep">/</span>12</div>
+      </div>
+
+      <div class="scene" data-slide="2" data-skill="title-bullets">
+        <div class="eyebrow">Proof first</div>
+        <div class="scene-title">오늘 저희는 세 가지를 증명하겠습니다</div>
+        <div class="scene-subtitle">아이디어 가능성이 아니라, 실제 문제와 작동하는 서비스, 확장 가능한 공공데이터 활용성을 보여드립니다.</div>
+        <div class="proof-grid">
+          <div class="card proof-card" id="s-2-p1">
+            <div class="proof-num">1</div>
+            <div class="proof-title">명확한 사용자 문제</div>
+            <div class="proof-text">지자체 담당자는 현장조사 전에 어떤 후보를 먼저 볼지 판단해야 합니다.</div>
+          </div>
+          <div class="card proof-card" id="s-2-p2">
+            <div class="proof-num">2</div>
+            <div class="proof-title">이미 작동하는 서비스</div>
+            <div class="proof-text">지도, 상세 분석, 대시보드까지 배포 URL에서 확인 가능한 흐름으로 구현했습니다.</div>
+          </div>
+          <div class="card proof-card" id="s-2-p3">
+            <div class="proof-num">3</div>
+            <div class="proof-title">정책 확장 가능성</div>
+            <div class="proof-text">공공데이터와 AI를 결합해 지자체 빈집 관리와 유휴공간 활용으로 확장합니다.</div>
+          </div>
+        </div>
+        <div class="evidence-strip" id="s-2-evidence">
+          <div class="evidence-shot"><img src="assets/service-main-map-proof.png" alt="공가지도 지도 화면" /></div>
+          <div class="evidence-shot"><img src="assets/service-house-gpt-proof.png" alt="공가지도 상세 GPT 분석 화면" /></div>
+          <div class="evidence-shot"><img src="assets/service-dashboard-proof.png" alt="공가지도 대시보드 화면" /></div>
+        </div>
+        <div class="source-note">검증 화면: 지도, 상세 분석, 지자체 대시보드 실제 서비스 캡처.</div>
+        <div class="slide-num"><span class="skill">title-bullets</span>2<span class="sep">/</span>12</div>
+      </div>
+
+      <div class="scene split" data-slide="3" data-skill="split">
+        <div class="eyebrow">Problem & target</div>
+        <div class="scene-title">문제는 ‘빈집 수’가 아니라, 먼저 볼 후보를 고르는 일입니다</div>
+        <div class="scene-subtitle">저희가 먼저 집중한 사용자는 지자체 빈집·도시재생·정비 담당자입니다.</div>
+        <div class="two-col">
+          <div class="stat-grid">
+            <div class="card stat-card" id="s-3-st1">
+              <div class="num">159.9만</div>
+              <div class="label">2024년 미거주 주택</div>
+              <div class="caption">전체 주택 약 1,987만 호 중 8% 수준</div>
+            </div>
+            <div class="card stat-card" id="s-3-st2">
+              <div class="num">8.0%</div>
+              <div class="label">전체 주택 중 비율</div>
+              <div class="caption">지역별 관리 난이도와 행정 부담 증가</div>
+            </div>
+            <div class="card stat-card wide" id="s-3-st3">
+              <div class="num">13만</div>
+              <div class="label">법령상 기준으로 파악된 2024년 전국 빈집</div>
+              <div class="caption">통계상 미거주 주택과 관리 빈집의 기준 차이가 큽니다.</div>
+            </div>
+          </div>
+          <div class="card target-card" id="s-3-target">
+            <div class="target-title">1차 핵심 사용자: 지자체 현장조사 준비 담당자</div>
+            <ul class="target-list">
+              <li>빈집대장·민원·현장정보를 따로 확인해야 합니다.</li>
+              <li>조사 인력은 제한적이고 후보는 넓게 흩어져 있습니다.</li>
+              <li>현장조사 전 우선순위 판단 근거가 필요합니다.</li>
+              <li>결과는 정비·매입·귀촌·창업 정책으로 이어져야 합니다.</li>
+            </ul>
+          </div>
+        </div>
+        <div class="source-note">출처: 국가데이터처 2024년 인구주택총조사 결과, KOSIS 미거주 주택 통계, 국토연구원 국토정책Brief 1042호.</div>
+        <div class="slide-num"><span class="skill">split</span>3<span class="sep">/</span>12</div>
+      </div>
+
+      <div class="scene compare" data-slide="4" data-skill="compare">
+        <div class="eyebrow">Core insight</div>
+        <div class="scene-title">실제로 적용해보니, 병목은 데이터 부족이 아니었습니다</div>
+        <div class="scene-subtitle">흩어진 데이터를 담당자가 바로 판단할 수 있는 후보·점수·근거로 바꾸는 과정이 진짜 병목이었습니다.</div>
+        <div class="insight-grid">
+          <div class="card insight-card" id="s-4-i1">
+            <div class="insight-kicker">겉으로 보이는 문제</div>
+            <div class="insight-title">빈집 또는 미거주 주택 정보가 많고 기준이 다릅니다</div>
+            <div class="insight-text">통계상 미거주 주택, 법령상 관리 빈집, 플랫폼 등록 빈집은 서로 다른 목적과 기준으로 관리됩니다.</div>
+          </div>
+          <div class="card insight-card highlight" id="s-4-i2">
+            <div class="insight-kicker">서비스가 해결해야 할 병목</div>
+            <div class="insight-title">현장조사 전에 관리 후보를 좁히고 순서를 정해야 합니다</div>
+            <div class="insight-text">공가지도는 확정 판정 대신 후보 탐지, 위험도, 활용 가능성을 함께 보여주는 사전 스크리닝 레이어입니다.</div>
+          </div>
+        </div>
+        <div class="quote-line" id="s-4-quote">저희의 인사이트는 “빈집을 찾아낸다”가 아니라 “어디를 먼저 확인할지 결정하게 한다”입니다.</div>
+        <div class="source-note">출처: 법제처 「빈집 및 소규모주택 정비에 관한 특례법」, 국토연구원 빈집 실태·관리체계 브리프, 한국경제 빈집 통계 관련 보도.</div>
+        <div class="slide-num"><span class="skill">compare</span>4<span class="sep">/</span>12</div>
+      </div>
+
+      <div class="scene" data-slide="5" data-skill="evolution-flow">
+        <div class="eyebrow">Service definition</div>
+        <div class="scene-title">공가지도는 현장조사 전 우선조사 추천 서비스입니다</div>
+        <div class="definition-box" id="s-5-def">
+          <div class="definition-text">공가지도는 국토교통·지역 공공데이터와 AI 분석을 활용해 지자체 담당자가 미등록 빈집 후보를 쉽게 검토하고, 먼저 확인할 후보를 정할 수 있도록 돕는 웹 기반 서비스입니다.</div>
+        </div>
+        <div class="flow-row" id="s-5-flow">
+          <div class="card flow-step"><div class="step-no">01</div><div class="step-title">공공데이터 결합</div></div>
+          <div class="card flow-step"><div class="step-no">02</div><div class="step-title">AI 후보 탐지</div></div>
+          <div class="card flow-step"><div class="step-no">03</div><div class="step-title">위험도·활용 점수</div></div>
+          <div class="card flow-step"><div class="step-no">04</div><div class="step-title">지도·대시보드 확인</div></div>
+          <div class="card flow-step"><div class="step-no">05</div><div class="step-title">현장조사 연결</div></div>
+        </div>
+        <div class="source-note">핵심 표현: 빈집 확정 판정 서비스가 아니라, 현장조사 전 사전 스크리닝 및 우선조사 추천 서비스.</div>
+        <div class="slide-num"><span class="skill">evolution-flow</span>5<span class="sep">/</span>12</div>
+      </div>
+
+      <div class="scene split" data-slide="6" data-skill="split">
+        <div class="eyebrow">Live workflow</div>
+        <div class="scene-title">서비스는 현재 이렇게 작동합니다</div>
+        <div class="scene-subtitle">접속부터 후보 검토, AI 근거 확인, 행정 업무 연결까지 실제 화면으로 이어집니다.</div>
+        <div class="workflow-grid">
+          <div class="screenshot-frame workflow-shot" id="s-6-shot">
+            <img src="assets/service-main-map.png" alt="공가지도 후보 탐지 지도 화면" />
+          </div>
+          <div class="workflow-steps" id="s-6-steps">
+            <div class="card workflow-step"><div class="circle-no">1</div><div><div class="workflow-title">서비스 접속</div><div class="workflow-text">웹에서 바로 지도 화면 확인</div></div></div>
+            <div class="card workflow-step"><div class="circle-no">2</div><div><div class="workflow-title">조건 선택</div><div class="workflow-text">용도, 신뢰도, 위험도 필터 적용</div></div></div>
+            <div class="card workflow-step"><div class="circle-no">3</div><div><div class="workflow-title">AI 분석</div><div class="workflow-text">전력·위성·건축 정보 기반 후보 산출</div></div></div>
+            <div class="card workflow-step"><div class="circle-no">4</div><div><div class="workflow-title">결과 시각화</div><div class="workflow-text">지도와 상세 화면에서 근거 확인</div></div></div>
+            <div class="card workflow-step"><div class="circle-no">5</div><div><div class="workflow-title">행정 행동</div><div class="workflow-text">상태 변경, CSV, 리포트로 연결</div></div></div>
+          </div>
+        </div>
+        <div class="source-note">실제 배포 서비스 캡처: https://kyo-map.vercel.app</div>
+        <div class="slide-num"><span class="skill">split</span>6<span class="sep">/</span>12</div>
+      </div>
+
+      <div class="scene compare" data-slide="7" data-skill="compare">
+        <div class="eyebrow">Data & AI</div>
+        <div class="scene-title">공공데이터를 실제 사용자 판단 정보로 변환합니다</div>
+        <div class="data-grid">
+          <div class="data-table" id="s-7-table">
+            <div class="card data-row"><div class="data-key">활용 데이터</div><div class="data-val">건축물대장, 에너지 사용 패턴, 위성영상, 교통·상권·안심구역 데이터</div></div>
+            <div class="card data-row"><div class="data-key">데이터 출처</div><div class="data-val">공공데이터포털, 국가데이터처/KOSIS, 국토교통 데이터 오픈마켓, 지자체 빈집대장 연계 가능</div></div>
+            <div class="card data-row"><div class="data-key">데이터 처리</div><div class="data-val">주소 정제, 좌표화, 후보 단위 결합, 지도 시각화, 업무 상태화</div></div>
+            <div class="card data-row"><div class="data-key">AI 활용</div><div class="data-val">후보 분류, 위험도·활용 점수, GPT 근거 요약과 체크리스트 생성</div></div>
+            <div class="card data-row"><div class="data-key">사용자 결과</div><div class="data-val">후보 신뢰도, 우선조사 추천, 현장확인 체크리스트, 행정 리포트</div></div>
+          </div>
+          <div class="source-grid" id="s-7-sources">
+            <div class="card source-card"><div class="source-org">국가데이터처 / KOSIS</div><div class="source-desc">2024 인구주택총조사와 미거주 주택 통계</div></div>
+            <div class="card source-card"><div class="source-org">국토교통부</div><div class="source-desc">범정부 빈집 관리 종합계획과 플랫폼 정책 방향</div></div>
+            <div class="card source-card"><div class="source-org">국토연구원</div><div class="source-desc">빈집 실태 파악 및 관리체계 개선 브리프</div></div>
+            <div class="card source-card"><div class="source-org">한국부동산원 / 빈집애</div><div class="source-desc">빈집정보시스템과 빈집정비 통합지원 체계</div></div>
+          </div>
+        </div>
+        <div class="source-note">출처: 공공데이터포털, KOSIS, 국토교통부, 국토연구원, 한국부동산원, 빈집애. 현재 시제품은 샘플 데이터를 사용하며 실증 단계에서 지자체 데이터 연동 검증 예정.</div>
+        <div class="slide-num"><span class="skill">compare</span>7<span class="sep">/</span>12</div>
+      </div>
+
+      <div class="scene" data-slide="8" data-skill="title-image">
+        <div class="eyebrow">Core features</div>
+        <div class="scene-title">문제 해결을 위해 설계된 3가지 핵심 기능</div>
+        <div class="feature-grid">
+          <div class="card feature-card" id="s-8-f1">
+            <div class="feature-img"><img src="assets/service-main-map-feature.png" alt="지도 기반 후보 탐지 기능" /></div>
+            <div class="feature-body">
+              <div class="feature-title">AI 후보 지도</div>
+              <div class="feature-problem">해결 문제: 데이터 탐색 어려움</div>
+              <div class="feature-value">후보 위치, 신뢰도, 추천 용도를 지도에서 한눈에 확인합니다.</div>
+            </div>
+          </div>
+          <div class="card feature-card" id="s-8-f2">
+            <div class="feature-img"><img src="assets/service-house-gpt-feature.png" alt="상세 분석과 GPT 체크리스트 기능" /></div>
+            <div class="feature-body">
+              <div class="feature-title">상세 분석·GPT 체크리스트</div>
+              <div class="feature-problem">해결 문제: 판단 기준 부족</div>
+              <div class="feature-value">전력 패턴, 건축 정보, AI 근거와 다음 행동을 함께 정리합니다.</div>
+            </div>
+          </div>
+          <div class="card feature-card" id="s-8-f3">
+            <div class="feature-img"><img src="assets/service-dashboard-feature.png" alt="지자체 대시보드 기능" /></div>
+            <div class="feature-body">
+              <div class="feature-title">지자체 대시보드</div>
+              <div class="feature-problem">해결 문제: 행동 연결 부족</div>
+              <div class="feature-value">우선순위, 상태 변경, CSV와 월간 리포트 흐름을 제공합니다.</div>
+            </div>
+          </div>
+        </div>
+        <div class="source-note">실제 구현 화면: 공가지도 지도, 상세 분석, 지자체 대시보드 캡처.</div>
+        <div class="slide-num"><span class="skill">title-image</span>8<span class="sep">/</span>12</div>
+      </div>
+
+      <div class="scene compare" data-slide="9" data-skill="compare">
+        <div class="eyebrow">Differentiation</div>
+        <div class="scene-title">차별점은 데이터를 보여주는 데서 끝나지 않는다는 점입니다</div>
+        <div class="compare-table">
+          <div class="card compare-col" id="s-9-before">
+            <div class="compare-head">기존 방식</div>
+            <ul class="compare-list">
+              <li>등록·조사된 빈집 정보 제공 중심</li>
+              <li>단일 플랫폼 또는 단일 데이터 확인</li>
+              <li>정보 조회 후 판단은 담당자 몫</li>
+              <li>정책·현황 관리 중심</li>
+            </ul>
+            <div class="screenshot-frame small-shot contain"><img src="assets/binzibe-map.png" alt="빈집애 참고 화면" /></div>
+          </div>
+          <div class="card compare-col highlight" id="s-9-after">
+            <div class="compare-head">공가지도</div>
+            <ul class="compare-list">
+              <li>미등록 후보 탐지와 우선조사 추천</li>
+              <li>건축·에너지·위성·생활권 데이터 결합</li>
+              <li>AI 근거, 점수, 체크리스트까지 제공</li>
+              <li>지도에서 대시보드, 리포트까지 연결</li>
+            </ul>
+            <div class="quote-line" style="margin-top:auto;">사용자가 판단하고 행동할 수 있는 형태로 데이터를 바꿉니다.</div>
+          </div>
+        </div>
+        <div class="source-note">참고: 한국부동산원 빈집정보시스템, REB 빈집정비통합시스템 빈집애. 공가지도는 기존 플랫폼의 앞단 탐지·우선순위 레이어로 포지셔닝.</div>
+        <div class="slide-num"><span class="skill">compare</span>9<span class="sep">/</span>12</div>
+      </div>
+
+      <div class="scene split" data-slide="10" data-skill="split">
+        <div class="eyebrow">Readiness & validation</div>
+        <div class="scene-title">서비스 완성도와 테스트 결과입니다</div>
+        <div class="ops-grid">
+          <div>
+            <div class="ops-status" id="s-10-status">
+              <div class="card status-row"><div class="status-key">서비스 형태</div><div class="status-val">웹 기반 배포 서비스</div></div>
+              <div class="card status-row"><div class="status-key">접속 경로</div><div class="status-val">https://kyo-map.vercel.app</div></div>
+              <div class="card status-row"><div class="status-key">구현 기능</div><div class="status-val">지도, 상세 분석, 지자체 대시보드 구현</div></div>
+              <div class="card status-row"><div class="status-key">데이터 상태</div><div class="status-val">샘플 후보 100건 기준 시연 가능</div></div>
+              <div class="card status-row"><div class="status-key">검증 방식</div><div class="status-val">후보 탐색→상세 확인→업무 연결 내부 플로우 테스트</div></div>
+            </div>
+            <div class="metric-row" id="s-10-metrics">
+              <div class="card metric-card"><div class="metric-num">3개</div><div class="metric-label">핵심 화면 구현</div></div>
+              <div class="card metric-card"><div class="metric-num">100건</div><div class="metric-label">샘플 후보 데이터</div></div>
+              <div class="card metric-card"><div class="metric-num">5단계</div><div class="metric-label">사용 흐름 검증</div></div>
+            </div>
+          </div>
+          <div class="screenshot-frame workflow-shot" id="s-10-shot">
+            <img src="assets/service-dashboard.png" alt="공가지도 지자체 대시보드 운영 화면" />
+          </div>
+        </div>
+        <div class="source-note">운영 현황: 배포 URL 기준 접근 가능. 사용자 수·기관 로그는 지자체 실증 단계에서 정량 수집 예정이며, 현재는 내부 시나리오 테스트와 화면 플로우 검증 기준.</div>
+        <div class="slide-num"><span class="skill">split</span>10<span class="sep">/</span>12</div>
+      </div>
+
+      <div class="scene" data-slide="11" data-skill="title-tags">
+        <div class="eyebrow">Public value & scalability</div>
+        <div class="scene-title">공공데이터 활용 가치와 정책 확장성이 분명합니다</div>
+        <div class="value-grid">
+          <div class="card value-card" id="s-11-v1">
+            <div class="value-key">데이터 활용성</div>
+            <div class="value-title">흩어진 공공데이터를 서비스로 전환</div>
+            <div class="value-text">건축, 에너지, 위치, 생활권 정보를 후보 단위로 결합합니다.</div>
+          </div>
+          <div class="card value-card green" id="s-11-v2">
+            <div class="value-key">시민 편익</div>
+            <div class="value-title">위험 방치와 정보 접근성 개선</div>
+            <div class="value-text">방치 공간을 더 빨리 확인하고 활용 가능성을 찾습니다.</div>
+          </div>
+          <div class="card value-card" id="s-11-v3">
+            <div class="value-key">행정 활용</div>
+            <div class="value-title">현장조사 준비와 배정 효율화</div>
+            <div class="value-text">제한된 인력으로 먼저 볼 곳을 정하는 근거를 제공합니다.</div>
+          </div>
+          <div class="card value-card green" id="s-11-v4">
+            <div class="value-key">정책 연계</div>
+            <div class="value-title">정비·매입·귀촌·창업 연결</div>
+            <div class="value-text">빈집 관리를 유휴공간 활용 정책으로 확장합니다.</div>
+          </div>
+          <div class="card value-card" id="s-11-v5">
+            <div class="value-key">AI 혁신성</div>
+            <div class="value-title">분석·추천·요약 자동화</div>
+            <div class="value-text">데이터를 담당자가 이해 가능한 판단 정보로 바꿉니다.</div>
+          </div>
+        </div>
+        <div class="quote-line" id="s-11-quote">현재 구현된 서비스를 기반으로, 데이터 범위와 적용 지역을 넓혀 더 많은 지자체가 활용하는 공공데이터 기반 서비스로 고도화하겠습니다.</div>
+        <div class="source-note">출처: 국토교통부 범정부 빈집 관리 종합계획, 정책브리핑 빈집정책, 국토연구원 빈집 관리체계 개선 제안.</div>
+        <div class="slide-num"><span class="skill">title-tags</span>11<span class="sep">/</span>12</div>
+      </div>
+
+      <div class="scene split" data-slide="12" data-skill="split">
+        <div class="eyebrow">Impact & closing</div>
+        <div class="scene-title">공가지도는 공공데이터를 실제 문제 해결 경험으로 연결합니다</div>
+        <div class="closing-grid">
+          <div>
+            <div class="effect-grid" id="s-12-effects">
+              <div class="card effect-card"><div class="effect-key">사용자</div><div class="effect-text">후보 탐색 시간 감소, 현장조사 준비 편의 향상</div></div>
+              <div class="card effect-card"><div class="effect-key">공공데이터</div><div class="effect-text">개방 데이터의 실제 행정 활용 사례 창출</div></div>
+              <div class="card effect-card"><div class="effect-key">지역 정책</div><div class="effect-text">정비 수요 발굴과 유휴공간 활용 가능성 확대</div></div>
+              <div class="card effect-card"><div class="effect-key">확장성</div><div class="effect-text">다른 지역과 생활·관광·안전 분야로 확장 가능</div></div>
+            </div>
+            <div class="final-line" id="s-12-line">저희는 공공데이터와 AI로 방치된 공간을 도시 자산으로 바꾸겠습니다.</div>
+          </div>
+          <div class="qr-panel" id="s-12-qr">
+            <img src="assets/qr-kyo-map-generated.png" alt="공가지도 서비스 접속 QR" />
+            <div class="qr-title">공가지도<br>서비스 접속</div>
+            <div class="qr-url">https://kyo-map.vercel.app</div>
+          </div>
+        </div>
+        <div class="source-note">QR 생성 대상 URL: https://kyo-map.vercel.app</div>
+        <div class="slide-num"><span class="skill">split</span>12<span class="sep">/</span>12</div>
+      </div>
+        </div>
+      </div>
+    </main>
+
+    <script>
+      (function() {
+        const frame = document.getElementById('detail-frame');
+        const scenes = Array.from(frame.querySelectorAll('.scene'));
+        const stripGrid = document.getElementById('strip-grid');
+        const prevBtn = document.getElementById('nav-prev');
+        const nextBtn = document.getElementById('nav-next');
+        const currentEl = document.getElementById('nav-current');
+        const skillEl = document.getElementById('nav-skill');
+
+        function cleanThumbClone(clone) {
+          clone.classList.add('active');
+          clone.removeAttribute('contenteditable');
+          clone.querySelectorAll('[contenteditable]').forEach(el => el.removeAttribute('contenteditable'));
+          return clone;
+        }
+
+        function syncThumbFromScene(n) {
+          const scene = scenes[n - 1];
+          const thumb = thumbs[n - 1];
+          if (!scene || !thumb) return;
+          const oldClone = thumb.querySelector('.scene');
+          const clone = cleanThumbClone(scene.cloneNode(true));
+          if (oldClone) oldClone.replaceWith(clone);
+          else thumb.insertBefore(clone, thumb.firstChild);
+        }
+
+        scenes.forEach((scene, i) => {
+          const n = i + 1;
+          const skill = scene.dataset.skill;
+          const thumb = document.createElement('div');
+          thumb.className = 'thumb';
+          thumb.dataset.slide = n;
+
+          const clone = cleanThumbClone(scene.cloneNode(true));
+          thumb.appendChild(clone);
+
+          const label = document.createElement('div');
+          label.className = 'thumb-label';
+          label.innerHTML = `<span>${String(n).padStart(2, '0')}</span><code>${skill}</code>`;
+          thumb.appendChild(label);
+
+          thumb.addEventListener('click', () => setActive(n));
+          stripGrid.appendChild(thumb);
+        });
+
+        const thumbs = Array.from(stripGrid.querySelectorAll('.thumb'));
+        let active = 1;
+
+        function setActive(n) {
+          n = Math.max(1, Math.min(scenes.length, n));
+          active = n;
+          scenes.forEach((scene, i) => scene.classList.toggle('active', i + 1 === n));
+          thumbs.forEach((thumb, i) => thumb.classList.toggle('active', i + 1 === n));
+          currentEl.textContent = String(n).padStart(2, '0');
+          skillEl.textContent = scenes[n - 1].dataset.skill;
+          prevBtn.disabled = (n === 1);
+          nextBtn.disabled = (n === scenes.length);
+          const t = thumbs[n - 1];
+          if (t && t.scrollIntoView) t.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+        }
+
+        prevBtn.addEventListener('click', () => setActive(active - 1));
+        nextBtn.addEventListener('click', () => setActive(active + 1));
+
+        document.addEventListener('keydown', (e) => {
+          if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') { setActive(active - 1); e.preventDefault(); }
+          if (e.key === 'ArrowRight' || e.key === 'ArrowDown' || e.key === ' ') { setActive(active + 1); e.preventDefault(); }
+          if (/^[1-9]$/.test(e.key)) setActive(parseInt(e.key, 10));
+          if (e.key === '0') setActive(10);
+        });
+
+        setActive(1);
+
+        /* ============ Aim inspector ============ */
+        const aimBtn = document.getElementById('nav-aim');
+        const overlay = document.createElement('div');
+        overlay.className = 'aim-overlay';
+        document.body.appendChild(overlay);
+        const tooltip = document.createElement('div');
+        tooltip.className = 'aim-tooltip';
+        document.body.appendChild(tooltip);
+        const toast = document.createElement('div');
+        toast.className = 'aim-toast';
+        document.body.appendChild(toast);
+        let aimMode = false;
+        let toastTimer = null;
+
+        function activeSceneEl() {
+          return document.querySelector('#detail-frame .scene.active');
+        }
+
+        function buildSelector(el) {
+          if (!el || el.nodeType !== 1) return '';
+          const parts = [];
+          let cur = el;
+          while (cur && cur.nodeType === 1) {
+            if (cur.classList.contains('scene') && cur.dataset.slide) {
+              parts.unshift(`[data-slide="${cur.dataset.slide}"]`);
+              break;
+            }
+            if (cur.id) { parts.unshift('#' + cur.id); break; }
+
+            let part = cur.tagName.toLowerCase();
+            if (cur.className && typeof cur.className === 'string') {
+              const classes = cur.className.trim().split(/\s+/)
+                .filter(c => c && c !== 'active' && !c.startsWith('aim-'));
+              if (classes.length) part += '.' + classes.join('.');
+            }
+            const parent = cur.parentElement;
+            if (parent) {
+              const twins = Array.from(parent.children).filter(s =>
+                s.tagName === cur.tagName && s.className === cur.className
+              );
+              if (twins.length > 1) {
+                const idx = twins.indexOf(cur) + 1;
+                part += `:nth-of-type(${idx})`;
+              }
+            }
+            parts.unshift(part);
+            cur = parent;
+          }
+          return parts.join(' > ');
+        }
+
+        function colorize(sel) {
+          return sel
+            .replace(/\[data-slide="\d+"\]/g, m => `<span class="tag-part">${m}</span>`)
+            .replace(/\.[a-zA-Z_-][a-zA-Z0-9_-]*/g, m => `<span class="cls-part">${m}</span>`)
+            .replace(/ > /g, '<span class="sep-part"> › </span>');
+        }
+
+        function setOverlayTo(el) {
+          const rect = el.getBoundingClientRect();
+          overlay.style.display = 'block';
+          overlay.style.top = rect.top + 'px';
+          overlay.style.left = rect.left + 'px';
+          overlay.style.width = rect.width + 'px';
+          overlay.style.height = rect.height + 'px';
+          const sel = buildSelector(el);
+          tooltip.innerHTML = colorize(sel);
+          tooltip.style.display = 'block';
+          let tipTop = rect.bottom + 6;
+          let tipLeft = rect.left;
+          const tipRect = tooltip.getBoundingClientRect();
+          if (tipTop + tipRect.height > window.innerHeight - 8) tipTop = rect.top - tipRect.height - 6;
+          if (tipLeft + tipRect.width > window.innerWidth - 8) tipLeft = window.innerWidth - tipRect.width - 8;
+          if (tipLeft < 8) tipLeft = 8;
+          tooltip.style.top = tipTop + 'px';
+          tooltip.style.left = tipLeft + 'px';
+        }
+
+        function hideAim() { overlay.style.display = 'none'; tooltip.style.display = 'none'; }
+        function exitAimMode() {
+          aimMode = false;
+          document.body.classList.remove('aim-active');
+          aimBtn.classList.remove('active');
+          hideAim();
+        }
+        function enterAimMode() {
+          aimMode = true;
+          document.body.classList.add('aim-active');
+          aimBtn.classList.add('active');
+        }
+        function showToast(sel) {
+          toast.innerHTML =
+            '<div class="toast-title">✓ 복사되었습니다</div>' +
+            '<div class="toast-sel">' + sel.replace(/</g, '&lt;').replace(/>/g, '&gt;') + '</div>';
+          toast.classList.add('show');
+          if (toastTimer) clearTimeout(toastTimer);
+          toastTimer = setTimeout(() => toast.classList.remove('show'), 2500);
+        }
+        function copyToClipboard(text) {
+          if (navigator.clipboard && window.isSecureContext !== false) {
+            return navigator.clipboard.writeText(text).catch(() => legacyCopy(text));
+          }
+          return legacyCopy(text);
+        }
+        function legacyCopy(text) {
+          const ta = document.createElement('textarea');
+          ta.value = text;
+          ta.style.position = 'fixed';
+          ta.style.opacity = '0';
+          document.body.appendChild(ta);
+          ta.select();
+          try { document.execCommand('copy'); } catch (e) {}
+          document.body.removeChild(ta);
+          return Promise.resolve();
+        }
+
+        aimBtn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          if (aimMode) exitAimMode(); else enterAimMode();
+        });
+        document.addEventListener('mousemove', (e) => {
+          if (!aimMode) return;
+          const el = document.elementFromPoint(e.clientX, e.clientY);
+          const scene = activeSceneEl();
+          if (!el || !scene || !scene.contains(el)) { hideAim(); return; }
+          setOverlayTo(el);
+        });
+        document.addEventListener('click', (e) => {
+          if (!aimMode) return;
+          const el = document.elementFromPoint(e.clientX, e.clientY);
+          const scene = activeSceneEl();
+          if (!el || !scene || !scene.contains(el)) return;
+          e.preventDefault();
+          e.stopPropagation();
+          const sel = buildSelector(el);
+          copyToClipboard(sel).then(() => showToast(sel));
+          exitAimMode();
+        }, true);
+        document.addEventListener('keydown', (e) => {
+          if (e.key === 'Escape' && aimMode) { exitAimMode(); e.preventDefault(); }
+        });
+
+        /* ============ Text Edit mode (16:9 slide variant — data-slide) ============ */
+        const editBtn = document.getElementById('nav-edit');
+        const INLINE_TAGS = new Set(['SPAN','EM','STRONG','B','I','U','A','BR','CODE','MARK','SMALL']);
+
+        function isTextOnlyLeaf(el) {
+          if (!el.children.length) return true;
+          return Array.from(el.children).every(c => INLINE_TAGS.has(c.tagName) && isTextOnlyLeaf(c));
+        }
+
+        function findEditableElements(scope) {
+          const out = [];
+          const walk = (el) => {
+            if (el.hasAttribute('aria-hidden')) return;
+            if (el.tagName === 'IMG' || el.tagName === 'SCRIPT' || el.tagName === 'STYLE') return;
+            if (isTextOnlyLeaf(el) && el.textContent.trim()) {
+              out.push(el);
+            } else {
+              Array.from(el.children).forEach(walk);
+            }
+          };
+          Array.from(scope.children).forEach(walk);
+          return out;
+        }
+
+        const origTexts = new Map();
+        let editMode = false;
+
+        function simpleSelectorFromSlide(el) {
+          if (!el.className || typeof el.className !== 'string') return el.tagName.toLowerCase();
+          const parts = el.className.trim().split(/\s+/).filter(c => c && c !== 'active' && !c.startsWith('aim-') && !c.startsWith('edit-'));
+          return parts.length ? '.' + parts.join('.') : el.tagName.toLowerCase();
+        }
+
+        function enterEditMode() {
+          editMode = true;
+          document.body.classList.add('edit-mode');
+          editBtn.classList.add('active');
+          editBtn.textContent = 'Done';
+          document.querySelectorAll('#detail-frame [data-slide]').forEach(slide => {
+            findEditableElements(slide).forEach(el => {
+              origTexts.set(el, el.innerHTML);
+              el.contentEditable = 'true';
+              el.spellcheck = false;
+            });
+          });
+        }
+
+        function exitEditMode() {
+          editMode = false;
+          document.body.classList.remove('edit-mode');
+          editBtn.classList.remove('active');
+          editBtn.textContent = 'Edit';
+          const bySlide = new Map();
+          origTexts.forEach((origHTML, el) => {
+            el.removeAttribute('contenteditable');
+            const curHTML = el.innerHTML;
+            if (origHTML.trim() !== curHTML.trim()) {
+              const slide = el.closest('[data-slide]');
+              const num = slide ? slide.dataset.slide : '?';
+              const skill = slide ? (slide.dataset.skill || '') : '';
+              const sel = simpleSelectorFromSlide(el);
+              if (!bySlide.has(num)) bySlide.set(num, { skill, changes: [] });
+              bySlide.get(num).changes.push({ sel, old: origHTML.trim(), new: curHTML.trim() });
+            }
+          });
+          origTexts.clear();
+          const totalChanges = Array.from(bySlide.values()).reduce((a, v) => a + v.changes.length, 0);
+          if (totalChanges > 0) {
+            Array.from(bySlide.keys()).forEach(num => syncThumbFromScene(parseInt(num, 10)));
+            const topic = document.title.replace(/ · Card Overview.*$/, '').replace(/ · Overview.*$/, '');
+            let patch = `# Overview edits — ${topic} (${totalChanges} change${totalChanges === 1 ? '' : 's'})\n\n`;
+            Array.from(bySlide.keys()).sort((a, b) => parseInt(a) - parseInt(b)).forEach(num => {
+              const { skill, changes } = bySlide.get(num);
+              patch += `## Slide ${num}${skill ? ' (' + skill + ')' : ''}\n`;
+              changes.forEach(c => {
+                patch += `- ${c.sel}\n  OLD: ${c.old}\n  NEW: ${c.new}\n`;
+              });
+              patch += '\n';
+            });
+            // Try POST /save (live server); fall back to clipboard (static server)
+            fetch('/save', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ patch: patch }),
+            }).then(r => {
+              if (!r.ok) throw new Error('save failed: ' + r.status);
+              return r.json();
+            }).then(result => {
+              toast.innerHTML =
+                '<div class="toast-title">✓ ' + result.applied + '건 반영됨 (파일 직접 수정)</div>' +
+                '<div class="toast-sel">오른쪽 화면과 왼쪽 썸네일이 함께 갱신됨</div>';
+              toast.classList.add('show');
+              if (toastTimer) clearTimeout(toastTimer);
+              toastTimer = setTimeout(() => toast.classList.remove('show'), 4000);
+            }).catch(() => {
+              copyToClipboard(patch).then(() => {
+                toast.innerHTML =
+                  '<div class="toast-title">✎ ' + totalChanges + '개 변경 클립보드 복사됨</div>' +
+                  '<div class="toast-sel">정적 서버 — 대화창에 붙여넣어 agent 반영 요청</div>';
+                toast.classList.add('show');
+                if (toastTimer) clearTimeout(toastTimer);
+                toastTimer = setTimeout(() => toast.classList.remove('show'), 4500);
+              });
+            });
+          }
+        }
+
+        editBtn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          if (editMode) exitEditMode(); else enterEditMode();
+        });
+
+        document.addEventListener('keydown', (e) => {
+          if (editMode && document.activeElement && document.activeElement.isContentEditable) {
+            e.stopPropagation();
+          }
+        }, true);
+      })();
+    </script>
+  </body>
+</html>
