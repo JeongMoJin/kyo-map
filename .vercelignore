@@ -1,0 +1,21 @@
+.git
+.next
+node_modules
+
+# Local video/editing artifacts are not part of the web deployment.
+deliverables
+video_work
+경진대회_참가서류
+경진대회_참가서류.zip
+
+*.mov
+*.mp4
+*.webm
+*.gif
+*.pptx
+*.key
+*.pdf
+*.zip
+
+*.log
+*.tsbuildinfo
