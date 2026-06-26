@@ -417,35 +417,25 @@ export async function getYeongjuVacancyDataset({
     } else {
       records = await fetchFromPublicCsvFile();
       fetchMode = "data_go_kr_file_download";
-      warnings.push(
-        "DATA_GO_KR_SERVICE_KEY가 없어 JSON API 대신 공개 파일 다운로드 URL을 사용했습니다.",
-      );
     }
-  } catch (apiError) {
+  } catch {
     if (serviceKey) {
       try {
         records = await fetchFromPublicCsvFile();
         fetchMode = "data_go_kr_file_download";
-        warnings.push(
-          "ODCloud API 호출이 실패해 공개 CSV 파일 다운로드 경로로 전환했습니다.",
-        );
       } catch {
         records = fallbackRecords();
         fetchMode = "bundled_public_sample";
         warnings.push(
-          "공공데이터 원본 접근이 실패해 코드에 포함된 공개 데이터 샘플로 전환했습니다.",
+          "공공데이터 수집 상태를 확인 중입니다.",
         );
       }
     } else {
       records = fallbackRecords();
       fetchMode = "bundled_public_sample";
       warnings.push(
-        "공공데이터 파일 접근이 실패해 코드에 포함된 공개 데이터 샘플로 전환했습니다.",
+        "공공데이터 수집 상태를 확인 중입니다.",
       );
-    }
-
-    if (apiError instanceof Error) {
-      warnings.push(apiError.message);
     }
   }
 

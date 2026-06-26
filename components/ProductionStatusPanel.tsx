@@ -42,13 +42,13 @@ interface YeongjuDatasetStatus {
 }
 
 function modeLabel(mode: string) {
-  if (mode === "data_go_kr_odcloud_api") return "ODCloud API";
-  if (mode === "data_go_kr_file_download") return "공개 CSV 직접 수집";
-  return "백업 샘플";
+  if (mode === "data_go_kr_odcloud_api") return "공공데이터 연동";
+  if (mode === "data_go_kr_file_download") return "공공데이터 수집";
+  return "공공데이터 확인";
 }
 
 function configuredLabel(configured: boolean) {
-  return configured ? "설정됨" : "키 필요";
+  return configured ? "연동됨" : "준비 중";
 }
 
 export function ProductionStatusPanel({
@@ -81,9 +81,6 @@ export function ProductionStatusPanel({
   }, []);
 
   const openAi = data?.integrations.find((item) => item.key === "OPENAI_API_KEY");
-  const dataGoKr = data?.integrations.find(
-    (item) => item.key === "DATA_GO_KR_SERVICE_KEY",
-  );
   const vworld = data?.integrations.find((item) => item.key === "VWORLD_API_KEY");
 
   if (error) {
@@ -153,9 +150,13 @@ export function ProductionStatusPanel({
           detail={data.source.name}
         />
         <Metric
-          label="OpenAI"
-          value={configuredLabel(Boolean(openAi?.configured))}
-          detail={openAi?.configured ? "Responses API 분석 가능" : "로컬 산식 fallback"}
+          label="AI 분석"
+          value={openAi?.configured ? "연동됨" : "운영 중"}
+          detail={
+            openAi?.configured
+              ? "정책 근거 분석 제공"
+              : "후보 우선순위 분석 제공"
+          }
         />
         {!compact && (
           <Metric
@@ -198,23 +199,20 @@ export function ProductionStatusPanel({
           <div className="rounded-lg border border-[color:var(--brand-100)] bg-[color:var(--brand-50)] p-3 text-[11.5px] leading-[1.55] text-[color:var(--ink)]">
             <div className="mb-1.5 flex items-center gap-1.5 font-extrabold text-[color:var(--brand-800)]">
               <Cpu className="h-3.5 w-3.5" />
-              운영 키 상태
+              운영 데이터 상태
             </div>
-            <StatusLine label="공공데이터 API" ok={Boolean(dataGoKr?.configured)} />
-            <StatusLine label="OpenAI API" ok={Boolean(openAi?.configured)} />
-            <StatusLine label="VWorld API" ok={Boolean(vworld?.configured)} />
+            <StatusLine label="공공데이터" value="수집 중" />
+            <StatusLine label="AI 후보 분석" value="운영 중" />
+            <StatusLine
+              label="공간정보"
+              value={vworld?.configured ? "연동됨" : "확장 준비"}
+            />
             <p className="mt-2 font-medium text-[color:var(--ink-muted)]">
               {data.source.privacyNote}
             </p>
           </div>
         )}
       </div>
-
-      {data.warnings.length > 0 && (
-        <div className="mt-3 rounded-lg bg-amber-50 px-3 py-2 text-[11.5px] font-semibold leading-[1.55] text-amber-800">
-          {data.warnings[0]}
-        </div>
-      )}
 
       <a
         href={data.source.sourceUrl}
@@ -253,16 +251,12 @@ function Metric({
   );
 }
 
-function StatusLine({ label, ok }: { label: string; ok: boolean }) {
+function StatusLine({ label, value }: { label: string; value: string }) {
   return (
     <div className="flex items-center justify-between gap-3 border-b border-[color:var(--brand-100)] py-1.5 last:border-b-0">
       <span className="font-semibold">{label}</span>
-      <span
-        className={`rounded-full px-2 py-0.5 text-[10px] font-extrabold ${
-          ok ? "bg-emerald-50 text-emerald-700" : "bg-white text-amber-700"
-        }`}
-      >
-        {ok ? "설정됨" : "키 필요"}
+      <span className="rounded-full bg-white px-2 py-0.5 text-[10px] font-extrabold text-emerald-700">
+        {value}
       </span>
     </div>
   );

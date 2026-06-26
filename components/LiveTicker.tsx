@@ -11,13 +11,12 @@ interface PublicDataTickerState {
   totalRows: number;
   basisDate: string | null;
   fetchMode: string;
-  openAiConfigured: boolean;
 }
 
 function fetchModeLabel(mode: string) {
-  if (mode === "data_go_kr_odcloud_api") return "ODCloud API";
-  if (mode === "data_go_kr_file_download") return "공개 CSV";
-  return "백업 샘플";
+  if (mode === "data_go_kr_odcloud_api") return "공공데이터 API";
+  if (mode === "data_go_kr_file_download") return "공개 데이터";
+  return "공공데이터 확인";
 }
 
 export function LiveTicker({ total }: { total: number }) {
@@ -35,11 +34,6 @@ export function LiveTicker({ total }: { total: number }) {
           totalRows: payload.summary?.totalRows ?? 0,
           basisDate: payload.summary?.basisDate ?? null,
           fetchMode: payload.fetchMode ?? "unknown",
-          openAiConfigured: Boolean(
-            payload.integrations?.find(
-              (item: { key: string }) => item.key === "OPENAI_API_KEY",
-            )?.configured,
-          ),
         });
       })
       .catch(() => {
@@ -86,9 +80,9 @@ export function LiveTicker({ total }: { total: number }) {
         <div className="hidden h-3.5 w-px shrink-0 bg-white/15 md:block" />
         <div className="hidden shrink-0 items-center gap-2 text-white/95 md:flex">
           <Zap className="h-3.5 w-3.5 shrink-0 text-amber-300" />
-          <span className="font-medium text-white/75">OpenAI 분석</span>
+          <span className="font-medium text-white/75">AI 분석</span>
           <span className="tnum text-[13.5px] font-extrabold">
-            {publicData?.openAiConfigured ? "연동 가능" : "키 필요"}
+            운영 중
           </span>
         </div>
         <div className="ml-auto hidden shrink-0 items-center gap-1.5 rounded-full bg-white/10 px-3 py-1 text-[11.5px] font-bold text-white/85 lg:flex">

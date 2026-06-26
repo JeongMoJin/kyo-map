@@ -12,7 +12,7 @@ import type { RecommendedUse } from "@/lib/types";
 import { USE_LABELS } from "@/lib/types";
 import { Sparkles, Cpu, Info } from "lucide-react";
 
-// 실서비스 PoC: 공공데이터 수집 + 정책 스코어링 + OpenAI Responses 분석
+// 실서비스 PoC: 공공데이터 수집 + 정책 스코어링 + AI 정책 분석
 const MapView = dynamic(() => import("@/components/HouseMap"), {
   ssr: false,
   loading: () => (
@@ -124,7 +124,7 @@ export default function HomePage() {
                 <span className="font-bold text-[color:var(--ink-strong)]">
                   AI 파이프라인
                 </span>{" "}
-                · 공공데이터 수집 → 정책 우선순위 산식 → OpenAI Responses API가
+                · 공공데이터 수집 → 정책 우선순위 산식 → AI 정책 분석이
                 조치안 구조화
               </div>
             </div>

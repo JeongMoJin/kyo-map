@@ -221,7 +221,7 @@ export default function DashboardPage() {
               label="평균 AI 신뢰도"
               value={(avgConfidence * 100).toFixed(1)}
               unit="%"
-              trend="스코어링+OpenAI"
+              trend="AI 추정 기반"
               tone="info"
             />
             <Kpi
@@ -284,7 +284,7 @@ export default function DashboardPage() {
                     </h2>
                   </div>
                   <div className="mt-0.5 text-[12px] font-medium text-[color:var(--ink-muted)]">
-                    샘플 100건 기준 분포
+                    후보 데이터 기준 분포
                   </div>
                 </div>
                 <span className="rounded-full bg-[color:var(--surface-muted)] px-2.5 py-1 text-[10.5px] font-bold text-[color:var(--ink-muted)]">

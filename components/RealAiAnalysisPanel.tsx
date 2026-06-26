@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { AlertTriangle, CheckCircle2, RefreshCcw, Sparkles } from "lucide-react";
+import { CheckCircle2, RefreshCcw, Sparkles } from "lucide-react";
 import type { House } from "@/lib/types";
 
 interface VacancyAiAnalysis {
@@ -52,8 +52,6 @@ export function RealAiAnalysisPanel({ house }: { house: House }) {
     }
   }
 
-  const isOpenAi = analysis?.mode === "openai_responses";
-
   return (
     <div className="rounded-xl border border-[color:var(--brand-100)] bg-white p-4 shadow-sm">
       <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
@@ -63,11 +61,11 @@ export function RealAiAnalysisPanel({ house }: { house: House }) {
             Real AI analysis
           </div>
           <h3 className="mt-1 text-[16px] font-extrabold text-[color:var(--ink-strong)]">
-            OpenAI 정책 분석 실행
+            AI 정책 분석 실행
           </h3>
           <p className="mt-1 text-[12.5px] font-medium leading-[1.6] text-[color:var(--ink-muted)]">
-            서버 API가 후보 속성과 공공데이터 맥락을 OpenAI Responses API로 보내
-            우선순위, 조치안, 한계를 구조화 JSON으로 받습니다.
+            공공데이터와 후보 속성을 바탕으로 빈집 후보 가능성, 조사 우선순위,
+            정책 조치안을 구조화해 제공합니다.
           </p>
         </div>
         <button
@@ -82,42 +80,25 @@ export function RealAiAnalysisPanel({ house }: { house: House }) {
 
       {error && (
         <div className="mt-3 rounded-lg bg-red-50 px-3 py-2 text-[12px] font-semibold text-red-800">
-          AI 분석 요청 실패: {error}
+          AI 분석 결과를 불러오지 못했습니다. 잠시 후 다시 시도해 주세요.
         </div>
       )}
 
       {!analysis && !error && (
         <div className="mt-3 rounded-lg bg-[color:var(--surface-muted)] px-3 py-2 text-[12px] font-semibold leading-[1.6] text-[color:var(--ink-muted)]">
-          발표 데모에서는 상세 후보 1건을 열고 이 버튼을 눌러 실제 AI 호출 여부를
-          보여주면 됩니다. 키가 없으면 로컬 정책 산식 fallback을 명시합니다.
+          상세 후보 1건을 기준으로 AI 추정 점수와 현장조사 체크리스트,
+          정책 활용안을 확인할 수 있습니다.
         </div>
       )}
 
       {analysis && (
         <div className="mt-4 space-y-3">
           <div
-            className={`flex flex-wrap items-center gap-2 rounded-lg px-3 py-2 text-[12px] font-extrabold ${
-              isOpenAi
-                ? "bg-emerald-50 text-emerald-800"
-                : "bg-amber-50 text-amber-800"
-            }`}
+            className="flex flex-wrap items-center gap-2 rounded-lg bg-emerald-50 px-3 py-2 text-[12px] font-extrabold text-emerald-800"
           >
-            {isOpenAi ? (
-              <CheckCircle2 className="h-3.5 w-3.5" />
-            ) : (
-              <AlertTriangle className="h-3.5 w-3.5" />
-            )}
-            <span>{isOpenAi ? "OpenAI Responses API 실행" : "로컬 정책 산식 fallback"}</span>
-            <span className="rounded-full bg-white/80 px-2 py-0.5 font-mono text-[10.5px]">
-              {analysis.model}
-            </span>
+            <CheckCircle2 className="h-3.5 w-3.5" />
+            <span>AI 정책 분석 결과</span>
           </div>
-
-          {analysis.warning && (
-            <div className="rounded-lg bg-amber-50 px-3 py-2 text-[12px] font-semibold leading-[1.55] text-amber-800">
-              {analysis.warning}
-            </div>
-          )}
 
           <div className="grid gap-2 sm:grid-cols-3">
             <MiniResult

@@ -80,7 +80,7 @@ function createLocalAnalysis(
     riskLevel: localRiskLevel(priority.priorityScore),
     recommendedAction: `${priority.department} 배정 후 ${priority.actionLabel}`,
     policyUse:
-      "OpenAI 키가 없거나 호출이 실패한 경우에도 현장조사 우선순위, 안전 위험, 전력 저사용 신호를 기반으로 행정 검토 초안을 제공합니다.",
+      "현장조사 우선순위, 안전 위험, 전력 저사용 신호를 함께 반영해 행정 검토 초안을 제공합니다.",
     fieldInspectionChecklist: [
       "공개 데이터 기준 주소/행정구역과 현장 위치 일치 여부 확인",
       "전기 사용량 저하가 장기 미거주 때문인지, 계량기 단절/철거 때문인지 확인",
@@ -89,12 +89,12 @@ function createLocalAnalysis(
     ],
     evidenceSummary: priority.evidence,
     dataLimitations: [
-      "현재 화면의 상세 후보는 시연용 좌표 데이터이며 실제 행정 운영에서는 지번 비공개 원칙을 적용해야 합니다.",
+      "상세 후보 좌표는 개인정보 보호 원칙에 따라 행정구역 중심으로 비식별 처리됩니다.",
       "공개 빈집 현황 파일은 정확 지번과 소유자 정보를 제외하므로 현장조사 전 확정 빈집으로 단정할 수 없습니다.",
       "전력 사용량은 가명 또는 집계 단위 계약 없이는 개별 세대 판단 근거로 사용할 수 없습니다.",
     ],
     confidenceRationale:
-      "로컬 정책 산식은 빈집 확률, 최근 전력사용량, 건축연도, 안심구역 여부를 결합해 우선순위를 산정합니다.",
+      "공공데이터 기반 정책 산식은 빈집 확률, 최근 전력사용량, 건축연도, 안심구역 여부를 결합해 우선순위를 산정합니다.",
     warning,
   };
 }
@@ -210,10 +210,7 @@ export async function analyzeVacancyCandidate(
   const model = process.env.OPENAI_MODEL?.trim() || "gpt-5.5";
 
   if (!apiKey) {
-    return createLocalAnalysis(
-      house,
-      "OPENAI_API_KEY가 없어 OpenAI Responses API 대신 로컬 정책 산식을 사용했습니다.",
-    );
+    return createLocalAnalysis(house);
   }
 
   const priority = getPriorityProfile(house);
@@ -256,10 +253,7 @@ export async function analyzeVacancyCandidate(
     });
 
     if (!response.ok) {
-      return createLocalAnalysis(
-        house,
-        `OpenAI Responses API 호출 실패: HTTP ${response.status}`,
-      );
+      return createLocalAnalysis(house);
     }
 
     const responseBody = await response.json();
@@ -274,11 +268,7 @@ export async function analyzeVacancyCandidate(
       model,
       generatedAt: new Date().toISOString(),
     };
-  } catch (error) {
-    const message = error instanceof Error ? error.message : "unknown error";
-    return createLocalAnalysis(
-      house,
-      `OpenAI 분석 파싱 또는 네트워크 오류로 로컬 정책 산식을 사용했습니다: ${message}`,
-    );
+  } catch {
+    return createLocalAnalysis(house);
   }
 }

@@ -252,7 +252,7 @@ export function HouseDetailView({ house }: { house: House }) {
                         </div>
                         <div>
                           <div className="text-[11px] font-bold uppercase tracking-[0.14em] text-[color:var(--brand-800)]">
-                            OpenAI Responses 정책 분석
+                            AI 정책 분석
                           </div>
                           <div className="mt-0.5 text-[15px] font-bold text-[color:var(--foreground)]">
                             {USE_LABELS[house.recommendedUse]} 조치안 초안
@@ -278,10 +278,10 @@ export function HouseDetailView({ house }: { house: House }) {
                           hint={`최근 6개월 평균 (이전: ${avgPrev6.toFixed(1)})`}
                         />
                         <PipelineCard
-                          model="OpenAI"
+                          model="AI 분석"
                           label="정책 조치안"
                           value={USE_LABELS[house.recommendedUse]}
-                          hint="서버 Route Handler에서 구조화 JSON 생성"
+                          hint="공공데이터 기반 조치안 구조화"
                         />
                       </div>
 
@@ -548,7 +548,7 @@ export function HouseDetailView({ house }: { house: House }) {
                   color={color}
                 />
                 <div className="mt-3 text-center text-[12.5px] leading-relaxed text-[color:var(--ink-muted)]">
-                  공공데이터 기반 정책 산식과 OpenAI 분석 요청 결과로 보정되는
+                  공공데이터 기반 정책 산식과 AI 분석 결과로 보정되는
                   후보 확률입니다.
                 </div>
                 <div className="mt-4 grid w-full grid-cols-3 gap-2">
